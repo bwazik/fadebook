@@ -78,7 +78,7 @@ return [
     |
     */
 
-    'locale' => env('APP_LOCALE', 'en'),
+    'locale' => env('APP_LOCALE', 'ar'),
 
     'fallback_locale' => env('APP_FALLBACK_LOCALE', 'en'),
 
@@ -121,6 +121,12 @@ return [
     'maintenance' => [
         'driver' => env('APP_MAINTENANCE_DRIVER', 'file'),
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
+    ],
+
+    'super_admin' => [
+        'name' => env('SUPER_ADMIN_NAME', 'FadeBook Super Admin'),
+        'phone' => env('SUPER_ADMIN_PHONE', '01000000000'),
+        'password' => env('SUPER_ADMIN_PASSWORD', 'password123'),
     ],
 
 ];
