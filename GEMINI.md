@@ -281,12 +281,12 @@ The Laravel Boost guidelines are specifically curated by Laravel maintainers for
 This application is a Laravel application and its main Laravel ecosystems package & versions are below. You are an expert with them all. Ensure you abide by these specific packages & versions.
 
 - php - 8.5
+- laravel/fortify (FORTIFY) - v1
 - laravel/framework (LARAVEL) - v13
 - laravel/prompts (PROMPTS) - v0
 - livewire/livewire (LIVEWIRE) - v3
 - livewire/volt (VOLT) - v1
 - laravel/boost (BOOST) - v2
-- laravel/breeze (BREEZE) - v2
 - laravel/mcp (MCP) - v0
 - laravel/pail (PAIL) - v1
 - laravel/pint (PINT) - v1
@@ -298,6 +298,7 @@ This application is a Laravel application and its main Laravel ecosystems packag
 
 This project has domain-specific skills available. You MUST activate the relevant skill whenever you work in that domain—don't wait until you're stuck.
 
+- `fortify-development` — ACTIVATE when the user works on authentication in Laravel. This includes login, registration, password reset, email verification, two-factor authentication (2FA/TOTP/QR codes/recovery codes), profile updates, password confirmation, or any auth-related routes and controllers. Activate when the user mentions Fortify, auth, authentication, login, register, signup, forgot password, verify email, 2FA, or references app/Actions/Fortify/, CreateNewUser, UpdateUserProfileInformation, FortifyServiceProvider, config/fortify.php, or auth guards. Fortify is the frontend-agnostic authentication backend for Laravel that registers all auth routes and controllers. Also activate when building SPA or headless authentication, customizing login redirects, overriding response contracts like LoginResponse, or configuring login throttling. Do NOT activate for Laravel Passport (OAuth2 API tokens), Socialite (OAuth social login), or non-auth Laravel features.
 - `laravel-best-practices` — Apply this skill whenever writing, reviewing, or refactoring Laravel PHP code. This includes creating or modifying controllers, models, migrations, form requests, policies, jobs, scheduled commands, service classes, and Eloquent queries. Triggers for N+1 and query performance issues, caching strategies, authorization and security patterns, validation, error handling, queue and job configuration, route definitions, and architectural decisions. Also use for Laravel code reviews and refactoring existing Laravel code to follow best practices. Covers any task involving Laravel backend PHP code patterns.
 - `livewire-development` — Use for any task or question involving Livewire. Activate if user mentions Livewire, wire: directives, or Livewire-specific concepts like wire:model, wire:click, invoke this skill. Covers building new components, debugging reactivity issues, real-time form validation, loading states, migrating from Livewire 2 to 3, converting component formats (SFC/MFC/class-based), and performance optimization. Do not use for non-Livewire reactive UI (React, Vue, Alpine-only, Inertia.js) or standard Laravel forms without Livewire.
 - `volt-development` — Develops single-file Livewire components with Volt. Activates when creating Volt components, converting Livewire to Volt, working with @volt directive, functional or class-based Volt APIs; or when the user mentions Volt, single-file components, functional Livewire, or inline component logic in Blade files.
@@ -380,6 +381,13 @@ This project has domain-specific skills available. You MUST activate the relevan
 - Use TitleCase for Enum keys: `FavoritePerson`, `BestLake`, `Monthly`.
 - Prefer PHPDoc blocks over inline comments. Only add inline comments for exceptionally complex logic.
 - Use array shape type definitions in PHPDoc blocks.
+
+=== tests rules ===
+
+# Test Enforcement
+
+- Every change must be programmatically tested. Write a new test or update an existing test, then run the affected tests to make sure they pass.
+- Run the minimum number of tests needed to ensure code quality and speed. Use `php artisan test --compact` with a specific filename or filter.
 
 === laravel/core rules ===
 

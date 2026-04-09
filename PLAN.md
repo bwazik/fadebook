@@ -34,7 +34,7 @@ Before touching any phase, internalize these rules. They are non-negotiable and 
 
 The following are already installed and configured. Do NOT re-install or re-scaffold:
 - Laravel 13
-- Laravel Breeze (with existing controller-based auth files)
+- Laravel Fortify (with existing controller-based auth files)
 - Livewire 4
 - Filament 5
 - Tailwind CSS v4
@@ -163,7 +163,7 @@ This trait must:
 Run all migrations in this exact order. Use the exact schema defined in the constitution for every table. Do not invent columns or change types.
 
 Order:
-1. `users` — modify the existing Breeze migration to match the constitution schema exactly (add `uuid`, `phone`, `role`, `no_show_count`, `is_blocked`, `otp_request_count`, `last_otp_sent_at`, remove `email` as required, make it nullable)
+1. `users` — modify the existing Fortify migration to match the constitution schema exactly (add `uuid`, `phone`, `role`, `no_show_count`, `is_blocked`, `otp_request_count`, `last_otp_sent_at`, remove `email` as required, make it nullable)
 2. `password_reset_tokens` — modify to use `phone` as primary instead of `email`
 3. `phone_verifications`
 4. `phone_change_history`
@@ -353,7 +353,7 @@ Write Pest tests in `tests/Unit/`:
 
 ## Phase 1 — Authentication
 
-**Goal:** Full working auth flow — login, register, forgot password — all in Livewire with Liquid Glass design. The developer will provide the OTP service and WhatsApp service. The LLM converts Breeze controllers to Livewire and integrates with the provided services.
+**Goal:** Full working auth flow — login, register, forgot password — all in Livewire with Liquid Glass design. The developer will provide the OTP service and WhatsApp service. The LLM converts Fortify controllers to Livewire and integrates with the provided services.
 
 ---
 
@@ -370,15 +370,15 @@ The LLM must output this message and wait:
 
 ---
 
-### 1.1 — Convert Breeze Auth to Livewire
+### 1.1 — Convert Fortify Auth to Livewire
 
-**Delete** the following Breeze controller files if they exist:
+**Delete** the following Fortify controller files if they exist:
 - `app/Http/Controllers/Auth/RegisteredUserController.php`
 - `app/Http/Controllers/Auth/AuthenticatedSessionController.php`
 - `app/Http/Controllers/Auth/PasswordResetLinkController.php`
 - `app/Http/Controllers/Auth/NewPasswordController.php`
 
-**Delete** the corresponding Breeze blade views in `resources/views/auth/`.
+**Delete** the corresponding Fortify blade views in `resources/views/auth/`.
 
 **Do NOT delete** any routes file or middleware — only the controller classes and their views.
 
@@ -388,7 +388,7 @@ The LLM must output this message and wait:
 
 **File:** `routes/web.php`
 
-Replace Breeze auth routes with Livewire full-page component routes:
+Replace Fortify auth routes with Livewire full-page component routes:
 
 ```php
 // Guest only
@@ -479,7 +479,7 @@ View: `resources/views/livewire/auth/forgot-password.blade.php`
 
 ### 1.4 — Guest & Auth Middleware
 
-Ensure the existing Laravel middleware `auth` and `guest` are applied correctly to the routes defined in 1.2. Do not create new middleware — use the existing ones from Breeze.
+Ensure the existing Laravel middleware `auth` and `guest` are applied correctly to the routes defined in 1.2. Do not create new middleware — use the existing ones from Fortify.
 
 ---
 
