@@ -2,20 +2,72 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Database\Factories\UserFactory;
+use App\Enums\UserRole;
+use App\Models\Concerns\HasPublicUuid;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-#[Fillable(['name', 'email', 'password'])]
-#[Hidden(['password', 'remember_token'])]
+#[Fillable([
+    'uuid',
+    'name',
+    'email',
+    'phone',
+    'birthday',
+    'otp_request_count',
+    'last_otp_sent_at',
+    'phone_verified_at',
+    'password',
+    'role',
+    'no_show_count',
+    'is_blocked',
+])]
+#[Hidden([
+    'password',
+    'remember_token',
+])]
 class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
-    use HasFactory, Notifiable;
+    use HasFactory, HasPublicUuid, Notifiable, SoftDeletes;
+
+    /**
+     * Scope a query to only include active (non-blocked) users.
+     */
+    public function scopeActive(Builder $query): Builder
+    {
+        return $query->where('is_blocked', false);
+    }
+
+    /**
+     * Scope a query to only include clients.
+     */
+    public function scopeClients(Builder $query): Builder
+    {
+        return $query->where('role', UserRole::Client);
+    }
+
+    /**
+     * Scope a query to only include shop owners.
+     */
+    public function scopeOwners(Builder $query): Builder
+    {
+        return $query->where('role', UserRole::BarberOwner);
+    }
+
+    /**
+     * Scope a query to only include blocked users.
+     */
+    public function scopeBlocked(Builder $query): Builder
+    {
+        return $query->where('is_blocked', true);
+    }
 
     /**
      * Get the attributes that should be cast.
@@ -26,7 +78,84 @@ class User extends Authenticatable
     {
         return [
             'email_verified_at' => 'datetime',
+            'phone_verified_at' => 'datetime',
+            'last_otp_sent_at' => 'datetime',
+            'birthday' => 'date',
             'password' => 'hashed',
+            'role' => UserRole::class,
+            'is_blocked' => 'boolean',
         ];
+    }
+
+    /**
+     * Get the shop owned by this user (a barber owner has one shop).
+     */
+    public function shop(): HasOne
+    {
+        return $this->hasOne(Shop::class, 'owner_id');
+    }
+
+    /**
+     * Get the bookings made by this user as a client.
+     */
+    public function bookings(): HasMany
+    {
+        return $this->hasMany(Booking::class, 'client_id');
+    }
+
+    /**
+     * Get the phone verifications for this user.
+     */
+    public function phoneVerifications(): HasMany
+    {
+        return $this->hasMany(PhoneVerification::class);
+    }
+
+    /**
+     * Get the phone change history for this user.
+     */
+    public function phoneChangeHistory(): HasMany
+    {
+        return $this->hasMany(PhoneChangeHistory::class);
+    }
+
+    /**
+     * Get the WhatsApp messages sent to this user.
+     */
+    public function whatsappMessages(): HasMany
+    {
+        return $this->hasMany(WhatsAppMessage::class);
+    }
+
+    /**
+     * Get the reviews written by this user.
+     */
+    public function reviews(): HasMany
+    {
+        return $this->hasMany(Review::class);
+    }
+
+    /**
+     * Determine if the user is the super admin.
+     */
+    public function isSuperAdmin(): bool
+    {
+        return $this->role === UserRole::SuperAdmin;
+    }
+
+    /**
+     * Determine if the user is a shop owner.
+     */
+    public function isShopOwner(): bool
+    {
+        return $this->role === UserRole::BarberOwner;
+    }
+
+    /**
+     * Determine if the user is a client.
+     */
+    public function isClient(): bool
+    {
+        return $this->role === UserRole::Client;
     }
 }

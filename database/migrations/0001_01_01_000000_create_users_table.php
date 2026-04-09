@@ -13,16 +13,28 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
+            $table->uuid('uuid')->unique();
             $table->string('name');
-            $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
+            $table->string('email')->nullable()->unique();
+            $table->string('phone', 20)->unique();
+            $table->date('birthday')->nullable();
+            $table->tinyInteger('role')->default(1)->comment('1 => client, 2 => barber_owner, 3 => super_admin');
             $table->string('password');
+            $table->unsignedInteger('no_show_count')->default(0);
+            $table->boolean('is_blocked')->default(false)->index();
+            $table->unsignedInteger('otp_request_count')->default(0);
+            $table->timestamp('last_otp_sent_at')->nullable();
+            $table->timestamp('phone_verified_at')->nullable();
+            $table->timestamp('email_verified_at')->nullable();
             $table->rememberToken();
             $table->timestamps();
+            $table->softDeletes();
+
+            $table->index(['role', 'is_blocked']);
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {
-            $table->string('email')->primary();
+            $table->string('phone', 20)->primary();
             $table->string('token');
             $table->timestamp('created_at')->nullable();
         });
