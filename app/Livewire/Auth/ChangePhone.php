@@ -12,6 +12,7 @@ use App\Traits\WithRateLimiting;
 use App\Traits\WithToast;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 
@@ -45,19 +46,28 @@ class ChangePhone extends Component
             return;
         }
 
-        $this->validate([
+        $validator = Validator::make([
+            'current_password' => $this->current_password,
+            'new_phone' => $this->new_phone,
+        ], [
             'current_password' => 'required|string',
             'new_phone' => ['required', 'string', 'different:current_password', 'unique:users,phone', new EgyptianPhone],
         ]);
 
+        if ($validator->fails()) {
+            $this->toastError($validator->errors()->first());
+
+            return;
+        }
+
         if (! Hash::check($this->current_password, $user->password)) {
-            $this->addError('current_password', __('messages.current_password_invalid'));
+            $this->toastError(__('messages.current_password_invalid'));
 
             return;
         }
 
         if ($this->new_phone === $user->phone) {
-            $this->addError('new_phone', __('messages.new_phone_must_be_different'));
+            $this->toastError(__('messages.new_phone_must_be_different'));
 
             return;
         }
@@ -82,9 +92,17 @@ class ChangePhone extends Component
             return;
         }
 
-        $this->validate([
+        $validator = Validator::make([
+            'otp_code' => $this->otp_code,
+        ], [
             'otp_code' => 'required|digits:6',
         ]);
+
+        if ($validator->fails()) {
+            $this->toastError($validator->errors()->first());
+
+            return;
+        }
 
         /** @var User $user */
         $user = Auth::user();
@@ -96,7 +114,7 @@ class ChangePhone extends Component
                 type: OtpType::PhoneVerification
             );
         } catch (OtpException $e) {
-            $this->addError('otp_code', $e->getMessage());
+            $this->toastError($e->getMessage());
 
             return;
         }

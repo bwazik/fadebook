@@ -1,6 +1,6 @@
 @auth
     @if(!auth()->user()->phone_verified_at && !request()->routeIs(['phone.verification.show', 'password.request', 'password.change']))
-        <div class="fixed top-[var(--safe-area-top)] left-0 right-0 z-[60] px-4 pt-2 pointer-events-none">
+        <div class="fixed left-0 right-0 z-[60] px-4 pt-2 pointer-events-none" style="top: env(safe-area-inset-top);">
             <div class="max-w-md mx-auto pointer-events-auto">
                 <div class="glass border border-fadebook-accent/30 rounded-2xl p-4 flex items-center justify-between shadow-lg backdrop-blur-xl bg-white/60 dark:bg-gray-900/60">
                     <div class="flex items-center gap-3">

@@ -1,15 +1,20 @@
 {{-- iOS Input Component --}}
-{{-- Usage: <x-ios-input label="الاسم" wire:model="name" /> --}}
 @props(['label' => '', 'id' => '', 'type' => 'text', 'dir' => 'auto', 'labelWidth' => 'w-16'])
 
-<div class="relative border-b border-black/5 dark:border-white/10 last:border-0 flex items-center px-4">
+<div>
     @if($label)
-        <span class="text-gray-400 dark:text-white/40 text-sm font-medium shrink-0 {{ $labelWidth }}">{{ $label }}</span>
+        <label for="{{ $id }}" class="block text-xs font-medium text-gray-600 dark:text-white/60 mb-1.5">{{ $label }}</label>
     @endif
-    <input {{ $attributes->merge([
-        'type' => $type,
-        'id' => $id,
-        'dir' => $dir,
-        'class' => 'flex-1 bg-transparent border-0 focus:ring-0 text-gray-900 dark:text-white px-2 py-4 text-sm font-bold placeholder-gray-400 dark:placeholder-white/30 outline-none'
-    ]) }}>
+    <div class="relative">
+        <input {{ $attributes->merge([
+            'type' => $type,
+            'id' => $id,
+            'dir' => $dir,
+            'class' => 'liquid-transition w-full rounded-2xl bg-black/5 dark:bg-white/10 border-0 text-gray-900 dark:text-white text-sm px-4 py-3.5 focus:bg-white dark:focus:bg-[#3a3a3c] focus:ring-2 focus:ring-fadebook-accent/50 outline-none ' . ($dir === 'ltr' ? 'text-left' : 'text-right') . '
+                        [&:-webkit-autofill]:[transition:background-color_9999999s_ease-in-out_0s]
+                        [&:-webkit-autofill]:[-webkit-text-fill-color:inherit]
+                        dark:[&:-webkit-autofill]:[-webkit-text-fill-color:#fff]'
+        ]) }}>
+    </div>
+    @error($attributes->get('wire:model', '')) <span class="text-red-500 text-xs block mt-1">{{ $message }}</span> @enderror
 </div>

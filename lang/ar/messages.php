@@ -107,6 +107,7 @@ return [
 
     'change_phone_title' => 'تغيير رقم الموبايل',
     'current_phone' => 'الرقم الحالي',
+    'new_phone' => 'رقم الموبايل الجديد',
     'send_verification_code' => 'إرسال كود التحقق',
     'confirm_change' => 'تأكيد التغيير',
     'confirming' => 'جاري التأكيد...',

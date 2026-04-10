@@ -10,28 +10,20 @@
     --font-sans: "Tajawal", ui-sans-serif, system-ui, sans-serif;
 
     --color-fadebook-dark: #0f172a;
-    --color-fadebook-accent: #ff2d55;
+    --color-fadebook-accent: #0165E1;
 
     --radius-card: 2rem;
     --radius-button: 1rem;
-
-    --safe-area-top: env(safe-area-inset-top);
-    --safe-area-bottom: env(safe-area-inset-bottom);
-    --safe-area-left: env(safe-area-inset-left);
-    --safe-area-right: env(safe-area-inset-right);
 }
 
-/* =========================
-🌍 Base Styles
-========================= */
+@custom-variant dark (&:is(.dark, .dark *));
 
-* {
-    -webkit-tap-highlight-color: transparent;
-}
+/* iOS tap highlight removal */
+* { -webkit-tap-highlight-color: transparent; }
+body { @apply font-sans antialiased; }
 
-body {
-    @apply font-sans antialiased;
-}
+/* Alpine x-cloak — hide until Alpine initializes */
+[x-cloak] { display: none !important; }
 
 /* =========================
 ✨ Custom Utilities
@@ -46,22 +38,48 @@ body {
     animation-delay: 4s;
 }
 
-/* Glass effect */
-@utility glass {
-    @apply bg-white/60 dark:bg-gray-900/60 backdrop-blur-[20px] border border-white/20 dark:border-white/10 shadow-lg;
+/* =========================
+💧 Liquid Glass Design System
+========================= */
+
+/* The primary heavily blurred, translucent container with an inner light-reflection lip */
+@utility liquid-glass {
+    @apply bg-white/40 dark:bg-[#1c1c1e]/40 backdrop-blur-2xl backdrop-saturate-150 border border-white/50 dark:border-white/10 shadow-[0_8px_30px_rgba(0,0,0,0.12),inset_0_1px_0_rgba(255,255,255,0.9)] dark:shadow-[0_8px_30px_rgba(0,0,0,0.6),inset_0_1px_0_rgba(255,255,255,0.08)];
 }
 
-/* Bottom navigation */
+/* A slightly more opaque variant for main cards or modals that need higher contrast */
+@utility liquid-panel {
+    @apply bg-white/85 dark:bg-[#2c2c2e]/85 backdrop-blur-3xl border border-black/5 dark:border-white/10 shadow-2xl;
+}
+
+/* Squishy, elastic interaction for all pressable buttons */
+@utility liquid-button {
+    @apply active:scale-95 transition-all duration-300 cursor-pointer;
+    transition-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+/* Base hyper-smooth spring-like transition standard */
+@utility liquid-transition {
+    @apply transition-all duration-300;
+    transition-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+/* Legacy Glass effect */
+@utility glass {
+    @apply bg-white/70 dark:bg-[#1c1c1e]/70 backdrop-blur-2xl border border-black/5 dark:border-white/10 shadow-sm;
+}
+
+/* Bottom navigation (legacy class — kept for compatibility) */
 .bottom-nav {
     @apply fixed bottom-0 left-0 right-0 z-50 glass;
-    padding-bottom: var(--safe-area-bottom);
-    height: calc(64px + var(--safe-area-bottom));
+    padding-bottom: env(safe-area-inset-bottom);
+    height: calc(64px + env(safe-area-inset-bottom));
 }
 
 /* Smooth iOS transitions */
 .ios-transition {
     @apply transition-all duration-300;
-    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 /* =========================

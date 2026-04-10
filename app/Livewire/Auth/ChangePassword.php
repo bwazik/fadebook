@@ -75,7 +75,7 @@ class ChangePassword extends Component
         }
     }
 
-    public function verifyOtp(): void
+    public function verifyOtp(OtpService $otpService): void
     {
         if ($this->isRateLimited('change-password-verify', 5, 60)) {
             return;
@@ -92,9 +92,15 @@ class ChangePassword extends Component
             return;
         }
 
-        // Just advance the stepper — the OTP is verified and burned in resetPassword()
-        $this->otpVerified = true;
-        $this->step = 3;
+        try {
+            // Verify and burn the OTP immediately to prevent fake progression
+            $otpService->verify((string) $this->phone, (string) $this->otp, OtpType::ChangePassword);
+            
+            $this->otpVerified = true;
+            $this->step = 3;
+        } catch (OtpException $e) {
+            $this->toastError($e->getMessage());
+        }
     }
 
     public function resendOtp(OtpService $otpService)
@@ -139,9 +145,6 @@ class ChangePassword extends Component
         }
 
         try {
-            // Verify and burn the OTP — only then update the password
-            $otpService->verify((string) $this->phone, (string) $this->otp, OtpType::ChangePassword);
-
             /** @var User $user */
             $user = Auth::user();
             $user->update([
@@ -167,6 +170,17 @@ class ChangePassword extends Component
 
     public function render()
     {
-        return view('livewire.auth.change-password');
+        return view('livewire.auth.change-password', [
+            'maskedPhone' => $this->maskPhone($this->phone ?? ''),
+        ]);
+    }
+
+    private function maskPhone(string $phone): string
+    {
+        if (strlen($phone) <= 7) {
+            return $phone;
+        }
+
+        return substr($phone, 0, 3).'•••••••'.substr($phone, -2);
     }
 }

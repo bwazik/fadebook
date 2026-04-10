@@ -24,7 +24,7 @@ class PhoneVerificationFactory extends Factory
             'user_id' => User::factory(),
             'phone' => '010'.fake()->numerify('########'),
             'otp_code' => Hash::make('123456'),
-            'type' => OtpType::BookingConfirmation,
+            'type' => OtpType::PhoneVerification,
             'expires_at' => now()->addMinutes(5),
             'verified_at' => null,
             'attempts' => 0,

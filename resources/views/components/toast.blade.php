@@ -1,58 +1,79 @@
 {{-- Toast Component --}}
-<div
-    x-data="{
-        show: false,
-        message: '',
-        type: 'info',
-        timeout: null,
-        showToast(event) {
-            this.message = event.detail[0]?.message || event.detail.message;
-            this.type = event.detail[0]?.type || event.detail.type || 'info';
-            this.show = true;
-            
-            if (this.timeout) clearTimeout(this.timeout);
-            
-            this.timeout = setTimeout(() => {
-                this.show = false;
-            }, 3000);
-        },
-        init() {
-            @if(session()->has('success'))
-                this.message = '{{ session('success') }}';
-                this.type = 'success';
-                this.show = true;
-                this.timeout = setTimeout(() => { this.show = false; }, 3000);
-            @endif
-            @if(session()->has('error'))
-                this.message = '{{ session('error') }}';
-                this.type = 'error';
-                this.show = true;
-                this.timeout = setTimeout(() => { this.show = false; }, 3000);
-            @endif
-        }
-    }"
-    x-on:toast.window="showToast($event)"
-    x-show="show"
-    x-transition:enter="transition ease-out duration-300 transform"
-    x-transition:enter-start="translate-y-full opacity-0 scale-95"
-    x-transition:enter-end="translate-y-0 opacity-100 scale-100"
-    x-transition:leave="transition ease-in duration-200 transform"
-    x-transition:leave-start="translate-y-0 opacity-100 scale-100"
-    x-transition:leave-end="translate-y-full opacity-0 scale-95"
-    class="fixed top-12 left-1/2 -translate-x-1/2 z-[100] w-[90%] max-w-sm pointer-events-none"
-    style="display: none;"
->
-    <div
-        :class="{
-            'bg-black/80 dark:bg-white/90 text-white dark:text-black': type === 'info',
-            'bg-green-600/90 text-white': type === 'success',
-            'bg-red-600/90 text-white': type === 'error',
-            'bg-yellow-500/90 text-white': type === 'warning',
-        }"
-        class="backdrop-blur-2xl rounded-2xl px-5 py-3.5 shadow-2xl flex items-center gap-3 border border-white/10 dark:border-black/5"
-    >
-        <div class="flex-1 text-[15px] font-semibold text-center">
-            <span x-text="message"></span>
+<div x-data="{
+    show: false,
+    message: '',
+    type: 'success',
+    timeout: null,
+    progress: 100,
+    progressInterval: null,
+    duration: 3000,
+    toast(data) {
+        this.message = data.message || '';
+        this.type = data.type || 'success';
+        this.show = true;
+        this.progress = 100;
+
+        clearTimeout(this.timeout);
+        clearInterval(this.progressInterval);
+
+        const startTime = Date.now();
+        this.progressInterval = setInterval(() => {
+            const elapsed = Date.now() - startTime;
+            this.progress = Math.max(0, 100 - (elapsed / this.duration * 100));
+            if (this.progress === 0) {
+                clearInterval(this.progressInterval);
+            }
+        }, 16); // ~60fps
+
+        this.timeout = setTimeout(() => {
+            this.show = false;
+            clearInterval(this.progressInterval);
+        }, this.duration);
+    }
+}" @toast.window="toast($event.detail)"
+    class="fixed top-[calc(1rem+env(safe-area-inset-top))] left-1/2 -translate-x-1/2 z-[100]">
+
+    <div x-show="show"
+         x-transition:enter="transition ease-out duration-300"
+         x-transition:enter-start="opacity-0 -translate-y-4 scale-95"
+         x-transition:enter-end="opacity-100 translate-y-0 scale-100"
+         x-transition:leave="transition ease-in duration-200"
+         x-transition:leave-start="opacity-100 translate-y-0 scale-100"
+         x-transition:leave-end="opacity-0 -translate-y-4 scale-95"
+         class="relative"
+         style="display: none;">
+
+        {{-- Progress Border Ring --}}
+        <div class="absolute -inset-[2px] rounded-full pointer-events-none transition-none"
+             :style="`background: conic-gradient(from -90deg, ${type === 'error' ? 'rgb(239 68 68)' : 'rgb(34 197 94)'} 0% ${progress}%, transparent ${progress}% 100%);`">
         </div>
+
+        {{-- Toast Content --}}
+        <div class="relative flex items-center gap-2.5 liquid-panel rounded-full px-5 py-3">
+            {{-- Success Icon --}}
+            <template x-if="type === 'success'">
+                <div class="w-6 h-6 rounded-full bg-green-500/15 flex items-center justify-center shrink-0">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5"
+                        stroke="currentColor" class="w-3.5 h-3.5 text-green-500">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                    </svg>
+                </div>
+            </template>
+
+            {{-- Error Icon --}}
+            <template x-if="type === 'error'">
+                <div class="w-6 h-6 rounded-full bg-red-500/15 flex items-center justify-center shrink-0">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5"
+                    stroke="currentColor" class="w-3.5 h-3.5 text-red-500">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </div>
+        </template>
+
+        <span class="text-sm font-bold whitespace-nowrap"
+            :class="type === 'error' ? 'text-red-500 dark:text-red-400' : 'text-gray-900 dark:text-white'"
+            x-text="message">
+        </span>
+    </div>
     </div>
 </div>

@@ -44,9 +44,17 @@ class ForgotPassword extends Component
             return;
         }
 
-        $this->validate([
+        $validator = \Illuminate\Support\Facades\Validator::make([
+            'phone' => $this->phone,
+        ], [
             'phone' => ['required', 'string', new EgyptianPhone],
         ]);
+
+        if ($validator->fails()) {
+            $this->toastError($validator->errors()->first());
+
+            return;
+        }
 
         $user = User::where('phone', $this->phone)->first();
 
@@ -74,9 +82,17 @@ class ForgotPassword extends Component
             return;
         }
 
-        $this->validate([
+        $validator = \Illuminate\Support\Facades\Validator::make([
+            'otp' => $this->otp,
+        ], [
             'otp' => 'required|string|digits:6',
         ]);
+
+        if ($validator->fails()) {
+            $this->toastError($validator->errors()->first());
+
+            return;
+        }
 
         $user = User::where('phone', $this->phone)->first();
 
@@ -132,9 +148,18 @@ class ForgotPassword extends Component
             return;
         }
 
-        $this->validate([
+        $validator = \Illuminate\Support\Facades\Validator::make([
+            'password' => $this->password,
+            'password_confirmation' => $this->password_confirmation,
+        ], [
             'password' => 'required|string|min:8|confirmed',
         ]);
+
+        if ($validator->fails()) {
+            $this->toastError($validator->errors()->first());
+
+            return;
+        }
 
         $user = User::where('phone', $this->phone)->first();
 
