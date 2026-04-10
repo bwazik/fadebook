@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enums\UserRole;
 use App\Models\Concerns\HasPublicUuid;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Builder;
@@ -157,5 +158,33 @@ class User extends Authenticatable
     public function isClient(): bool
     {
         return $this->role === UserRole::Client;
+    }
+
+    /**
+     * Determine if the user can change their phone number (e.g., once every 7 days).
+     */
+    public function canChangePhone(): bool
+    {
+        $lastChange = $this->phoneChangeHistory()->latest()->first();
+
+        if (! $lastChange) {
+            return true;
+        }
+
+        return $lastChange->created_at->addDays(7)->isPast();
+    }
+
+    /**
+     * Get the next date the user can change their phone number.
+     */
+    public function getNextPhoneChangeDate(): Carbon
+    {
+        $lastChange = $this->phoneChangeHistory()->latest()->first();
+
+        if (! $lastChange) {
+            return now();
+        }
+
+        return $lastChange->created_at->addDays(7);
     }
 }

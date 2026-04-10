@@ -6,8 +6,8 @@
         type: 'info',
         timeout: null,
         showToast(event) {
-            this.message = event.detail.message;
-            this.type = event.detail.type || 'info';
+            this.message = event.detail[0]?.message || event.detail.message;
+            this.type = event.detail[0]?.type || event.detail.type || 'info';
             this.show = true;
             
             if (this.timeout) clearTimeout(this.timeout);
@@ -15,6 +15,20 @@
             this.timeout = setTimeout(() => {
                 this.show = false;
             }, 3000);
+        },
+        init() {
+            @if(session()->has('success'))
+                this.message = '{{ session('success') }}';
+                this.type = 'success';
+                this.show = true;
+                this.timeout = setTimeout(() => { this.show = false; }, 3000);
+            @endif
+            @if(session()->has('error'))
+                this.message = '{{ session('error') }}';
+                this.type = 'error';
+                this.show = true;
+                this.timeout = setTimeout(() => { this.show = false; }, 3000);
+            @endif
         }
     }"
     x-on:toast.window="showToast($event)"

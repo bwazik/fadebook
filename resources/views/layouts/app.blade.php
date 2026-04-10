@@ -30,6 +30,9 @@ declare(strict_types=1);
     </head>
     <body class="font-sans antialiased bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 selection:bg-fadebook-accent selection:text-white pb-[calc(80px+var(--safe-area-bottom))]">
         <div class="min-h-screen">
+            <!-- Verification Reminder (Soft Verification) -->
+            <x-verification-reminder />
+
             <!-- Main Content -->
             <main class="max-w-md mx-auto min-h-screen px-4 pt-[var(--safe-area-top)]">
                 {{ $slot }}

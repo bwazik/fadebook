@@ -1,0 +1,23 @@
+<?php
+
+return [
+    /*
+    |--------------------------------------------------------------------------
+    | WhatsApp Message Templates
+    |--------------------------------------------------------------------------
+    |
+    | These templates are used by the WhatsApp service to format outgoing messages.
+    | All messages MUST follow the project constitution regarding Egyptian Arabic.
+    |
+    */
+
+    'otp_verification' => [
+        'ar' => "كود التحقق الخاص بك هو: {otp_code}.\nالكود صالح لمدة {expires_in} دقيقة.\nمتشاركش الكود مع أي حد.",
+    ],
+
+    'phone_changed_notification' => [
+        'ar' => "تنبيه: تم تغيير رقم موبايلك.\nالرقم القديم: {old_phone}\nالرقم الجديد: {new_phone}\nالوقت: {date}\nلو مش انت، تواصل مع الدعم فورًا.",
+    ],
+
+    // future FadeBook templates go here (booking_confirmed, booking_cancelled, etc.)
+];

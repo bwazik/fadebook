@@ -25,6 +25,58 @@ class SettingsSeeder extends Seeder
             'max_pending_bookings_per_client' => '3',
             'no_show_grace_period_minutes' => '15',
             'cancellation_window_hours' => '2',
+
+            // Rate Limiting Settings
+            'rate_limit_login-attempt_attempts' => '5',
+            'rate_limit_login-attempt_seconds' => '60',
+
+            'rate_limit_register-next-step_attempts' => '5',
+            'rate_limit_register-next-step_seconds' => '60',
+
+            'rate_limit_register-submit_attempts' => '3',
+            'rate_limit_register-submit_seconds' => '60',
+
+            'rate_limit_verify-otp_attempts' => '5',
+            'rate_limit_verify-otp_seconds' => '60',
+
+            'rate_limit_resend-otp_attempts' => '3',
+            'rate_limit_resend-otp_seconds' => '120',
+
+            'rate_limit_change-phone-send_attempts' => '5',
+            'rate_limit_change-phone-send_seconds' => '120',
+
+            'rate_limit_change-phone-verify_attempts' => '5',
+            'rate_limit_change-phone-verify_seconds' => '60',
+
+            'rate_limit_change-phone-resend_attempts' => '3',
+            'rate_limit_change-phone-resend_seconds' => '120',
+
+            'rate_limit_forgot-password-send_attempts' => '3',
+            'rate_limit_forgot-password-send_seconds' => '120',
+
+            'rate_limit_forgot-password-verify_attempts' => '5',
+            'rate_limit_forgot-password-verify_seconds' => '60',
+
+            'rate_limit_forgot-password-resend_attempts' => '3',
+            'rate_limit_forgot-password-resend_seconds' => '120',
+
+            'rate_limit_forgot-password-reset_attempts' => '5',
+            'rate_limit_forgot-password-reset_seconds' => '60',
+
+            'rate_limit_change-password-send_attempts' => '3',
+            'rate_limit_change-password-send_seconds' => '120',
+
+            'rate_limit_change-password-verify_attempts' => '5',
+            'rate_limit_change-password-verify_seconds' => '60',
+
+            'rate_limit_change-password-resend_attempts' => '3',
+            'rate_limit_change-password-resend_seconds' => '120',
+
+            'rate_limit_change-password-update_attempts' => '5',
+            'rate_limit_change-password-update_seconds' => '60',
+
+            'otp_resend_cooldown_seconds' => '60',
+            'otp_cleanup_hours' => '24',
         ];
 
         foreach ($settings as $key => $value) {

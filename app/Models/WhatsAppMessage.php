@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Enums\WhatsAppQueueType;
 use App\Enums\WhatsAppStatus;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -21,6 +22,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
     'attempts',
     'sent_at',
 ])]
+#[Table('whatsapp_messages')]
 class WhatsAppMessage extends Model
 {
     use HasFactory;
