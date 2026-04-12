@@ -13,17 +13,15 @@ return new class extends Migration
     {
         Schema::create('views', function (Blueprint $table) {
             $table->id();
-            $table->morphs('viewable');
-            $table->foreignId('user_id')->nullable();
+            $table->foreignId('shop_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('user_id')->nullable()->constrained()->onDelete('cascade');
             $table->string('ip_address', 45)->nullable();
-            $table->string('user_agent', 255)->nullable();
+            $table->text('user_agent')->nullable();
             $table->timestamp('viewed_at');
             $table->timestamps();
 
-            $table->foreign('user_id')->references('id')->on('users')
-                ->onDelete('cascade')->onUpdate('cascade');
-
-            $table->index('viewed_at');
+            $table->index(['shop_id', 'viewed_at']);
+            $table->index(['shop_id', 'ip_address', 'viewed_at']);
         });
     }
 

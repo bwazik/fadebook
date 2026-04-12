@@ -6,11 +6,10 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Database\Eloquent\Builder;
 
 #[Fillable([
-    'viewable_type',
-    'viewable_id',
+    'shop_id',
     'user_id',
     'ip_address',
     'user_agent',
@@ -33,15 +32,23 @@ class View extends Model
     }
 
     /**
-     * Get the parent viewable model.
+     * Scope a query to only include views from today.
      */
-    public function viewable(): MorphTo
+    public function scopeToday(Builder $query): Builder
     {
-        return $this->morphTo();
+        return $query->whereDate('viewed_at', now()->toDateString());
     }
 
     /**
-     * Get the user who created this view.
+     * Get the shop that was viewed.
+     */
+    public function shop(): BelongsTo
+    {
+        return $this->belongsTo(Shop::class);
+    }
+
+    /**
+     * Get the user who viewed the shop.
      */
     public function user(): BelongsTo
     {

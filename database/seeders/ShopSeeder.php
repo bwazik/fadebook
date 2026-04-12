@@ -42,14 +42,14 @@ class ShopSeeder extends Seeder
             ->each(function (Shop $shop) {
                 // Create barbers for each shop
                 Barber::factory()
-                    ->count(3)
+                    ->count(6)
                     ->create([
                         'shop_id' => $shop->id,
                     ]);
 
                 // Create services for each shop
                 Service::factory()
-                    ->count(4)
+                    ->count(7)
                     ->create([
                         'shop_id' => $shop->id,
                     ]);

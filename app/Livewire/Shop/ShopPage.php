@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace App\Livewire\Shop;
 
-use App\Jobs\IncrementShopView;
+use App\Jobs\TrackShopView;
 use App\Models\Shop;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
@@ -36,8 +37,13 @@ class ShopPage extends Component
             ? $this->shop->opening_hours
             : json_decode($this->shop->opening_hours ?? '[]', true);
 
-        // Dispatch job to increment view (async)
-        IncrementShopView::dispatch($this->shop, request()->ip() ?? '127.0.0.1');
+        // Track view (async via background job)
+        TrackShopView::dispatch(
+            $this->shop,
+            Auth::id(),
+            request()->ip() ?? '127.0.0.1',
+            request()->userAgent()
+        );
 
         $this->dispatch('hide-bottom-nav');
     }
