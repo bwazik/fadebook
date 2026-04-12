@@ -156,6 +156,8 @@ class Register extends Component
                     'opening_hours' => $this->openingHours,
                 ]);
 
+                // TODO: Notify super admin via WhatsApp about new shop application
+
                 DB::commit();
 
                 session(['verification_redirect' => route('onboarding.pending')]);
