@@ -3,11 +3,14 @@
 namespace App\Livewire\Auth;
 
 use App\Actions\Auth\RegisterUser;
+use App\Enums\ShopStatus;
 use App\Enums\UserRole;
-use App\Exceptions\OtpException;
+use App\Models\Area;
+use App\Models\Shop;
 use App\Rules\EgyptianPhone;
 use App\Traits\WithRateLimiting;
 use App\Traits\WithToast;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Livewire\Attributes\Layout;
@@ -30,9 +33,30 @@ class Register extends Component
 
     public $role = 'client';
 
+    // Step 3 & 4 (Barber Owner Shop Info)
+    public $shopName;
+
+    public $areaId = 0;
+
+    public $address;
+
+    public $shopPhone;
+
+    public $description;
+
+    public $openingHours = [
+        'saturday' => ['is_open' => true, 'open' => '09:00', 'close' => '21:00'],
+        'sunday' => ['is_open' => true, 'open' => '09:00', 'close' => '21:00'],
+        'monday' => ['is_open' => true, 'open' => '09:00', 'close' => '21:00'],
+        'tuesday' => ['is_open' => true, 'open' => '09:00', 'close' => '21:00'],
+        'wednesday' => ['is_open' => true, 'open' => '09:00', 'close' => '21:00'],
+        'thursday' => ['is_open' => true, 'open' => '09:00', 'close' => '21:00'],
+        'friday' => ['is_open' => true, 'open' => '14:00', 'close' => '23:00'],
+    ];
+
     public function nextStep()
     {
-        if ($this->isRateLimited('register-next-step', 5, 60)) {
+        if ($this->isRateLimited('register-next-step', 10, 60)) {
             return;
         }
 
@@ -56,29 +80,51 @@ class Register extends Component
         $this->step = 2;
     }
 
-    public function goBack()
+    public function previousStep()
     {
-        $this->step = 1;
+        if ($this->step > 1) {
+            $this->step--;
+        }
     }
 
     public function register(RegisterUser $registerUser)
     {
-        if ($this->isRateLimited('register-submit', 3, 60)) {
+        if ($this->isRateLimited('register-submit', 5, 60)) {
             return;
         }
 
-        $validator = Validator::make([
+        // Final validation
+        $data = [
             'name' => $this->name,
             'phone' => $this->phone,
             'password' => $this->password,
             'password_confirmation' => $this->password_confirmation,
             'role' => $this->role,
-        ], [
+        ];
+
+        $rules = [
             'name' => 'required|string|max:255',
             'phone' => ['required', 'string', 'unique:users,phone', new EgyptianPhone],
             'password' => 'required|string|confirmed|min:8',
-            'role' => 'required|in:client,barber_owner',
-        ]);
+            'role' => 'required|string|in:client,barber_owner',
+        ];
+
+        if ($this->role === 'barber_owner') {
+            $data = array_merge($data, [
+                'shopName' => $this->shopName,
+                'areaId' => $this->areaId,
+                'address' => $this->address,
+                'shopPhone' => $this->shopPhone,
+            ]);
+            $rules = array_merge($rules, [
+                'shopName' => 'required|string|max:255',
+                'areaId' => 'required|integer|exists:areas,id',
+                'address' => 'required|string|max:500',
+                'shopPhone' => ['required', 'string', new EgyptianPhone],
+            ]);
+        }
+
+        $validator = Validator::make($data, $rules);
 
         if ($validator->fails()) {
             $this->toastError($validator->errors()->first());
@@ -87,28 +133,50 @@ class Register extends Component
         }
 
         try {
-            $registerUser->execute(
+            DB::beginTransaction();
+
+            $user = $registerUser->execute(
                 $this->name,
                 $this->phone,
                 $this->password,
-                $this->role === 'barber_owner' ? UserRole::BarberOwner : UserRole::Client
+                UserRole::Client
             );
-        } catch (OtpException $e) {
-            // Log but proceed; VerifyPhone allows resending
-            Log::warning('Registration OTP failed: '.$e->getMessage());
-        }
 
-        if ($this->role === 'barber_owner') {
-            // Placeholder for Shop Registration flow
-            // Could redirect to a specific shop onboarding route, but for now they must verify phone first.
-            session(['verification_redirect' => route('home')]);
-        }
+            if ($this->role === 'barber_owner') {
+                Shop::create([
+                    'owner_id' => $user->id,
+                    'name' => $this->shopName,
+                    'phone' => $this->shopPhone,
+                    'area_id' => $this->areaId,
+                    'address' => $this->address,
+                    'description' => $this->description,
+                    'status' => ShopStatus::Pending,
+                    'is_online' => true,
+                    'advance_booking_days' => 30,
+                    'opening_hours' => $this->openingHours,
+                ]);
 
-        return redirect()->intended(route('phone.verification.show'));
+                DB::commit();
+
+                session(['verification_redirect' => route('onboarding.pending')]);
+
+                return redirect()->route('onboarding.pending');
+            }
+
+            DB::commit();
+
+            return redirect()->intended(route('phone.verification.show'));
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Registration failed: '.$e->getMessage());
+            $this->toastError(__('messages.registration_failed'));
+        }
     }
 
     public function render()
     {
-        return view('livewire.auth.register');
+        return view('livewire.auth.register', [
+            'areasOptions' => Area::pluck('name', 'id')->toArray(),
+        ]);
     }
 }

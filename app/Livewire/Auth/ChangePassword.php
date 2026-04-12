@@ -95,7 +95,7 @@ class ChangePassword extends Component
         try {
             // Verify and burn the OTP immediately to prevent fake progression
             $otpService->verify((string) $this->phone, (string) $this->otp, OtpType::ChangePassword);
-            
+
             $this->otpVerified = true;
             $this->step = 3;
         } catch (OtpException $e) {

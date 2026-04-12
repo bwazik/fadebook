@@ -6,8 +6,9 @@ use App\Models\Setting;
 use App\Services\SettingsService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Cache;
+use Tests\TestCase;
 
-uses(Tests\TestCase::class, RefreshDatabase::class);
+uses(TestCase::class, RefreshDatabase::class);
 
 it('returns the setting value from the database', function () {
     Setting::create(['key' => 'test_key', 'value' => 'test_value']);

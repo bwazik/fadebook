@@ -11,6 +11,7 @@ use App\Traits\WithRateLimiting;
 use App\Traits\WithToast;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 
@@ -44,7 +45,7 @@ class ForgotPassword extends Component
             return;
         }
 
-        $validator = \Illuminate\Support\Facades\Validator::make([
+        $validator = Validator::make([
             'phone' => $this->phone,
         ], [
             'phone' => ['required', 'string', new EgyptianPhone],
@@ -82,7 +83,7 @@ class ForgotPassword extends Component
             return;
         }
 
-        $validator = \Illuminate\Support\Facades\Validator::make([
+        $validator = Validator::make([
             'otp' => $this->otp,
         ], [
             'otp' => 'required|string|digits:6',
@@ -148,7 +149,7 @@ class ForgotPassword extends Component
             return;
         }
 
-        $validator = \Illuminate\Support\Facades\Validator::make([
+        $validator = Validator::make([
             'password' => $this->password,
             'password_confirmation' => $this->password_confirmation,
         ], [

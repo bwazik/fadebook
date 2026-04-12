@@ -42,7 +42,7 @@ class WhatsappService
 
         if ($lockAcquired) {
             // Check for duplicates within 5 hours for non-allowed templates
-            if (!$allowMultiple) {
+            if (! $allowMultiple) {
                 $recentMessage = WhatsappMessage::where('phone', $phone)
                     ->where('template', $template)
                     ->whereIn('status', [WhatsAppStatus::Queued, WhatsAppStatus::Sent])
@@ -89,7 +89,7 @@ class WhatsappService
                 ? 'whatsapp_last_urgent_time'
                 : 'whatsapp_last_normal_time';
 
-            $lockSchedule = Cache::lock('whatsapp_schedule_lock_' . $isUrgent, 10);
+            $lockSchedule = Cache::lock('whatsapp_schedule_lock_'.$isUrgent, 10);
 
             if ($lockSchedule->get()) {
                 $lastScheduledTime = Cache::get($lastScheduledKey, now()->timestamp);
@@ -126,7 +126,7 @@ class WhatsappService
                 'delay_seconds' => $delaySeconds,
             ]);
 
-            if (!$allowMultiple) {
+            if (! $allowMultiple) {
                 Cache::lock($lockKey)->release();
             }
 
@@ -269,6 +269,6 @@ class WhatsappService
             return $phone;
         }
 
-        return '+20' . $phone;
+        return '+20'.$phone;
     }
 }

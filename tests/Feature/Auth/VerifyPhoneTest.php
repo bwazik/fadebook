@@ -1,12 +1,13 @@
 <?php
 
 use App\Enums\OtpType;
+use App\Livewire\Auth\VerifyPhone;
+use App\Models\PhoneVerification;
 use App\Models\User;
 use App\Services\OtpService;
-use Livewire\Livewire;
-use App\Livewire\Auth\VerifyPhone;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Hash;
+use Livewire\Livewire;
 
 uses(RefreshDatabase::class);
 
@@ -31,9 +32,9 @@ it('redirects verified user to home if accessing verification page', function ()
 
 it('can verify a valid otp', function () {
     $otpCode = '123456';
-    
+
     // Create a verification record reaching the model directly
-    \App\Models\PhoneVerification::create([
+    PhoneVerification::create([
         'user_id' => $this->user->id,
         'phone' => $this->user->phone,
         'otp_code' => Hash::make($otpCode),

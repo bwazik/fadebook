@@ -3,8 +3,10 @@
 declare(strict_types=1);
 
 use App\Services\BookingCodeGenerator;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 
-uses(Tests\TestCase::class, Illuminate\Foundation\Testing\RefreshDatabase::class);
+uses(TestCase::class, RefreshDatabase::class);
 
 it('generates a 6-character booking code', function () {
     $generator = new BookingCodeGenerator;

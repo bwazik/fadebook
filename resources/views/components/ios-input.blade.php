@@ -16,5 +16,4 @@
                         dark:[&:-webkit-autofill]:[-webkit-text-fill-color:#fff]'
         ]) }}>
     </div>
-    @error($attributes->get('wire:model', '')) <span class="text-red-500 text-xs block mt-1">{{ $message }}</span> @enderror
 </div>

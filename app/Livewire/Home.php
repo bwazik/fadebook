@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Livewire;
 
 use App\Enums\BookingStatus;
+use App\Enums\ShopStatus;
 use App\Models\Area;
 use App\Models\Shop;
 use App\Models\User;
@@ -64,6 +65,24 @@ class Home extends Component
         return $user->bookings()
             ->whereIn('status', [BookingStatus::Pending, BookingStatus::Confirmed])
             ->count();
+    }
+
+    #[Computed]
+    public function pendingShop()
+    {
+        /** @var User $user */
+        $user = Auth::user();
+
+        if (! $user || session()->has('dismissed_shop_banner')) {
+            return null;
+        }
+
+        return $user->shop()->whereIn('status', [ShopStatus::Pending, ShopStatus::Rejected])->first();
+    }
+
+    public function dismissStatusBanner(): void
+    {
+        session()->put('dismissed_shop_banner', true);
     }
 
     #[Computed]

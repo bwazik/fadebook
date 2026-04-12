@@ -2,10 +2,10 @@
 
 namespace App\Services;
 
-use App\Models\View;
 use App\Models\Shop;
-use Illuminate\Support\Facades\Auth;
+use App\Models\View;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ViewService
 {

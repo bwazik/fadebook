@@ -38,7 +38,7 @@
             <button type="button" wire:click="resend" wire:loading.attr="disabled" :disabled="cooldown > 0" :class="cooldown > 0 ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'" class="text-fadebook-accent hover:text-red-600 font-bold transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
                 <span wire:loading.remove wire:target="resend">
                     <span x-show="cooldown <= 0">{{ __('messages.resend_code') }}</span>
-                    <span x-show="cooldown > 0" x-text="`إعادة الإرسال بعد ${cooldown}ث`" dir="rtl"></span>
+                    <span x-show="cooldown > 0" x-text="'{{ __('messages.otp_resend_countdown', ['seconds' => '']) }}'.replace(':seconds', cooldown)" dir="rtl"></span>
                 </span>
                 <span wire:loading wire:target="resend">{{ __('messages.sending_code') }}</span>
             </button>

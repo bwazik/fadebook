@@ -1,5 +1,4 @@
-{{-- iOS Select Component — Fixed version --}}
-@props(['options' => [], 'placeholder' => 'اختار...', 'disabled' => false])
+@props(['options' => [], 'placeholder' => 'اختار...', 'disabled' => false, 'label' => ''])
 
 <div x-data="{
     id: $id('ios-select'),
@@ -18,6 +17,11 @@
     data-placeholder="{{ $placeholder }}" x-id="['ios-select']" @click.away="open = false"
     @ios-select-toggled.window="if ($event.detail !== id) open = false"
     x-effect="if (open) $dispatch('ios-select-toggled', id)" {{ $attributes->merge(['class' => 'relative w-full']) }}>
+
+    @if ($label)
+        <label class="block text-xs font-medium text-gray-600 dark:text-white/60 mb-1.5">{{ $label }}</label>
+    @endif
+
     <button type="button" @click="toggle()" {{ $disabled ? 'disabled' : '' }}
         class="w-full flex items-center justify-between rounded-2xl bg-black/5 dark:bg-white/10
                text-gray-900 dark:text-white text-sm px-4 py-3.5
@@ -47,7 +51,7 @@
         class="absolute z-50 w-full mt-2 rounded-3xl
                liquid-panel overflow-hidden"
         style="display: none;">
-        <ul class="max-h-60 overflow-y-auto overscroll-contain py-1">
+        <ul class="max-h-60 overflow-y-auto overscroll-contain py-1 no-scrollbar">
             @forelse($options as $val => $label)
                 <li wire:key="select-opt-{{ $val }}">
                     <button type="button" @click="value = '{{ $val }}'; open = false;"

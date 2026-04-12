@@ -64,6 +64,14 @@ body { @apply font-sans antialiased; }
     transition-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
+@utility no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    &::-webkit-scrollbar {
+        display: none;
+    }
+}
+
 /* Legacy Glass effect */
 @utility glass {
     @apply bg-white/70 dark:bg-[#1c1c1e]/70 backdrop-blur-2xl border border-black/5 dark:border-white/10 shadow-sm;

@@ -38,6 +38,53 @@
         </div>
     </div>
 
+    <!-- Shop Status Banner -->
+    @if ($this->pendingShop)
+        <div class="px-4 mt-2 mb-4">
+            @if ($this->pendingShop->status === App\Enums\ShopStatus::Pending)
+                <div class="liquid-glass border-amber-400/20 bg-amber-400/5 rounded-2xl p-4 flex items-center gap-4 relative">
+                    <div class="w-10 h-10 rounded-full bg-amber-400/10 flex items-center justify-center text-amber-500">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    </div>
+                    <div class="flex-1">
+                        <p class="text-sm font-black text-gray-900 dark:text-white leading-tight">
+                            {{ __('messages.shop_pending_title') }}</p>
+                        <p class="text-[11px] text-gray-500 dark:text-gray-400 font-bold leading-tight mt-1">
+                            {{ __('messages.shop_pending_subtitle') }}</p>
+                    </div>
+                    <button wire:click="dismissStatusBanner" class="p-1 -mr-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-all cursor-pointer hover:scale-110 active:scale-95">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+            @elseif($this->pendingShop->status === App\Enums\ShopStatus::Rejected)
+                <div class="liquid-glass border-red-400/20 bg-red-400/5 rounded-2xl p-4 flex items-center gap-4 relative">
+                    <div class="w-10 h-10 rounded-full bg-red-400/10 flex items-center justify-center text-red-500">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </div>
+                    <div class="flex-1">
+                        <p class="text-sm font-black text-gray-900 dark:text-white leading-tight">
+                            {{ __('messages.shop_rejected_title') }}</p>
+                        <p class="text-[11px] text-gray-500 dark:text-gray-400 font-bold leading-tight mt-1">
+                            {{ $this->pendingShop->rejection_reason ?? __('messages.shop_rejected_subtitle') }}</p>
+                    </div>
+                    <button wire:click="dismissStatusBanner" class="p-1 -mr-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-all cursor-pointer hover:scale-110 active:scale-95">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+            @endif
+        </div>
+    @endif
+
     <!-- Info Banner (Upcoming Appointments) -->
     @if ($this->upcomingBookingsCount > 0)
         <div class="px-4 mt-3 mb-1">
@@ -83,8 +130,7 @@
     <!-- Main Content Area -->
     <div class="px-4 space-y-5">
         <div class="flex justify-end mb-2">
-            <x-ios-select wire:model.live="sortBy"
-                :options="['rating' => __('messages.home_rating_sort'), 'newest' => __('messages.home_newest_sort')]" class="w-40" />
+            <x-ios-select wire:model.live="sortBy" :options="['rating' => __('messages.home_rating_sort'), 'newest' => __('messages.home_newest_sort')]" class="w-40" />
         </div>
 
         <!-- Shops List (1 Column, Stacked) -->
