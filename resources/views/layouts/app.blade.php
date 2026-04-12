@@ -88,10 +88,12 @@ declare(strict_types=1);
             <!-- Main Content Container -->
             <main class="w-full max-w-md mx-auto relative min-h-screen pb-32 pt-6 px-4 shadow-2xl bg-white/30 dark:bg-white/5">
                 <!-- Header -->
+                {{-- Global Header - Commented out per user request --}}
+                {{--
                 <header class="sticky top-0 z-40 -mx-4 -mt-6 px-5 py-2.5 flex items-center gap-4 bg-white/80 dark:bg-[#1c1c1e]/80 backdrop-blur-2xl border-b border-black/5 dark:border-white/10 transition-colors duration-300">
                     <div class="font-black text-2xl tracking-tighter drop-shadow-sm">Fade<span class="text-fadebook-accent">Book</span></div>
                     <div class="flex-1 min-w-0 flex items-center gap-3 justify-end">
-                        <!-- Theme Toggle -->
+                        <!-- Theme Toggle moved to Profile -->
                         <button x-data="{
                                 isDark: document.documentElement.classList.contains('dark'),
                                 toggle() {
@@ -99,7 +101,7 @@ declare(strict_types=1);
                                     document.documentElement.classList.toggle('dark', this.isDark);
                                     localStorage.setItem('darkMode', this.isDark);
                                 }
-                            }" 
+                            }"
                             @click="toggle()"
                             class="p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/10 liquid-button">
                             <svg x-show="isDark" x-cloak class="w-5 h-5 text-gray-300" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -110,14 +112,8 @@ declare(strict_types=1);
                             </svg>
                         </button>
 
-                        <!-- Notifications -->
+                        <!-- Notifications moved to Profile -->
                         @auth
-                            <button class="p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/10 relative liquid-button">
-                                <svg class="w-5 h-5 text-gray-600 dark:text-gray-300" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0018 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-                                </svg>
-                            </button>
-                        @else
                             <button class="p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/10 relative liquid-button">
                                 <svg class="w-5 h-5 text-gray-600 dark:text-gray-300" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0018 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
@@ -126,6 +122,7 @@ declare(strict_types=1);
                         @endauth
                     </div>
                 </header>
+                --}}
 
                 {{ $slot }}
             </main>
@@ -239,13 +236,6 @@ declare(strict_types=1);
                 }));
             });
 
-            // Bottom nav visibility toggle — update the store
-            window.addEventListener('hide-bottom-nav', () => {
-                if (window.Alpine) Alpine.store('nav').hidden = true;
-            });
-            window.addEventListener('show-bottom-nav', () => {
-                if (window.Alpine) Alpine.store('nav').hidden = false;
-            });
             // Also listen on document for Livewire dispatched events
             document.addEventListener('hide-bottom-nav', () => {
                 if (window.Alpine) Alpine.store('nav').hidden = true;

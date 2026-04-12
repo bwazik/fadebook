@@ -4,8 +4,12 @@
 <div {{ $attributes->merge(['class' => 'flex flex-col items-center justify-center py-16 px-6 text-center']) }}>
     @if($icon)
         <div class="w-16 h-16 rounded-3xl bg-black/5 dark:bg-white/10
-                    flex items-center justify-center mb-4">
-            {{ $icon }}
+                    flex items-center justify-center mb-4 text-gray-400">
+            @if(is_string($icon) && str_starts_with($icon, '<svg'))
+                {!! $icon !!}
+            @else
+                {{ $icon }}
+            @endif
         </div>
     @endif
 

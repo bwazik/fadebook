@@ -6,7 +6,7 @@
             'route' => 'home',
             'label' => 'الرئيسية',
             'icon' =>
-                'M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25',
+                'm7.848 8.25 1.536.887M7.848 8.25a3 3 0 1 1-5.196-3 3 3 0 0 1 5.196 3Zm1.536.887a2.165 2.165 0 0 1 1.083 1.839c.005.351.054.695.14 1.024M9.384 9.137l2.077 1.199M7.848 15.75l1.536-.887m-1.536.887a3 3 0 1 1-5.196 3 3 3 0 0 1 5.196-3Zm1.536-.887a2.165 2.165 0 0 0 1.083-1.838c.005-.352.054-.695.14-1.025m-1.223 2.863 2.077-1.199m0-3.328a4.323 4.323 0 0 1 2.068-1.379l5.325-1.628a4.5 4.5 0 0 1 2.48-.044l.803.215-7.794 4.5m-2.882-1.664A4.33 4.33 0 0 0 10.607 12m3.736 0 7.794 4.5-.802.215a4.5 4.5 0 0 1-2.48-.043l-5.326-1.629a4.324 4.324 0 0 1-2.068-1.379M14.343 12l-2.882 1.664',
         ],
         [
             'route' => 'bookings',
@@ -59,13 +59,13 @@
 
         {{-- Tab items --}}
         @foreach ($navItems as $item)
-            @php 
+            @php
                 $routeBase = str_replace('.index', '', $item['route']);
-                $isActive = request()->routeIs($item['route']) || request()->routeIs($routeBase . '.*'); 
+                $isActive = request()->routeIs($item['route']) || request()->routeIs($routeBase . '.*');
             @endphp
             <a href="{{ route($item['route']) }}" id="tour-nav-{{ $item['route'] }}" @auth wire:navigate @endauth
                 data-route="{{ $item['route'] }}" data-active="{{ $isActive ? 'true' : 'false' }}"
-                class="flex flex-col items-center justify-center py-2 px-[1rem] relative z-10
+                class="flex flex-col items-center justify-center py-2 px-[1.1rem] relative z-10
                       liquid-transition whitespace-nowrap
                       {{ $isActive ? 'text-fadebook-accent drop-shadow-[0_0_8px_rgba(1,101,225,0.4)]' : 'text-gray-500 dark:text-gray-400' }}">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
