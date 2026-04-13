@@ -29,4 +29,31 @@ trait WithToast
     {
         $this->toast($message, 'success');
     }
+
+    /**
+     * Flash a toast message to the session for persistence across redirects.
+     */
+    public function flashToast(string $message, string $type = 'success'): void
+    {
+        session()->flash('toast', [
+            'message' => $message,
+            'type' => $type,
+        ]);
+    }
+
+    /**
+     * Convenience method for session error toasts.
+     */
+    public function flashToastError(string $message): void
+    {
+        $this->flashToast($message, 'error');
+    }
+
+    /**
+     * Convenience method for session success toasts.
+     */
+    public function flashToastSuccess(string $message): void
+    {
+        $this->flashToast($message, 'success');
+    }
 }

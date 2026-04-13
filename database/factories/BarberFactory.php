@@ -25,7 +25,6 @@ class BarberFactory extends Factory
             'user_id' => null,
             'name' => fake()->name('male'),
             'phone' => fake()->optional()->numerify('010########'),
-            'specialties' => fake()->optional()->randomElements(['حلاقة', 'تشكيل لحية', 'تلوين', 'علاج فروة الرأس'], 2),
             'average_rating' => fake()->randomFloat(2, 3, 5),
             'total_reviews' => fake()->numberBetween(0, 200),
             'is_active' => true,

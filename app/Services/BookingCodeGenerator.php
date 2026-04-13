@@ -5,47 +5,35 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Models\Booking;
+use App\Models\Shop;
+use Illuminate\Support\Facades\DB;
 
 class BookingCodeGenerator
 {
     /**
-     * Charset excluding ambiguous characters (O, 0, I, 1).
+     * Generate a unique, shop-isolated booking code.
+     * Pattern: [AlphaPrefix][ShopID][Zero-padded ShopSequence]
+     * Example: Shop #7 (Barber) first booking -> B70001
      */
-    private const CHARSET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-
-    /**
-     * Length of the generated booking code.
-     */
-    private const LENGTH = 6;
-
-    /**
-     * Generate a unique booking code.
-     *
-     * Loops until a code is generated that does not already exist
-     * in the bookings table.
-     */
-    public function generate(): string
+    public function generate(Shop $shop): string
     {
-        do {
-            $code = $this->generateCode();
-        } while (Booking::where('booking_code', $code)->exists());
+        return DB::transaction(function () use ($shop) {
+            // Atomic increment on the shop record to prevent race conditions
+            DB::table('shops')
+                ->where('id', $shop->id)
+                ->increment('total_bookings');
 
-        return $code;
-    }
+            // Get the new sequence number
+            $sequence = (int) DB::table('shops')
+                ->where('id', $shop->id)
+                ->value('total_bookings');
 
-    /**
-     * Generate a random code from the charset.
-     */
-    private function generateCode(): string
-    {
-        $charset = self::CHARSET;
-        $length = strlen($charset);
-        $code = '';
+            $prefix = strtoupper(substr((string) $shop->slug, 0, 1));
+            $paddedSequence = str_pad((string) $sequence, 4, '0', STR_PAD_LEFT);
 
-        for ($i = 0; $i < self::LENGTH; $i++) {
-            $code .= $charset[random_int(0, $length - 1)];
-        }
-
-        return $code;
+            // Combining Prefix + ShopID + Sequence ensures global uniqueness
+            // while giving every store its own internal B0001... sequence.
+            return $prefix.$shop->id.$paddedSequence;
+        }, 5); // Retry 5 times if deadlock occurs under heavy load
     }
 }

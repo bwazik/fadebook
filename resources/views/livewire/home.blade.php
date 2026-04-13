@@ -138,7 +138,7 @@
             @forelse($this->shops as $shop)
                 <a href="{{ route('shop.show', ['areaSlug' => $shop->area->slug, 'shopSlug' => $shop->slug]) }}"
                     wire:navigate wire:key="shop-{{ $shop->id }}"
-                    class="block !cursor-default liquid-glass rounded-[2rem] overflow-hidden relative shadow-xl dark:shadow-2xl/20 border border-black/5 dark:border-white/10 group flex flex-col transform active:scale-[0.98] transition-all duration-300">
+                    class="block liquid-glass rounded-[2rem] overflow-hidden relative shadow-xl dark:shadow-2xl/20 border border-black/5 dark:border-white/10 group flex flex-col transform active:scale-[0.98] hover:scale-[0.99] transition-all duration-300">
                     @php
                         $banner = $shop->images->where('collection', 'banner')->first();
                         $logo = $shop->images->where('collection', 'logo')->first();

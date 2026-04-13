@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Enums\BookingStatus;
+use App\Enums\DiscountType;
 use App\Models\Booking;
 use App\Models\Shop;
 use App\Models\User;
@@ -113,5 +114,36 @@ class ShopDetailsSeeder extends Seeder
         );
 
         $this->command->info('Successfully seeded Shop ID 1 details (Reviews, Gallery, Banner, Logo).');
+
+        // 5. Add Coupons
+        $shop->coupons()->updateOrCreate(
+            ['code' => 'FADE20'],
+            [
+                'discount_type' => DiscountType::Percentage,
+                'discount_value' => 20,
+                'is_active' => true,
+                'usage_limit' => 100,
+                'usage_limit_per_user' => 1,
+                'minimum_amount' => 50,
+                'start_date' => now(),
+                'end_date' => now()->addMonths(1),
+            ]
+        );
+
+        $shop->coupons()->updateOrCreate(
+            ['code' => 'SAVE50'],
+            [
+                'discount_type' => DiscountType::Fixed,
+                'discount_value' => 50,
+                'is_active' => true,
+                'usage_limit' => 50,
+                'usage_limit_per_user' => 1,
+                'minimum_amount' => 100,
+                'start_date' => now(),
+                'end_date' => now()->addMonths(1),
+            ]
+        );
+
+        $this->command->info('Successfully seeded Shop ID 1 Coupons (FADE20, SAVE50).');
     }
 }

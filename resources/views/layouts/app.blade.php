@@ -80,7 +80,7 @@ declare(strict_types=1);
             })();
         </script>
     </head>
-    <body class="bg-[#f2f2f7] dark:bg-[#000000] font-tajawal antialiased text-gray-900 dark:text-gray-100 flex justify-center min-h-screen selection:bg-fadebook-accent/30">
+    <body data-route="{{ Route::currentRouteName() }}" class="bg-[#f2f2f7] dark:bg-[#000000] font-tajawal antialiased text-gray-900 dark:text-gray-100 flex justify-center min-h-screen selection:bg-fadebook-accent/30">
         <div class="w-full min-h-screen">
             <!-- Verification Reminder (Soft Verification) -->
             <x-verification-reminder />
@@ -132,8 +132,9 @@ declare(strict_types=1);
                 <x-bottom-nav />
             @endif
 
-            <!-- Toast Messages -->
+            <!-- Global Interactive Components -->
             <x-toast />
+            <x-ios-alert />
         </div>
 
         @livewireScripts
@@ -141,13 +142,13 @@ declare(strict_types=1);
         {{-- Session Toast Bridge --}}
         @if(session()->has('toast'))
             <script>
-                document.addEventListener('DOMContentLoaded', () => {
+                document.addEventListener('livewire:navigated', () => {
                     setTimeout(() => {
                         window.dispatchEvent(new CustomEvent('toast', {
                             detail: @json(session('toast'))
                         }));
                     }, 100);
-                });
+                }, { once: true });
             </script>
         @endif
 
@@ -344,15 +345,21 @@ declare(strict_types=1);
                 });
             }
 
-            // Re-apply dark mode on Livewire navigation
-            function applyDarkMode() {
+            // Re-apply dark mode and update route state on Livewire navigation
+            function onNavigate() {
+                // Update Dark Mode
                 if (localStorage.getItem('darkMode') === 'true' || (!('darkMode' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
                     document.documentElement.classList.add('dark');
                 } else {
                     document.documentElement.classList.remove('dark');
                 }
+
+                // Update Route Info
+                if (window.FadeBook) {
+                    window.FadeBook.currentRoute = document.body.dataset.route || '';
+                }
             }
-            document.addEventListener('livewire:navigated', applyDarkMode);
+            document.addEventListener('livewire:navigated', onNavigate);
         </script>
     </body>
 </html>

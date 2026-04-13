@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -18,7 +19,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
     'user_id',
     'name',
     'phone',
-    'specialties',
     'average_rating',
     'total_reviews',
     'is_active',
@@ -44,7 +44,6 @@ class Barber extends Model
     {
         return [
             'is_active' => 'boolean',
-            'specialties' => 'array',
             'average_rating' => 'decimal:2',
         ];
     }
@@ -63,6 +62,14 @@ class Barber extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    /**
+     * Get the services provided by this barber.
+     */
+    public function services(): BelongsToMany
+    {
+        return $this->belongsToMany(Service::class);
     }
 
     /**

@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Enums\WhatsAppQueueType;
 use App\Enums\WhatsAppStatus;
 use App\Jobs\SendWhatsappMessage;
+use App\Models\User;
 use App\Models\WhatsappMessage;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
@@ -23,6 +24,21 @@ class WhatsappService
     {
         // Clean phone number
         $phone = $this->formatPhoneNumber($phone);
+
+        // Global Preference Check: Skip if user has disabled WhatsApp notifications
+        // EXCEPTION: Always allow 'otp_verification' so users aren't locked out of their accounts
+        if ($template !== 'otp_verification') {
+            $user = $userId ? User::find($userId) : User::where('phone', $phone)->first();
+            if ($user && ! $user->whatsapp_notifications) {
+                Log::channel('whatsapp')->info('WhatsApp message skipped: User disabled notifications', [
+                    'phone' => $phone,
+                    'template' => $template,
+                    'user_id' => $user->id,
+                ]);
+
+                return false;
+            }
+        }
 
         // Determine if this is OTP or instant priority message
         $isInstant = ($priority === 'instant' || $template === 'otp_verification');

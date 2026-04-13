@@ -9,7 +9,7 @@
                 'm7.848 8.25 1.536.887M7.848 8.25a3 3 0 1 1-5.196-3 3 3 0 0 1 5.196 3Zm1.536.887a2.165 2.165 0 0 1 1.083 1.839c.005.351.054.695.14 1.024M9.384 9.137l2.077 1.199M7.848 15.75l1.536-.887m-1.536.887a3 3 0 1 1-5.196 3 3 3 0 0 1 5.196-3Zm1.536-.887a2.165 2.165 0 0 0 1.083-1.838c.005-.352.054-.695.14-1.025m-1.223 2.863 2.077-1.199m0-3.328a4.323 4.323 0 0 1 2.068-1.379l5.325-1.628a4.5 4.5 0 0 1 2.48-.044l.803.215-7.794 4.5m-2.882-1.664A4.33 4.33 0 0 0 10.607 12m3.736 0 7.794 4.5-.802.215a4.5 4.5 0 0 1-2.48-.043l-5.326-1.629a4.324 4.324 0 0 1-2.068-1.379M14.343 12l-2.882 1.664',
         ],
         [
-            'route' => 'bookings',
+            'route' => 'bookings.index',
             'label' => 'حجوزاتي',
             'icon' =>
                 'M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5',
@@ -61,16 +61,19 @@
         @foreach ($navItems as $item)
             @php
                 $routeBase = str_replace('.index', '', $item['route']);
-                $isActive = request()->routeIs($item['route']) || request()->routeIs($routeBase . '.*');
             @endphp
-            <a href="{{ route($item['route']) }}" id="tour-nav-{{ $item['route'] }}" @auth wire:navigate @endauth
-                data-route="{{ $item['route'] }}" data-active="{{ $isActive ? 'true' : 'false' }}"
-                class="flex flex-col items-center justify-center py-2 px-[1.1rem] relative z-10
-                      liquid-transition whitespace-nowrap
-                      {{ $isActive ? 'text-fadebook-accent drop-shadow-[0_0_8px_rgba(1,101,225,0.4)]' : 'text-gray-500 dark:text-gray-400' }}">
+            <a href="{{ route($item['route']) }}" 
+               id="tour-nav-{{ $item['route'] }}" 
+               @auth wire:navigate @endauth
+               data-route="{{ $item['route'] }}"
+               data-base-route="{{ $routeBase }}"
+               class="flex flex-col items-center justify-center py-2 px-[1.1rem] relative z-10 liquid-transition whitespace-nowrap"
+               :class="isActive('{{ $item['route'] }}') ? 'text-fadebook-accent drop-shadow-[0_0_8px_rgba(1,101,225,0.4)]' : 'text-gray-500 dark:text-gray-400'">
+                
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                    stroke-width="{{ $isActive ? '2' : '1.5' }}" stroke="currentColor"
-                    class="w-[22px] h-[22px] liquid-transition {{ $isActive ? 'scale-110' : 'scale-100' }}">
+                    :stroke-width="isActive('{{ $item['route'] }}') ? '2' : '1.5'" stroke="currentColor"
+                    class="w-[22px] h-[22px] liquid-transition"
+                    :class="isActive('{{ $item['route'] }}') ? 'scale-110' : 'scale-100'">
                     <path stroke-linecap="round" stroke-linejoin="round" d="{{ $item['icon'] }}" />
                 </svg>
                 <span class="text-[10px] font-semibold mt-0.5">{{ $item['label'] }}</span>
@@ -81,15 +84,18 @@
     {{-- ═══════════════════════════════ --}}
     {{-- RIGHT PILL — Search Icon Only  --}}
     {{-- ═══════════════════════════════ --}}
-    @php $searchActive = request()->routeIs('search') || request()->routeIs('search.*'); @endphp
-    <a href="{{ route('search') }}" id="tour-nav-search" @auth wire:navigate @endauth
-        class="flex items-center justify-center p-3 rounded-[2rem] liquid-glass liquid-button
-              {{ $searchActive
+    <a href="{{ route('search') }}" 
+       id="tour-nav-search" 
+       @auth wire:navigate @endauth
+       x-data="{ isSearchActive() { return currentRoute === 'search' || currentRoute.startsWith('search.'); } }"
+       class="flex items-center justify-center p-3 rounded-[2rem] liquid-glass liquid-button"
+       :class="isSearchActive()
                   ? 'text-fadebook-accent ring-2 ring-fadebook-accent/20 drop-shadow-[0_0_8px_rgba(1,101,225,0.4)]'
-                  : 'text-gray-500 dark:text-gray-400' }}">
+                  : 'text-gray-500 dark:text-gray-400'">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-            stroke-width="{{ $searchActive ? '2' : '1.5' }}" stroke="currentColor"
-            class="w-[22px] h-[22px] liquid-transition {{ $searchActive ? 'scale-110' : 'scale-100' }}">
+            :stroke-width="isSearchActive() ? '2' : '1.5'" stroke="currentColor"
+            class="w-[22px] h-[22px] liquid-transition"
+            :class="isSearchActive() ? 'scale-110' : 'scale-100'">
             <path stroke-linecap="round" stroke-linejoin="round"
                 d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 15.803a7.5 7.5 0 0010.607 0z" />
         </svg>
@@ -106,26 +112,57 @@
                 startX: 0,
                 currentTranslateX: 0,
                 initialTranslateX: 0,
+                currentRoute: @json(Route::currentRouteName()),
 
                 init() {
                     this.tabs = Array.from(this.$el.querySelectorAll('a[data-route]'));
                     this.pill = this.$refs.pill;
 
+                    // Re-calculate on Livewire navigation
+                    document.addEventListener('livewire:navigated', () => {
+                        this.currentRoute = window.FadeBook?.currentRoute || '';
+                        
+                        this.$nextTick(() => {
+                            const activeTab = this.tabs.find(t => this.isActive(t.dataset.route)) || this.tabs[0];
+                            this.snapTo(activeTab, true);
+                        });
+                    });
+
                     setTimeout(() => {
-                        const activeTab = this.tabs.find(t => t.dataset.active === 'true') ||
-                            this.tabs[0];
+                        const activeTab = this.tabs.find(t => this.isActive(t.dataset.route)) || this.tabs[0];
                         this.snapTo(activeTab, true);
                     }, 50);
 
                     window.addEventListener('resize', () => {
-                        const activeTab = this.tabs.find(t => t.dataset.active === 'true') ||
-                            this.tabs[0];
+                        const activeTab = this.tabs.find(t => this.isActive(t.dataset.route)) || this.tabs[0];
                         this.snapTo(activeTab, true);
                     });
+                },
 
-                    this.tabs.forEach(tab => {
-                        tab.addEventListener('click', () => this.snapTo(tab, false));
-                    });
+                isActive(route) {
+                    if (!this.currentRoute) return false;
+
+                    // Hardcoded check for Bookings tab
+                    if (route === 'bookings.index') {
+                        return [
+                            'bookings.index',
+                            'booking.show',
+                            'booking.create'
+                        ].includes(this.currentRoute);
+                    }
+
+                    // Hardcoded check for Profile tab
+                    if (route === 'profile.index') {
+                        return [
+                            'profile.index',
+                            'profile.edit',
+                            'profile.settings'
+                        ].includes(this.currentRoute);
+                    }
+
+                    // Generic case: exact match or sub-route
+                    const base = route.replace('.index', '');
+                    return this.currentRoute === route || this.currentRoute.startsWith(base + '.');
                 },
 
                 snapTo(targetEl, instant = false) {
@@ -186,7 +223,7 @@
 
                     this.snapTo(closestTab, false);
 
-                    if (closestTab.dataset.active !== 'true') {
+                    if (!this.isActive(closestTab.dataset.route)) {
                         setTimeout(() => {
                                 const href = closestTab.getAttribute('href');
                                 @auth

@@ -6,6 +6,7 @@ namespace App\Livewire\Shop;
 
 use App\Jobs\TrackShopView;
 use App\Models\Shop;
+use App\Traits\WithToast;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
@@ -15,9 +16,13 @@ use Livewire\Component;
 
 class ShopPage extends Component
 {
+    use WithToast;
+
     public Shop $shop;
 
     public string $reviewSort = 'newest';
+
+    public ?int $selectedCategory = null;
 
     public array $openingHours = [];
 
@@ -25,8 +30,9 @@ class ShopPage extends Component
     {
         $this->shop = Shop::with([
             'area',
-            'services' => fn ($q) => $q->orderBy('sort_order', 'asc')->orderBy('name', 'asc'),
-            'barbers', // loading all barbers, we will display active ones, or just let scope do it if defined
+            'serviceCategories',
+            'services' => fn ($q) => $q->with('category')->orderBy('sort_order', 'asc'),
+            'barbers' => fn ($q) => $q->with('services')->active(),
             'images',
         ])
             ->where('slug', $shopSlug)
@@ -67,12 +73,38 @@ class ShopPage extends Component
             $timestamp = strtotime($time);
             $hour = date('g', $timestamp);
             $minute = date('i', $timestamp);
-            $period = date('a', $timestamp) === 'am' ? 'ص' : 'م';
+            $period = date('a', $timestamp) === 'am' ? __('messages.time_am') : __('messages.time_pm');
 
             return "{$hour}:{$minute} {$period}";
         };
 
         return $formatTime($open).' - '.$formatTime($close);
+    }
+
+    public function filterByServiceCategory(?int $categoryId): void
+    {
+        $this->selectedCategory = $categoryId;
+    }
+
+    public function showServiceBlockedToast(bool $shopOnline, bool $serviceActive): void
+    {
+        if (! $shopOnline) {
+            $this->toastError(__('messages.toast_shop_unavailable'));
+        } elseif (! $serviceActive) {
+            $this->toastError(__('messages.toast_service_unavailable'));
+        }
+    }
+
+    #[Computed]
+    public function filteredServices(): Collection
+    {
+        $services = $this->shop->services;
+
+        if ($this->selectedCategory) {
+            $services = $services->where('service_category_id', $this->selectedCategory);
+        }
+
+        return $services->sortBy('sort_order')->values();
     }
 
     public int $reviewsPerPage = 2;
@@ -114,7 +146,7 @@ class ShopPage extends Component
         return $this->shop->images->where('collection', 'gallery');
     }
 
-    #[Layout('components.layout.app')]
+    #[Layout('layouts.app')]
     public function render(): View
     {
         return view('livewire.shop.shop-page');

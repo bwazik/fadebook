@@ -28,6 +28,7 @@ use Illuminate\Notifications\Notifiable;
     'role',
     'no_show_count',
     'is_blocked',
+    'whatsapp_notifications',
 ])]
 #[Hidden([
     'password',
@@ -85,6 +86,7 @@ class User extends Authenticatable
             'password' => 'hashed',
             'role' => UserRole::class,
             'is_blocked' => 'boolean',
+            'whatsapp_notifications' => 'boolean',
         ];
     }
 

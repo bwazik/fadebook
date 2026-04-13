@@ -135,9 +135,9 @@
                     <span
                         class="text-[11px] font-black text-gray-900 dark:text-white uppercase">{{ __('messages.available') }}</span>
                 @else
-                    <div class="w-2 h-2 rounded-full bg-gray-400"></div>
+                    <div class="w-2 h-2 rounded-full bg-red-400 shadow-sm shadow-red-400/50"></div>
                     <span
-                        class="text-[11px] font-black text-gray-900 dark:text-white uppercase">{{ __('messages.closed') }}</span>
+                        class="text-[11px] font-black text-gray-900 dark:text-white uppercase">{{ __('messages.unavailable') }}</span>
                 @endif
             </x-shop.stat-bubble>
 
@@ -286,32 +286,53 @@
 
     <!-- SERVICES MENU -->
     <div class="mt-8">
-        <div class="flex items-center justify-between mb-5 px-2">
+        <div class="flex items-center justify-between mb-2 px-2">
             <h2 class="text-xl font-black text-gray-900 dark:text-white uppercase tracking-tighter">
                 {{ __('messages.services') }}</h2>
             <span
                 class="text-[10px] font-black text-gray-400 bg-black/5 dark:bg-white/5 px-3 py-1 rounded-full uppercase tracking-[0.2em]">{{ $shop->services->count() }}
                 {{ __('messages.services_ar') }}</span>
         </div>
-        <div class="space-y-4">
-            @forelse($shop->services as $service)
-                <div
-                    class="liquid-glass rounded-[1.2rem] p-5 flex items-center justify-between border-white/30 dark:border-white/10 transition-all active:scale-[0.98] shadow-sm {{ !$service->is_active ? 'opacity-50 grayscale pointer-events-none' : '' }}">
-                    <div class="flex-1 pe-4">
-                        <h3 class="font-black text-gray-900 dark:text-white uppercase leading-none">
-                            {{ $service->name }}</h3>
-                        <p class="text-[11px] text-gray-500 dark:text-gray-400 font-bold mt-2 lowercase leading-none">
-                            {{ $service->duration_minutes }} {{ __('messages.minutes_of_care') }}</p>
+
+        <!-- Category Chip Filter -->
+        <div class="px-2 mb-6">
+            <x-chip-group>
+                <x-chip wire:key="cat-all" :active="$selectedCategory === null" wire:click="filterByServiceCategory(null)">
+                    {{ __('messages.all') }}
+                </x-chip>
+                @foreach ($shop->serviceCategories as $category)
+                    <x-chip wire:key="cat-{{ $category->id }}" :active="$selectedCategory === $category->id"
+                        wire:click="filterByServiceCategory({{ $category->id }})">
+                        {{ $category->name }}
+                    </x-chip>
+                @endforeach
+            </x-chip-group>
+        </div>
+
+        <div class="space-y-8">
+            @forelse($this->filteredServices->groupBy(fn($s) => $s->category?->name ?? __('messages.other')) as $categoryName => $services)
+                <div class="space-y-3">
+                    <div class="flex items-center gap-3 px-2">
+                        <h3 class="text-[11px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest">{{ $categoryName }}</h3>
+                        <div class="flex-1 h-px bg-black/5 dark:bg-white/5"></div>
                     </div>
-                    <div class="shrink-0 text-right">
-                        <p class="text-xl font-black text-fadebook-accent tracking-tighter leading-none">
-                            {{ number_format($service->price, 0) }} <span
-                                class="text-[10px] ms-0.5">{{ __('messages.egp') }}</span></p>
+                    
+                    <div class="space-y-4">
+                        @foreach($services as $service)
+                            <div wire:key="service-{{ $service->id }}"
+                                @if (!($shop->is_online && $service->is_active)) wire:click="showServiceBlockedToast({{ $shop->is_online ? 'true' : 'false' }}, {{ $service->is_active ? 'true' : 'false' }})" @endif>
+                                <x-shop.service-card :service="$service" :selected="false" :href="$shop->is_online && $service->is_active
+                                    ? route('booking.create', ['shopSlug' => $shop->slug, 'serviceId' => $service->id])
+                                    : null" :unavailable="!($shop->is_online && $service->is_active)" />
+                            </div>
+                        @endforeach
                     </div>
                 </div>
             @empty
-                <div class="text-center py-10 opacity-50">
-                    <p class="text-gray-400 font-bold uppercase tracking-widest">{{ __('messages.no_services_en') }}
+                <div
+                    class="text-center py-16 opacity-50 bg-black/5 dark:bg-white/5 rounded-[2rem] border-2 border-dashed border-gray-200 dark:border-gray-800">
+                    <p class="text-gray-400 font-black uppercase tracking-[0.2em] text-xs">
+                        {{ __('messages.no_services_found') }}
                     </p>
                 </div>
             @endforelse
@@ -397,7 +418,7 @@
             <div class="flex-1 relative z-10">
                 @auth
                     @if ($shop->is_online)
-                        <a href="#" wire:navigate class="block w-full">
+                        <a href="{{ route('booking.create', $shop->slug) }}" wire:navigate class="block w-full">
                             <button
                                 class="w-full h-12 rounded-[1.5rem] bg-fadebook-accent text-white text-[11px] font-black uppercase tracking-[0.1em] cursor-pointer transition-all active:scale-[0.98] shadow-md shadow-fadebook-accent/30">
                                 {{ __('messages.book_your_spot_now') }}

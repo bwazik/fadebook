@@ -26,16 +26,17 @@
 
     <!-- Main Content Area -->
     <div class="px-0 py-6 pb-24 space-y-8">
-        @if(strlen($query) < 2)
-            <div class="text-center py-12 px-4">
-                <div class="inline-flex items-center justify-center w-20 h-20 rounded-3xl bg-gray-100 dark:bg-white/5 mb-6">
+        @if($this->search === '')
+            <x-empty-state 
+                title="دور على صالون حلاقة" 
+                description="اكتب اسم المحل أو المنطقة عشان تدور" 
+            >
+                <x-slot name="icon">
                     <svg class="w-10 h-10 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
                     </svg>
-                </div>
-                <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">دور على صالون حلاقة</h3>
-                <p class="text-gray-500 dark:text-gray-400">اكتب اسم المحل أو المنطقة عشان تدور</p>
-            </div>
+                </x-slot>
+            </x-empty-state>
         @elseif(empty($results))
             <div class="text-center py-12 px-4">
                 <x-empty-state 
@@ -72,7 +73,7 @@
                                         @if($shop->is_online)
                                             <x-badge color="success" class="liquid-glass border-0 rounded-xl shadow-lg !text-[10px] py-1 px-3">متاح الآن</x-badge>
                                         @else
-                                            <x-badge color="gray" class="liquid-glass border-0 rounded-xl shadow-lg !text-[10px] py-1 px-3">مغلق</x-badge>
+                                            <x-badge color="gray" class="liquid-glass border-0 rounded-xl shadow-lg !text-[10px] py-1 px-3">غير متاح</x-badge>
                                         @endif
                                     </div>
                                 </div>

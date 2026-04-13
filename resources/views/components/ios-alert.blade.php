@@ -1,20 +1,56 @@
-{{-- iOS Alert Component --}}
-@props(['type' => 'info'])
+<div x-data="{
+    show: false,
+    title: '',
+    message: '',
+    action: '',
+    params: null,
+    componentId: null,
+    open(data) {
+        this.title = data.title || '';
+        this.message = data.message || '';
+        this.action = data.action || '';
+        this.params = data.params ?? null;
+        this.componentId = data.componentId || null;
+        this.show = true;
+    },
+    confirm() {
+        if (this.componentId && this.action) {
+            Livewire.find(this.componentId).call(this.action, this.params);
+        }
+        this.show = false;
+    },
+    cancel() {
+        this.show = false;
+    }
+}" @open-ios-alert.window="open($event.detail)" x-show="show" x-cloak
+    x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0"
+    x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-150"
+    x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
+    class="fixed inset-0 z-[110] flex items-center justify-center bg-black/40 backdrop-blur-sm">
+    
+    <div x-show="show" 
+        x-transition:enter="transition ease-out duration-200"
+        x-transition:enter-start="opacity-0 scale-90" x-transition:enter-end="opacity-100 scale-100"
+        x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100 scale-100"
+        x-transition:leave-end="opacity-0 scale-90"
+        class="w-[270px] bg-white/80 dark:bg-[#2c2c2e]/80 backdrop-blur-3xl rounded-[1.25rem] flex flex-col text-center overflow-hidden border border-black/5 dark:border-white/10 shadow-2xl"
+        @click.stop>
+        
+        {{-- Content --}}
+        <div class="px-5 pt-5 pb-4">
+            <h3 class="text-[17px] font-black text-gray-900 dark:text-white mb-1 leading-tight" x-text="title"></h3>
+            <p class="text-[13px] text-gray-500 dark:text-gray-400 font-medium leading-relaxed" x-text="message"></p>
+        </div>
 
-@php
-    $styles = [
-        'success' => 'bg-green-100/80 dark:bg-green-900/40 text-green-800 dark:text-green-300 border-green-200/50 dark:border-green-800/50',
-        'error' => 'bg-red-100/80 dark:bg-red-900/40 text-red-800 dark:text-red-300 border-red-200/50 dark:border-red-800/50',
-        'warning' => 'bg-yellow-100/80 dark:bg-yellow-900/40 text-yellow-800 dark:text-yellow-300 border-yellow-200/50 dark:border-yellow-800/50',
-        'info' => 'bg-blue-100/80 dark:bg-blue-900/40 text-blue-800 dark:text-blue-300 border-blue-200/50 dark:border-blue-800/50',
-    ];
-    $style = $styles[$type] ?? $styles['info'];
-@endphp
-
-<div {{ $attributes->merge([
-    'class' => "p-4 rounded-2xl border backdrop-blur-xl flex gap-3 items-center " . $style
-]) }}>
-    <div class="flex-1 text-[15px] font-medium leading-relaxed">
-        {{ $slot }}
+        <div class="border-t border-black/5 dark:border-white/10 flex">
+            <button @click="cancel()"
+                class="flex-1 py-3 text-[17px] font-bold text-gray-400 dark:text-gray-500 border-l border-black/5 dark:border-white/10 active:bg-black/5 dark:active:bg-white/10 transition-colors cursor-pointer">
+                {{ __('messages.back') }}
+            </button>
+            <button @click="confirm()"
+                class="flex-1 py-3 text-[17px] font-black text-fadebook-accent active:bg-black/5 dark:active:bg-white/10 transition-colors cursor-pointer">
+                {{ __('messages.confirm') }}
+            </button>
+        </div>
     </div>
 </div>

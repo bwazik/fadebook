@@ -28,6 +28,6 @@
         {{ $barber->name }}</h3>
     <p
         class="text-[10px] text-fadebook-accent font-black uppercase mt-2 tracking-widest leading-none whitespace-nowrap overflow-hidden">
-        {{ is_array($barber->specialties) ? implode(' • ', $barber->specialties) : $barber->specialties ?? __('messages.top_artist') }}
+        {{ $barber->services->count() > 0 ? implode(' • ', $barber->services->pluck('name')->toArray()) : __('messages.top_artist') }}
     </p>
 </div>

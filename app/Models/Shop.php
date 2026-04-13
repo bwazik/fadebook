@@ -115,6 +115,14 @@ class Shop extends Model
     }
 
     /**
+     * Get the service categories for this shop.
+     */
+    public function serviceCategories(): HasMany
+    {
+        return $this->hasMany(ServiceCategory::class)->orderBy('sort_order');
+    }
+
+    /**
      * Get the services offered by this shop.
      */
     public function services(): HasMany

@@ -1,5 +1,8 @@
 <?php
 
+use App\Livewire\Booking\BookingDetails;
+use App\Livewire\Booking\BookingList;
+use App\Livewire\Booking\CreateBooking;
 use App\Livewire\Home;
 use App\Livewire\Onboarding\PendingApproval;
 use App\Livewire\Onboarding\ShopSetup;
@@ -18,7 +21,9 @@ Route::middleware('auth')->group(function () {
 Route::middleware(['auth', 'phone.verified'])->group(function () {
     Route::get('/offers', fn () => 'offers')->name('offers');
     Route::view('dashboard', 'dashboard')->name('dashboard');
-    Route::get('/bookings', fn () => 'bookings')->name('bookings');
+    Route::get('/book/{shopSlug}/{serviceId?}', CreateBooking::class)->name('booking.create');
+    Route::get('/bookings', BookingList::class)->name('bookings.index');
+    Route::get('/bookings/{bookingUuid}', BookingDetails::class)->name('booking.show');
 });
 
 // Phase 2 Public Routes
