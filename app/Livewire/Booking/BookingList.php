@@ -17,6 +17,13 @@ class BookingList extends Component
 {
     public string $tab = 'upcoming'; // upcoming, completed, cancelled
 
+    public int $perPage = 6;
+
+    public function loadMore(): void
+    {
+        $this->perPage += 6;
+    }
+
     public function mount(): void
     {
         $this->dispatch('show-bottom-nav');
@@ -25,24 +32,36 @@ class BookingList extends Component
     public function setTab(string $tab): void
     {
         $this->tab = $tab;
+        $this->perPage = 6;
     }
 
     #[Computed]
     public function bookings()
+    {
+        $query = $this->getBaseQuery();
+        return $query->limit($this->perPage)->get();
+    }
+
+    #[Computed]
+    public function hasMore(): bool
+    {
+        $query = $this->getBaseQuery();
+        return $query->count() > $this->perPage;
+    }
+
+    private function getBaseQuery()
     {
         /** @var User $user */
         $user = Auth::user();
 
         $query = $user->bookings()->with(['shop.images', 'service', 'barber'])->latest();
 
-        $query = match ($this->tab) {
+        return match ($this->tab) {
             'upcoming' => $query->whereIn('status', [BookingStatus::Pending, BookingStatus::Confirmed, BookingStatus::InProgress]),
             'completed' => $query->where('status', BookingStatus::Completed),
             'cancelled' => $query->whereIn('status', [BookingStatus::Cancelled, BookingStatus::NoShow]),
             default => $query,
         };
-
-        return $query->get();
     }
 
     public function render(): View
