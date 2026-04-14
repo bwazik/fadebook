@@ -67,7 +67,7 @@ class GlobalSearch extends Component
     #[Computed]
     public function suggestions(): Collection
     {
-        $user = auth()->user();
+        $user = Auth::user();
         if (! $user) {
             return collect();
         }
@@ -137,7 +137,7 @@ class GlobalSearch extends Component
 
     private function searchDashboard(): Collection
     {
-        $shopId = auth()->user()->shop?->id;
+        $shopId = Auth::user()->shop?->id;
 
         return Booking::where('shop_id', $shopId)
             ->where(function ($q) {
