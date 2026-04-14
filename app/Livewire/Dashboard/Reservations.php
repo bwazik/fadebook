@@ -14,6 +14,7 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
+use Livewire\Attributes\Url;
 use Livewire\Component;
 
 #[Layout('layouts.app')]
@@ -22,6 +23,9 @@ class Reservations extends Component
     use WithRateLimiting, WithToast;
 
     public string $tab = 'upcoming'; // upcoming, completed, cancelled
+
+    #[Url(except: '')]
+    public string $search = '';
 
     public int $perPage = 6;
 
@@ -39,6 +43,7 @@ class Reservations extends Component
     {
         $this->tab = $tab;
         $this->perPage = 6;
+        $this->search = ''; // Clear search when explicitly switching tabs
     }
 
     public function confirmReservation(int $bookingId, BookingService $bookingService): void
@@ -126,6 +131,14 @@ class Reservations extends Component
     {
         $query = Auth::user()->shop->bookings()
             ->with(['client', 'service', 'barber']);
+
+        if ($this->search) {
+            return $query->where(function ($q) {
+                $q->where('booking_code', 'like', "%{$this->search}%")
+                    ->orWhereHas('client', fn ($cq) => $cq->where('name', 'like', "%{$this->search}%"))
+                    ->orWhereHas('barber', fn ($bq) => $bq->where('name', 'like', "%{$this->search}%"));
+            })->orderBy('scheduled_at', 'desc');
+        }
 
         if ($this->tab === 'upcoming') {
             return $query->whereIn('status', [BookingStatus::Pending, BookingStatus::Confirmed, BookingStatus::InProgress])

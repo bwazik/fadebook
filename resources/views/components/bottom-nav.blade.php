@@ -112,7 +112,8 @@
     {{-- RIGHT PILL — Search Icon Only  --}}
     {{-- ═══════════════════════════════ --}}
     <button type="button"
-       class="flex items-center justify-center p-3 rounded-[2rem] liquid-glass liquid-button text-gray-500 dark:text-gray-400">
+        @click="$dispatch('open-global-search')"
+        class="flex items-center justify-center p-3 rounded-[2rem] liquid-glass liquid-button text-gray-500 dark:text-gray-400">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
             stroke-width="1.5" stroke="currentColor"
             class="w-[22px] h-[22px] liquid-transition scale-100">

@@ -1,8 +1,14 @@
 <div class="pb-[calc(5rem+var(--safe-area-bottom)+64px)] min-h-screen pt-4 px-4 relative">
-    <div class="mb-6 mt-4">
+    <div class="mb-6 mt-4 flex items-center justify-between">
         <h1 class="text-2xl font-black text-gray-900 dark:text-white uppercase tracking-tighter">
-            {{ __('messages.reservations_title') }}
+            {{ $search ? __('messages.search_results') : __('messages.reservations_title') }}
         </h1>
+
+        @if($search)
+            <button wire:click="$set('search', '')" class="text-[10px] font-black uppercase text-fadebook-accent bg-fadebook-accent/10 px-3 py-1 rounded-lg">
+                {{ __('messages.clear_search') }} X
+            </button>
+        @endif
     </div>
 
     <!-- Tabs -->

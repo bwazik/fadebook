@@ -119,7 +119,9 @@ declare(strict_types=1);
                 </header>
                 --}}
 
-                {{ $slot }}
+                <livewire:global-search />
+
+    {{ $slot }}
             </main>
 
             <!-- Bottom Navigation -->
