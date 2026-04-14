@@ -161,6 +161,18 @@
                     const currentRoute = Alpine.store('nav').currentRoute;
                     if (!currentRoute) return false;
 
+                    // Internal Workshop Check: Dashboard Home should include management sub-pages
+                    if (route === 'dashboard.home') {
+                        return [
+                            'dashboard.home',
+                            'dashboard.reviews',
+                            'dashboard.services',
+                            'dashboard.categories',
+                            'dashboard.barbers',
+                            'dashboard.clients'
+                        ].includes(currentRoute);
+                    }
+
                     // Hardcoded check for Bookings tab
                     if (route === 'bookings.index') {
                         return [

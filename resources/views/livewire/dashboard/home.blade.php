@@ -37,24 +37,42 @@
         </div>
     </div>
 
-    <!-- Quick Stats -->
-    <div class="grid grid-cols-2 gap-3 mb-6">
-        <div class="liquid-glass rounded-2xl p-4 border border-white/20 shadow-sm transition-all hover:scale-[1.02]">
-            <p class="text-[10px] font-medium text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-1">
+    <div class="grid grid-cols-3 gap-2.5 mb-6">
+        <div class="liquid-glass rounded-2xl p-3.5 border border-white/20 shadow-sm transition-all hover:scale-[1.02]">
+            <p class="text-[9px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-1.5 leading-none">
                 {{ __('messages.month_bookings') }}
             </p>
-            <p class="text-2xl font-black text-gray-900 dark:text-white leading-none">
+            <p class="text-xl font-black text-gray-900 dark:text-white leading-none">
                 {{ $this->stats['total_bookings'] }}
             </p>
         </div>
-        <div class="liquid-glass rounded-2xl p-4 border border-white/20 shadow-sm relative overflow-hidden transition-all hover:scale-[1.02]">
+        <div class="liquid-glass rounded-2xl p-3.5 border border-white/20 shadow-sm relative overflow-hidden transition-all hover:scale-[1.02]">
             <div class="absolute inset-0 bg-fadebook-accent/5 pointer-events-none"></div>
-            <p class="text-[10px] font-medium text-fadebook-accent uppercase tracking-widest mb-1">
+            <p class="text-[9px] font-bold text-fadebook-accent uppercase tracking-widest mb-1.5 leading-none">
                 {{ __('messages.net_amount_egp') }}
             </p>
-            <p class="text-2xl font-black text-fadebook-accent leading-none">
+            <p class="text-xl font-black text-fadebook-accent leading-none">
                 {{ number_format($this->stats['net_payout'], 0) }}
             </p>
+        </div>
+        <div class="liquid-glass rounded-2xl p-3.5 border border-white/20 shadow-sm transition-all hover:scale-[1.02]">
+            <p class="text-[9px] font-bold text-yellow-500 uppercase tracking-widest mb-1.5 leading-none">
+                {{ __('messages.rating') }}
+            </p>
+            <div class="flex items-center gap-1">
+                <p class="text-xl font-black text-gray-900 dark:text-white leading-none">
+                    {{ (float) $this->stats['average_rating'] }}
+                </p>
+                @if($this->stats['average_rating'] > 0)
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-3.5 h-3.5 text-yellow-400">
+                        <path fill-rule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006z" clip-rule="evenodd" />
+                    </svg>
+                @else
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-3.5 h-3.5 text-blue-500">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 0 1-1.043 3.296 3.745 3.745 0 0 1-3.296 1.043A3.745 3.745 0 0 1 12 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 0 1-3.296-1.043 3.745 3.745 0 0 1-1.043-3.296A3.745 3.745 0 0 1 3 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 0 1 1.043-3.296 3.746 3.746 0 0 1 3.296-1.043A3.746 3.746 0 0 1 12 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 0 1 3.296 1.043 3.746 3.746 0 0 1 1.043 3.296A3.745 3.745 0 0 1 21 12Z" />
+                    </svg>
+                @endif
+            </div>
         </div>
     </div>
 
@@ -109,6 +127,15 @@
             </svg>
             <span class="text-[10px] font-medium opacity-80">{{ __('messages.nav_categories') }}</span>
         </a>
+        <a href="{{ route('dashboard.reviews') }}" wire:navigate
+            class="shrink-0 snap-start flex flex-col items-center justify-center w-20 h-20 liquid-glass liquid-button rounded-[1.2rem] border border-white/20 shadow-sm text-gray-700 dark:text-gray-300">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                stroke="currentColor" class="w-6 h-6 mb-2 text-yellow-500">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M11.48 3.499a.562.562 0 0 1 1.04 0l2.125 5.111a.563.563 0 0 0 .475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 0 0-.182.557l1.285 5.385a.562.562 0 0 1-.84.61l-4.725-2.885a.562.562 0 0 0-.586 0L6.982 20.54a.562.562 0 0 1-.84-.61l1.285-5.386a.563.563 0 0 0-.182-.557l-4.204-3.602a.562.562 0 0 1 .321-.988l5.518-.442a.563.563 0 0 0 .475-.345L11.48 3.5Z" />
+            </svg>
+            <span class="text-[10px] font-medium opacity-80">{{ __('messages.nav_reviews') }}</span>
+        </a>
         <a href="{{ route('dashboard.settings') }}" wire:navigate
             class="shrink-0 snap-start flex flex-col items-center justify-center w-20 h-20 liquid-glass liquid-button rounded-[1.2rem] border border-white/20 shadow-sm text-gray-700 dark:text-gray-300">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -119,6 +146,48 @@
             <span class="text-[10px] font-medium opacity-80">{{ __('messages.nav_shop') }}</span>
         </a>
     </div>
+
+    <!-- Barber Performance Carousel -->
+    @if($this->barberPerformance->isNotEmpty())
+        <div class="mb-8">
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="text-lg font-black text-gray-900 dark:text-white uppercase tracking-tighter">
+                    {{ __('messages.barbers_performance') }}
+                </h2>
+            </div>
+            <div class="flex gap-4 overflow-x-auto no-scrollbar -mx-4 px-4 pb-2 snap-x">
+                @foreach($this->barberPerformance as $barber)
+                    <div class="shrink-0 snap-start w-32 liquid-glass rounded-2xl p-4 border border-white/20 shadow-sm flex flex-col items-center">
+                        <div class="relative mb-3">
+                            @php $photo = $barber->getImage('photo')->first(); @endphp
+                            @if ($photo)
+                                <img src="{{ Storage::url($photo->path) }}" alt="{{ $barber->name }}"
+                                    class="w-14 h-14 rounded-full object-cover border-2 border-white/50 shadow-sm">
+                            @else
+                                <div class="w-14 h-14 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center border-2 border-white/50 shadow-sm">
+                                    <span class="text-xl text-gray-400 font-black uppercase">{{ mb_substr($barber->name, 0, 1) }}</span>
+                                </div>
+                            @endif
+                            <div class="absolute -bottom-1 left-1/2 -translate-x-1/2 bg-yellow-400 text-white text-[9px] font-black px-1.5 py-0.5 rounded-full shadow-md flex items-center gap-0.5">
+                                @if($barber->average_rating > 0)
+                                    <span>{{ (float) $barber->average_rating }}</span>
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-2 h-2">
+                                        <path fill-rule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006z" clip-rule="evenodd" />
+                                    </svg>
+                                @else
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-2.5 h-2.5">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 0 1-1.043 3.296 3.745 3.745 0 0 1-3.296 1.043A3.745 3.745 0 0 1 12 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 0 1-3.296-1.043 3.745 3.745 0 0 1-1.043-3.296A3.745 3.745 0 0 1 3 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 0 1 1.043-3.296 3.746 3.746 0 0 1 3.296-1.043A3.746 3.746 0 0 1 12 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 0 1 3.296 1.043 3.746 3.746 0 0 1 1.043 3.296A3.745 3.745 0 0 1 21 12Z" />
+                                    </svg>
+                                @endif
+                            </div>
+                        </div>
+                        <h3 class="text-[11px] font-black text-gray-900 dark:text-white uppercase truncate w-full text-center">{{ $barber->name }}</h3>
+                        <span class="text-[9px] text-gray-400 font-bold mt-1 uppercase tracking-tighter">{{ $barber->total_reviews }} {{ __('messages.reviews') }}</span>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+    @endif
 
     <!-- Today's Upcoming Bookings -->
     <div>

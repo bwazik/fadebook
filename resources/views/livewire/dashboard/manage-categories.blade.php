@@ -125,12 +125,3 @@
 @push('scripts')
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
 @endpush
-  </x-ios-button>
-            </div>
-        </form>
-    </x-bottom-sheet>
-</div>
-
-@push('scripts')
-    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
-@endpush

@@ -6,20 +6,20 @@ use App\Enums\WhatsAppQueueType;
 use App\Enums\WhatsAppStatus;
 use App\Models\WhatsAppMessage;
 use App\Services\WhatsappService;
+use Illuminate\Console\Attributes\Description;
+use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 
-class RequeueFailedWhatsappMessages extends Command
-{
-    protected $signature = 'whatsapp:requeue-failed
+#[Signature('whatsapp:requeue-failed
                             {--from= : Start of ID range}
                             {--to=   : End of ID range}
                             {--all   : Requeue all failed messages}
                             {--priority= : Filter by priority (instant|urgent|default)}
-                            {--force : Skip confirmation prompt (for CI/automation)}';
-
-    protected $description = 'Requeue failed WhatsApp messages with correct priority routing';
-
+                            {--force : Skip confirmation prompt (for CI/automation)}')]
+#[Description('Requeue failed WhatsApp messages with correct priority routing')]
+class RequeueFailedWhatsappMessages extends Command
+{
     public function __construct(protected WhatsappService $whatsappService)
     {
         parent::__construct();

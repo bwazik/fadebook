@@ -21,14 +21,16 @@
     <!-- Barbers List -->
     <div class="space-y-4">
         @forelse($this->barbers as $barber)
-            <div class="liquid-glass rounded-[1.5rem] p-4 border border-white/20 shadow-sm flex items-center gap-4 {{ !$barber->is_active ? 'opacity-60 grayscale' : '' }}">
+            <div
+                class="liquid-glass rounded-[1.5rem] p-4 border border-white/20 shadow-sm flex items-center gap-4 {{ !$barber->is_active ? 'opacity-60 grayscale' : '' }}">
                 <div class="shrink-0">
                     @php $barberImage = $barber->images->first(); @endphp
                     @if ($barberImage)
                         <img src="{{ Storage::url($barberImage->path) }}" alt="{{ $barber->name }}"
                             class="w-14 h-14 rounded-full object-cover border border-black/5 dark:border-white/10 shadow-sm bg-white dark:bg-[#1c1c1e]">
                     @else
-                        <div class="w-14 h-14 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center border border-black/5 dark:border-white/10 shadow-sm">
+                        <div
+                            class="w-14 h-14 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center border border-black/5 dark:border-white/10 shadow-sm">
                             <span class="text-xl text-gray-400 font-black">{{ mb_substr($barber->name, 0, 1) }}</span>
                         </div>
                     @endif
@@ -76,8 +78,7 @@
                 </div>
             </div>
         @empty
-            <x-empty-state title="{{ __('messages.no_barbers') }}"
-                description="{{ __('messages.no_barbers_desc') }}">
+            <x-empty-state title="{{ __('messages.no_barbers') }}" description="{{ __('messages.no_barbers_desc') }}">
                 <x-slot name="icon">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                         stroke="currentColor" class="w-8 h-8 opacity-60">
@@ -94,49 +95,42 @@
         <form wire:submit="save" class="space-y-6 pb-6">
             <!-- Avatar Upload -->
             <div class="flex justify-center mb-6">
-                <x-photo-upload
-                    wire:key="avatar-u-{{ $editingId ?? 'new' }}"
-                    wireModel="avatar"
-                    :photo="$avatar"
+                <x-photo-upload wire:key="avatar-u-{{ $editingId ?? 'new' }}" wireModel="avatar" :photo="$avatar"
                     :current-photo="$editingId
                         ? $this->barbers->find($editingId)?->getImage('avatar')->first()?->path ?? null
-                        : null"
-                    label="{{ __('messages.barber_photo') }}"
+                        : null" label="{{ __('messages.barber_photo') }}"
                     placeholder="images/barber-default.jpg" />
             </div>
             <div class="space-y-4">
                 <div>
-                    <x-ios-input label="{{ __('messages.barber_name_label') }}" wire:model="name" type="text" placeholder="{{ __('messages.barber_name_placeholder') }}" />
+                    <x-ios-input label="{{ __('messages.barber_name_label') }}" wire:model="name" type="text"
+                        placeholder="{{ __('messages.barber_name_placeholder') }}" />
                 </div>
 
                 <div>
-                    <x-ios-input label="{{ __('messages.phone_number_label') }}" wire:model="phone" type="tel" dir="ltr"
-                        placeholder="{{ __('messages.phone_number_placeholder') }}" />
+                    <x-ios-input label="{{ __('messages.phone_number_label') }}" wire:model="phone" type="tel"
+                        dir="ltr" placeholder="{{ __('messages.phone_number_placeholder') }}" />
                     <p class="text-[10px] text-gray-400 font-bold mt-1 px-1">
                         {{ __('messages.phone_number_note') }}
                         @if (!$editingId)
-                            <br> {{ __('messages.default_password_note') }} <span class="text-fadebook-accent">{{ $password }}</span>
+                            <br> {{ __('messages.default_password_note') }} <span
+                                class="text-fadebook-accent">{{ $password }}</span>
                         @endif
                     </p>
                 </div>
 
                 <!-- Recurring Days Off -->
                 <div>
-                    <x-ios-select 
-                        label="{{ __('messages.weekly_off_label') }}" 
-                        wire:model="daysOff" 
-                        :options="[
-                            'sunday' => __('messages.sunday_off'),
-                            'monday' => __('messages.monday_off'),
-                            'tuesday' => __('messages.tuesday_off'),
-                            'wednesday' => __('messages.wednesday_off'),
-                            'thursday' => __('messages.thursday_off'),
-                            'friday' => __('messages.friday_off'),
-                            'saturday' => __('messages.saturday_off'),
-                        ]"
-                        multiple
-                        placeholder="{{ __('messages.days_off_placeholder') }}"
-                    />
+                    <x-ios-select label="{{ __('messages.weekly_off_label') }}" wire:model="daysOff" :options="[
+                        'sunday' => __('messages.sunday_off'),
+                        'monday' => __('messages.monday_off'),
+                        'tuesday' => __('messages.tuesday_off'),
+                        'wednesday' => __('messages.wednesday_off'),
+                        'thursday' => __('messages.thursday_off'),
+                        'friday' => __('messages.friday_off'),
+                        'saturday' => __('messages.saturday_off'),
+                    ]"
+                        multiple placeholder="{{ __('messages.days_off_placeholder') }}" />
                 </div>
 
                 <!-- Unavailability -->
@@ -149,41 +143,45 @@
                             <x-ios-input type="date" wire:model="newUnavailabilityDate" />
                         </div>
                         <div class="shrink-0 pb-0.5">
-                            <x-ios-button type="button" wire:click="addUnavailabilityDate" class="!rounded-2xl !p-3.5 !w-auto">
+                            <x-ios-button type="button" wire:click="addUnavailabilityDate"
+                                class="!rounded-2xl !p-3.5 !w-auto">
                                 <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                                        d="M12 4v16m8-8H4" />
                                 </svg>
                             </x-ios-button>
                         </div>
                     </div>
 
-                    @if(count($unavailabilityDates) > 0)
+                    @if (count($unavailabilityDates) > 0)
                         <div class="flex flex-wrap gap-2 p-1">
-                            @foreach($unavailabilityDates as $date)
-                                <div wire:key="undate-{{ $date }}" class="flex items-center gap-1.5 px-3 py-2 bg-[--color-fadebook-accent]/10 border border-[--color-fadebook-accent]/20 rounded-xl">
-                                    <span class="text-[10px] font-bold text-[--color-fadebook-accent]">{{ \Carbon\Carbon::parse($date)->format('Y/m/d') }}</span>
-                                    <button type="button" wire:click="removeUnavailabilityDate('{{ $date }}')" class="text-[--color-fadebook-accent]/60 hover:text-[--color-fadebook-accent] transition-colors">
-                                        <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" />
+                            @foreach ($unavailabilityDates as $date)
+                                <div wire:key="undate-{{ $date }}"
+                                    class="flex items-center gap-1.5 px-3 py-2 bg-[--color-fadebook-accent]/10 border border-[--color-fadebook-accent]/20 rounded-xl">
+                                    <span
+                                        class="text-[10px] font-bold text-[--color-fadebook-accent]">{{ \Carbon\Carbon::parse($date)->format('Y/m/d') }}</span>
+                                    <button type="button"
+                                        wire:click="removeUnavailabilityDate('{{ $date }}')"
+                                        class="text-[--color-fadebook-accent]/60 hover:text-[--color-fadebook-accent] transition-colors">
+                                        <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24"
+                                            stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                                                d="M6 18L18 6M6 6l12 12" />
                                         </svg>
                                     </button>
                                 </div>
                             @endforeach
                         </div>
                     @else
-                        <p class="text-[10px] text-gray-400 font-medium px-1">{{ __('messages.no_special_holidays') }}</p>
+                        <p class="text-[10px] text-gray-400 font-medium px-1">{{ __('messages.no_special_holidays') }}
+                        </p>
                     @endif
                 </div>
 
                 <!-- Services Selection -->
                 <div>
-                    <x-ios-select 
-                        label="{{ __('messages.services_provided_label') }}" 
-                        wire:model="selectedServices" 
-                        :options="$this->availableServices->pluck('name', 'id')->toArray()"
-                        multiple
-                        placeholder="{{ __('messages.select_services_placeholder') }}"
-                    />
+                    <x-ios-select label="{{ __('messages.services_provided_label') }}" wire:model="selectedServices"
+                        :options="$this->availableServices->pluck('name', 'id')->toArray()" multiple placeholder="{{ __('messages.select_services_placeholder') }}" />
                 </div>
             </div>
 

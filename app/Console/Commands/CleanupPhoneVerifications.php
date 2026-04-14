@@ -4,24 +4,14 @@ namespace App\Console\Commands;
 
 use App\Models\PhoneVerification;
 use App\Services\SettingsService;
+use Illuminate\Console\Attributes\Description;
+use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
 
+#[Signature('phone-verifications:cleanup')]
+#[Description('Soft delete expired or used phone verifications.')]
 class CleanupPhoneVerifications extends Command
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
-    protected $signature = 'phone-verifications:cleanup';
-
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
-    protected $description = 'Soft delete expired or used phone verifications.';
-
     /**
      * Execute the console command.
      */

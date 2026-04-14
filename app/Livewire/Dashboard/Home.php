@@ -8,6 +8,7 @@ use App\Enums\BookingStatus;
 use App\Enums\CancelledBy;
 use App\Enums\UserRole;
 use App\Models\Booking;
+use App\Models\Review;
 use App\Models\Shop;
 use App\Models\User;
 use App\Services\BookingService;
@@ -101,7 +102,18 @@ class Home extends Component
             'commission_deducted' => $commission,
             'net_payout' => $net,
             'commission_rate' => $commissionRate,
+            'average_rating' => (float) $this->shop->average_rating,
+            'total_reviews' => $this->shop->total_reviews,
         ];
+    }
+
+    #[Computed]
+    public function barberPerformance()
+    {
+        return $this->shop->barbers()
+            ->where('is_active', true)
+            ->get()
+            ->sortByDesc('average_rating');
     }
 
     public function confirmReservation(int $bookingId, BookingService $bookingService): void
