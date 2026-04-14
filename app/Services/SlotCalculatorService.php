@@ -37,6 +37,14 @@ class SlotCalculatorService
         $openTime = Carbon::parse($date.' '.$openingHours[$dayOfWeek]['open']);
         $closeTime = Carbon::parse($date.' '.$openingHours[$dayOfWeek]['close']);
 
+        /**
+         * PROOF: Check if specific barber is available on this date.
+         * This handles both weekly days off and specific unavailability dates.
+         */
+        if ($barber && ! $barber->isAvailableOn($targetDate)) {
+            return [];
+        }
+
         // Ensure close time is after open time (handle past midnight if needed, though simple for now)
         if ($closeTime->lessThan($openTime)) {
             $closeTime->addDay();
@@ -79,7 +87,18 @@ class SlotCalculatorService
         // PERFORMANCE FIX: Pre-calculate active barbers count once, outside the loop (Fixes N+1)
         $activeBarbersCount = 1;
         if ($shop->barber_selection_mode === BarberSelectionMode::AnyAvailable) {
-            $activeBarbersCount = max(1, $shop->barbers()->where('is_active', true)->count());
+            /**
+             * PROOF: Only count barbers who are AVAILABLE on this specific date.
+             */
+            $activeBarbersCount = $shop->barbers()
+                ->where('is_active', true)
+                ->get()
+                ->filter(fn ($b) => $b->isAvailableOn($targetDate))
+                ->count();
+
+            if ($activeBarbersCount === 0) {
+                return [];
+            }
         }
 
         foreach ($slots as $slot) {

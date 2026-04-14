@@ -7,20 +7,33 @@
                 <p class="text-xs font-black text-gray-500 dark:text-gray-400 mt-0.5 uppercase tracking-[0.1em]">
                     {{ __('messages.app_slogan') }}</p>
             </div>
-            <!-- Optional User Avatar on right -->
-            <a href="{{ route('profile.index') }}" wire:navigate
-                class="w-12 h-12 rounded-full bg-gray-200 dark:bg-gray-800 border-2 border-white dark:border-gray-700 shadow-sm overflow-hidden flex items-center justify-center liquid-button">
-                @auth
-                    <span
-                        class="text-gray-600 dark:text-gray-300 font-bold text-sm">{{ mb_substr(auth()->user()->name, 0, 1) }}</span>
-                @else
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                        stroke="currentColor" class="w-6 h-6 text-gray-400">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
-                    </svg>
-                @endauth
-            </a>
+            <!-- Header Actions -->
+            <div class="flex items-center gap-3">
+                @if ($this->isOwner)
+                    <a href="{{ route('dashboard.home') }}" wire:navigate
+                        class="w-12 h-12 rounded-2xl bg-fadebook-accent/10 border-2 border-fadebook-accent/20 shadow-sm overflow-hidden flex items-center justify-center liquid-button group">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                            stroke="currentColor" class="w-6 h-6 text-fadebook-accent group-hover:scale-110 transition-transform">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M13.5 21v-7.5a.75.75 0 0 1 .75-.75h3a.75.75 0 0 1 .75.75V21m-4.5 0H2.36m11.14 0H18m0 0h3.64m-1.39 0V9.349M3.75 21V9.349m0 0a3.001 3.001 0 0 0 3.75-.615A2.993 2.993 0 0 0 9.75 9.75c.896 0 1.7-.393 2.25-1.016a2.993 2.993 0 0 0 2.25 1.016c.896 0 1.7-.393 2.25-1.015a3.001 3.001 0 0 0 3.75.614m-16.5 0a3.004 3.004 0 0 1-.621-4.72l1.189-1.19A1.5 1.5 0 0 1 5.378 3h13.243a1.5 1.5 0 0 1 1.06.44l1.19 1.189a3 3 0 0 1-.621 4.72M6.75 18h3.75a.75.75 0 0 0 .75-.75V13.5a.75.75 0 0 0-.75-.75H6.75a.75.75 0 0 0-.75.75v3.75c0 .414.336.75.75.75Z" />
+                        </svg>
+                    </a>
+                @endif
+
+                <a href="{{ route('profile.index') }}" wire:navigate
+                    class="w-12 h-12 rounded-full bg-gray-200 dark:bg-gray-800 border-2 border-white dark:border-gray-700 shadow-sm overflow-hidden flex items-center justify-center liquid-button">
+                    @auth
+                        <span
+                            class="text-gray-600 dark:text-gray-300 font-bold text-sm">{{ mb_substr(auth()->user()->name, 0, 1) }}</span>
+                    @else
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                            stroke="currentColor" class="w-6 h-6 text-gray-400">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
+                        </svg>
+                    @endauth
+                </a>
+            </div>
         </div>
 
         <!-- Greetings Section -->
@@ -40,76 +53,39 @@
 
     <!-- Shop Status Banner -->
     @if ($this->pendingShop)
-        <div class="px-4 mt-2 mb-4">
-            @if ($this->pendingShop->status === App\Enums\ShopStatus::Pending)
-                <div class="liquid-glass border-amber-400/20 bg-amber-400/5 rounded-2xl p-4 flex items-center gap-4 relative">
-                    <div class="w-10 h-10 rounded-full bg-amber-400/10 flex items-center justify-center text-amber-500">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                    </div>
-                    <div class="flex-1">
-                        <p class="text-sm font-black text-gray-900 dark:text-white leading-tight">
-                            {{ __('messages.shop_pending_title') }}</p>
-                        <p class="text-[11px] text-gray-500 dark:text-gray-400 font-bold leading-tight mt-1">
-                            {{ __('messages.shop_pending_subtitle') }}</p>
-                    </div>
-                    <button wire:click="dismissStatusBanner" class="p-1 -mr-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-all cursor-pointer hover:scale-110 active:scale-95">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                    </button>
-                </div>
-            @elseif($this->pendingShop->status === App\Enums\ShopStatus::Rejected)
-                <div class="liquid-glass border-red-400/20 bg-red-400/5 rounded-2xl p-4 flex items-center gap-4 relative">
-                    <div class="w-10 h-10 rounded-full bg-red-400/10 flex items-center justify-center text-red-500">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                    </div>
-                    <div class="flex-1">
-                        <p class="text-sm font-black text-gray-900 dark:text-white leading-tight">
-                            {{ __('messages.shop_rejected_title') }}</p>
-                        <p class="text-[11px] text-gray-500 dark:text-gray-400 font-bold leading-tight mt-1">
-                            {{ $this->pendingShop->rejection_reason ?? __('messages.shop_rejected_subtitle') }}</p>
-                    </div>
-                    <button wire:click="dismissStatusBanner" class="p-1 -mr-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-all cursor-pointer hover:scale-110 active:scale-95">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                    </button>
-                </div>
-            @endif
-        </div>
+        @if ($this->pendingShop->status === App\Enums\ShopStatus::Pending)
+            <x-home.info-card color="amber" :title="__('messages.shop_pending_title')" :subtitle="__('messages.shop_pending_subtitle')" dismissible
+                wire-click-dismiss="dismissStatusBanner" class="mt-2 mb-4">
+                <x-slot:icon>
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                </x-slot:icon>
+            </x-home.info-card>
+        @elseif($this->pendingShop->status === App\Enums\ShopStatus::Rejected)
+            <x-home.info-card color="red" :title="__('messages.shop_rejected_title')" :subtitle="$this->pendingShop->rejection_reason ?? __('messages.shop_rejected_subtitle')" dismissible
+                wire-click-dismiss="dismissStatusBanner" class="mt-2 mb-4">
+                <x-slot:icon>
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </x-slot:icon>
+            </x-home.info-card>
+        @endif
     @endif
 
     <!-- Info Banner (Upcoming Appointments) -->
     @if ($this->upcomingBookingsCount > 0)
-        <div class="px-4 mt-3 mb-1">
-            <a href="{{ route('bookings.index') }}" wire:navigate
-                class="block w-full liquid-glass rounded-2xl p-3 flex items-center gap-3 liquid-button border border-fadebook-accent/20 bg-fadebook-accent/5">
-                <div
-                    class="w-8 h-8 rounded-full bg-fadebook-accent text-white flex items-center justify-center shadow-sm">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4">
-                        <path fill-rule="evenodd"
-                            d="M5.75 2a.75.75 0 0 1 .75.75V4h7V2.75a.75.75 0 0 1 1.5 0V4h.25A2.75 2.75 0 0 1 18 6.75v8.5A2.75 2.75 0 0 1 15.25 18H4.75A2.75 2.75 0 0 1 2 15.25v-8.5A2.75 2.75 0 0 1 4.75 4H5V2.75A.75.75 0 0 1 5.75 2Zm-1 5.5c-.69 0-1.25.56-1.25 1.25v6.5c0 .69.56 1.25 1.25 1.25h10.5c.69 0 1.25-.56 1.25-1.25v-6.5c0-.69-.56-1.25-1.25-1.25H4.75Z"
-                            clip-rule="evenodd" />
-                    </svg>
-                </div>
-                <div class="flex-1">
-                    <p class="text-sm font-bold text-gray-900 dark:text-white">
-                        {{ __('messages.home_upcoming_bookings', ['count' => $this->upcomingBookingsCount]) }}
-                    </p>
-                    <p class="text-xs text-gray-500 dark:text-gray-400">{{ __('messages.home_view_details') }}</p>
-                </div>
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
-                    stroke="currentColor" class="w-4 h-4 text-gray-400 rtl:rotate-180">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+        <x-home.info-card :href="route('bookings.index')" :title="__('messages.home_upcoming_bookings', ['count' => $this->upcomingBookingsCount])" :subtitle="__('messages.home_view_details')" class="mt-3 mb-1">
+            <x-slot:icon>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4">
+                    <path fill-rule="evenodd"
+                        d="M5.75 2a.75.75 0 0 1 .75.75V4h7V2.75a.75.75 0 0 1 1.5 0V4h.25A2.75 2.75 0 0 1 18 6.75v8.5A2.75 2.75 0 0 1 15.25 18H4.75A2.75 2.75 0 0 1 2 15.25v-8.5A2.75 2.75 0 0 1 4.75 4H5V2.75A.75.75 0 0 1 5.75 2Zm-1 5.5c-.69 0-1.25.56-1.25 1.25v6.5c0 .69.56 1.25 1.25 1.25h10.5c.69 0 1.25-.56 1.25-1.25v-6.5c0-.69-.56-1.25-1.25-1.25H4.75Z"
+                        clip-rule="evenodd" />
                 </svg>
-            </a>
-        </div>
+            </x-slot:icon>
+        </x-home.info-card>
     @endif
 
     <!-- Area Filters (Chips) -->
@@ -140,8 +116,8 @@
                     wire:navigate wire:key="shop-{{ $shop->id }}"
                     class="block liquid-glass rounded-[2rem] overflow-hidden relative shadow-xl dark:shadow-2xl/20 border border-black/5 dark:border-white/10 group flex flex-col transform active:scale-[0.98] hover:scale-[0.99] transition-all duration-300">
                     @php
-                        $banner = $shop->images->where('collection', 'banner')->first();
-                        $logo = $shop->images->where('collection', 'logo')->first();
+                        $banner = $shop->getImage('banner')->first();
+                        $logo = $shop->getImage('logo')->first();
                     @endphp
 
                     <!-- Shorter Banner (Facebook Style) -->

@@ -45,11 +45,6 @@ declare(strict_types=1);
         <link rel="shortcut icon" href="{{ asset('icons/favicon.ico') }}" />
         <link rel="apple-touch-icon" href="{{ asset('icons/icon-192x192.png') }}">
 
-        <!-- Fonts -->
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
-
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
         @livewireStyles
@@ -163,7 +158,8 @@ declare(strict_types=1);
 
             document.addEventListener('alpine:init', () => {
                 Alpine.store('nav', {
-                    hidden: false
+                    hidden: false,
+                    currentRoute: @json(Route::currentRouteName())
                 });
 
                 // PWA Prompt Alpine Data
@@ -358,8 +354,12 @@ declare(strict_types=1);
                 if (window.FadeBook) {
                     window.FadeBook.currentRoute = document.body.dataset.route || '';
                 }
+                if (window.Alpine) {
+                    Alpine.store('nav').currentRoute = document.body.dataset.route || '';
+                }
             }
             document.addEventListener('livewire:navigated', onNavigate);
         </script>
+        @stack('scripts')
     </body>
 </html>

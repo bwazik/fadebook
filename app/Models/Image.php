@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Support\Facades\Storage;
 
 #[Fillable([
     'imageable_type',
@@ -19,6 +20,18 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 class Image extends Model
 {
     use HasFactory;
+
+    /**
+     * The "booted" method of the model.
+     */
+    protected static function booted(): void
+    {
+        static::deleting(function (Image $image) {
+            if ($image->disk && $image->path && Storage::disk($image->disk)->exists($image->path)) {
+                Storage::disk($image->disk)->delete($image->path);
+            }
+        });
+    }
 
     /**
      * Get the attributes that should be cast.

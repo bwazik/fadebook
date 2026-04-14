@@ -6,6 +6,7 @@ namespace App\Livewire;
 
 use App\Enums\BookingStatus;
 use App\Enums\ShopStatus;
+use App\Enums\UserRole;
 use App\Models\Area;
 use App\Models\Shop;
 use App\Models\User;
@@ -17,6 +18,15 @@ use Livewire\Component;
 
 class Home extends Component
 {
+    #[Computed]
+    public function isOwner(): bool
+    {
+        /** @var User|null $user */
+        $user = Auth::user();
+
+        return $user && $user->role === UserRole::BarberOwner;
+    }
+
     public ?int $selectedArea = null;
 
     public function mount(): void

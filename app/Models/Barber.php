@@ -3,7 +3,11 @@
 namespace App\Models;
 
 use App\Models\Concerns\HasPublicUuid;
+use App\Observers\BarberObserver;
+use App\Traits\HasImages;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -13,19 +17,21 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+#[ObservedBy(BarberObserver::class)]
 #[Fillable([
     'uuid',
     'shop_id',
     'user_id',
     'name',
     'phone',
+    'days_off',
     'average_rating',
     'total_reviews',
     'is_active',
 ])]
 class Barber extends Model
 {
-    use HasFactory, HasPublicUuid, SoftDeletes;
+    use HasFactory, HasImages, HasPublicUuid, SoftDeletes;
 
     /**
      * Scope a query to only include active barbers.
@@ -43,6 +49,7 @@ class Barber extends Model
     protected function casts(): array
     {
         return [
+            'days_off' => 'array',
             'is_active' => 'boolean',
             'average_rating' => 'decimal:2',
         ];
@@ -83,17 +90,30 @@ class Barber extends Model
     /**
      * Get the unavailability records for this barber.
      */
-    public function unavailability(): HasMany
+    public function unavailabilities(): HasMany
     {
         return $this->hasMany(BarberUnavailability::class);
     }
 
     /**
-     * Get all images for this barber (polymorphic).
+     * Check if a barber is available on a specific date.
      */
-    public function images(): MorphMany
+    public function isAvailableOn(Carbon $date): bool
     {
-        return $this->morphMany(Image::class, 'imageable');
+        if (! $this->is_active) {
+            return false;
+        }
+
+        // 1. Check Weekly Days Off (e.g. ['sunday', 'monday'])
+        $dayName = strtolower($date->englishDayOfWeek);
+        if ($this->days_off && in_array($dayName, $this->days_off)) {
+            return false;
+        }
+
+        // 2. Check Specific Dates (Unavailability table)
+        return ! $this->unavailabilities()
+            ->whereDate('unavailable_date', $date->toDateString())
+            ->exists();
     }
 
     /**

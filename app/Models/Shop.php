@@ -6,7 +6,10 @@ use App\Enums\BarberSelectionMode;
 use App\Enums\PaymentMode;
 use App\Enums\ShopStatus;
 use App\Models\Concerns\HasPublicUuid;
+use App\Observers\ShopObserver;
+use App\Traits\HasImages;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -16,6 +19,7 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
 
+#[ObservedBy(ShopObserver::class)]
 #[Fillable([
     'uuid',
     'owner_id',
@@ -43,7 +47,7 @@ use Illuminate\Support\Str;
 ])]
 class Shop extends Model
 {
-    use HasFactory, HasPublicUuid, SoftDeletes;
+    use HasFactory, HasImages, HasPublicUuid, SoftDeletes;
 
     /**
      * Scope a query to only include active shops.
@@ -152,14 +156,6 @@ class Shop extends Model
     public function whatsappMessages(): HasMany
     {
         return $this->hasMany(WhatsAppMessage::class);
-    }
-
-    /**
-     * Get all images for this shop (polymorphic).
-     */
-    public function images(): MorphMany
-    {
-        return $this->morphMany(Image::class, 'imageable');
     }
 
     /**

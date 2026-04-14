@@ -60,10 +60,10 @@
     <!-- Booking Details List -->
     <div class="liquid-glass rounded-[1.5rem] p-5 border border-white/20 shadow-sm mb-6 space-y-4">
         <x-booking.summary-row :label="__('messages.booking_label_shop')" :value="$booking->shop->name" border />
-        <x-booking.summary-row :label="__('messages.booking_label_service')" :value="$booking->service->name" border />
+        <x-booking.summary-row :label="__('messages.booking_label_service')" :value="$booking->service?->name ?? __('messages.booking_service_deleted')" border />
 
-        @if ($booking->barber)
-            <x-booking.summary-row :label="__('messages.booking_label_barber')" :value="$booking->barber->name" border />
+        @if($booking->barber_id)
+            <x-booking.summary-row :label="__('messages.booking_label_barber')" :value="$booking->barber?->name ?? __('messages.booking_barber_deleted')" border />
         @endif
 
         <x-booking.summary-row :label="__('messages.booking_label_date')" :value="$booking->scheduled_at->translatedFormat('l, d F Y')" border />

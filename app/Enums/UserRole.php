@@ -7,6 +7,7 @@ enum UserRole: int
     case Client = 1;
     case BarberOwner = 2;
     case SuperAdmin = 3;
+    case Barber = 4;
 
     public function getLabel(): string
     {
@@ -14,6 +15,7 @@ enum UserRole: int
             self::Client => 'عميل',
             self::BarberOwner => 'صاحب محل',
             self::SuperAdmin => 'مدير النظام',
+            self::Barber => 'حلاق',
         };
     }
 }

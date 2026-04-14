@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enums\UserRole;
 use App\Models\Concerns\HasPublicUuid;
+use App\Traits\HasImages;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
@@ -37,7 +38,7 @@ use Illuminate\Notifications\Notifiable;
 class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
-    use HasFactory, HasPublicUuid, Notifiable, SoftDeletes;
+    use HasFactory, HasImages, HasPublicUuid, Notifiable, SoftDeletes;
 
     /**
      * Scope a query to only include active (non-blocked) users.

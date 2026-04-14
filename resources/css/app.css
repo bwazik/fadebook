@@ -1,5 +1,38 @@
-@import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap');
-@import url('https://cdn.jsdelivr.net/npm/shepherd.js@15.2.1/dist/css/shepherd.css');
+@font-face {
+    font-family: 'Tajawal';
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url('../fonts/tajawal/tajawal-400.ttf') format('truetype');
+}
+@font-face {
+    font-family: 'Tajawal';
+    font-style: normal;
+    font-weight: 500;
+    font-display: swap;
+    src: url('../fonts/tajawal/tajawal-500.ttf') format('truetype');
+}
+@font-face {
+    font-family: 'Tajawal';
+    font-style: normal;
+    font-weight: 700;
+    font-display: swap;
+    src: url('../fonts/tajawal/tajawal-700.ttf') format('truetype');
+}
+@font-face {
+    font-family: 'Tajawal';
+    font-style: normal;
+    font-weight: 800;
+    font-display: swap;
+    src: url('../fonts/tajawal/tajawal-800.ttf') format('truetype');
+}
+@font-face {
+    font-family: 'Tajawal';
+    font-style: normal;
+    font-weight: 900;
+    font-display: swap;
+    src: url('../fonts/tajawal/tajawal-900.ttf') format('truetype');
+}
 
 @import "tailwindcss";
 
@@ -105,73 +138,4 @@ body { @apply font-sans antialiased; }
 
 .animate-slide-in-bottom {
     animation: slide-in-bottom 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-/* =========================
-🧭 Shepherd Overrides
-========================= */
-.shepherd-element {
-    background: transparent !important;
-    font-family: inherit !important;
-    border: none !important;
-    border-radius: 2rem !important;
-    box-shadow: none !important;
-}
-
-.shepherd-has-title .shepherd-content .shepherd-header {
-    background: transparent !important;
-    padding: 1.5rem 1.5rem 0.5rem !important;
-}
-
-.shepherd-text {
-    padding: 0 1.5rem 1.25rem !important;
-    line-height: 1.6 !important;
-}
-
-.shepherd-footer {
-    padding: 0 1.5rem 1.5rem !important;
-    border-bottom-left-radius: 2rem !important;
-    border-bottom-right-radius: 2rem !important;
-}
-
-.shepherd-title {
-    font-size: 1.25rem !important;
-    font-weight: 700 !important;
-    color: #111827 !important;
-}
-
-.dark .shepherd-title {
-    color: #ffffff !important;
-}
-
-.shepherd-arrow,
-.shepherd-arrow:before {
-    display: none !important;
-}
-
-/* Buttons */
-.shepherd-button {
-    background-color: var(--color-fadebook-accent) !important;
-    color: #ffffff !important;
-    transition: all 0.2s ease !important;
-}
-
-.shepherd-button:hover,
-.shepherd-button:focus {
-    background-color: var(--color-fadebook-accent) !important;
-    color: #ffffff !important;
-    opacity: 1 !important;
-}
-
-/* Center mobile welcome step */
-.shepherd-element.shepherd-centered {
-    position: fixed !important;
-    top: 50% !important;
-    left: 50% !important;
-    transform: translate(-50%, -50%) !important;
-    margin: 0 !important;
-    max-width: calc(100vw - 2rem) !important;
-    width: 100% !important;
-    right: auto !important;
-    bottom: auto !important;
 }

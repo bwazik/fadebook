@@ -143,7 +143,7 @@ class ShopPage extends Component
     #[Computed]
     public function galleryImages(): Collection
     {
-        return $this->shop->images->where('collection', 'gallery');
+        return $this->shop->images->where('collection', 'gallery')->values();
     }
 
     #[Layout('layouts.app')]

@@ -23,15 +23,15 @@
         x-transition:leave="transition ease-in duration-300" 
         x-transition:leave-start="translate-y-0"
         x-transition:leave-end="translate-y-full"
-        class="bg-white/80 dark:bg-[#1c1c1e]/80 backdrop-blur-3xl border-t border-white/50 dark:border-white/10 rounded-t-[2rem] w-full max-w-md shadow-2xl relative"
+        class="bg-white/80 dark:bg-[#1c1c1e]/80 backdrop-blur-3xl border-t border-white/50 dark:border-white/10 rounded-t-[2rem] w-full max-w-md shadow-2xl relative max-h-[85vh] flex flex-col mb-0"
         @click.stop>
 
         {{-- Drag Handle --}}
-        <div class="flex justify-center pt-4 pb-2">
-            <div class="w-10 h-1 rounded-full bg-gray-300 dark:bg-white/20"></div>
+        <div class="flex justify-center pt-4 pb-2 shrink-0 cursor-grab active:cursor-grabbing select-none">
+            <div class="w-10 h-1.5 rounded-full bg-gray-300 dark:bg-white/20"></div>
         </div>
 
-        <div class="p-6 pt-2 pb-[calc(1.5rem+env(safe-area-inset-bottom))]">
+        <div class="p-6 pt-2 pb-[calc(1.5rem+env(safe-area-inset-bottom))] overflow-y-auto no-scrollbar flex-1">
             {{-- Header --}}
             @if($title)
                 <div class="flex flex-col items-center mb-6 text-center">

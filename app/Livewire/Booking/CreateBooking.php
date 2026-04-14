@@ -13,6 +13,7 @@ use App\Services\CouponService;
 use App\Services\SlotCalculatorService;
 use App\Traits\WithRateLimiting;
 use App\Traits\WithToast;
+use Carbon\Carbon;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Computed;
@@ -271,7 +272,13 @@ class CreateBooking extends Component
         return $this->shop->barbers
             ->where('is_active', true)
             ->filter(function ($barber) {
-                return $barber->services->contains('id', $this->selectedServiceId);
+                $providesService = $barber->services->contains('id', $this->selectedServiceId);
+
+                if ($this->selectedDate && $providesService) {
+                    return $barber->isAvailableOn(Carbon::parse($this->selectedDate));
+                }
+
+                return $providesService;
             });
     }
 

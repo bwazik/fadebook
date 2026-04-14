@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Middleware\EnsurePhoneIsVerified;
+use App\Http\Middleware\EnsureUserRole;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -14,6 +15,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([
             'phone.verified' => EnsurePhoneIsVerified::class,
+            'role' => EnsureUserRole::class,
         ]);
 
     })

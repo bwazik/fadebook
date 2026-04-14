@@ -4,7 +4,6 @@ namespace App\Console\Commands;
 
 use App\Enums\BookingStatus;
 use App\Models\Booking;
-use App\Models\Setting;
 use Illuminate\Console\Attributes\Description;
 use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
@@ -20,13 +19,18 @@ class UpdateBookingStatuses extends Command
     {
         $now = now();
 
-        // 1. Confirmed -> InProgress (when scheduled_at arrives)
-        $confirmedCount = Booking::confirmed()
+        // 1. Pending/Confirmed -> InProgress
+        // We auto-start the booking at the scheduled time.
+        // This ensures the slot looks "active" in the owner's dashboard.
+        $startedCount = Booking::whereIn('status', [BookingStatus::Pending, BookingStatus::Confirmed])
             ->where('scheduled_at', '<=', $now)
             ->update(['status' => BookingStatus::InProgress]);
 
-        // 2. InProgress -> Completed (1 hour after scheduled_at)
-        $completedCount = Booking::inProgress()
+        // 2. InProgress -> Completed
+        // "No News is Good News" fallback.
+        // If 1 hour passes and the barber hasn't touched the app, we assume everything went well.
+        // This protects clients from accidental No-Show strikes caused by busy/lazy barbers.
+        $completedCount = Booking::where('status', BookingStatus::InProgress)
             ->where('scheduled_at', '<=', $now->copy()->subHour())
             ->whereNull('completed_at')
             ->update([
@@ -34,13 +38,9 @@ class UpdateBookingStatuses extends Command
                 'completed_at' => $now,
             ]);
 
-        // 3. Confirmed -> NoShow (grace period after scheduled_at, barber not arrived)
-        $gracePeriodMinutes = (int) Setting::get('no_show_grace_period_minutes', 15);
-        $noShowCount = Booking::confirmed()
-            ->where('scheduled_at', '<=', $now->copy()->subMinutes($gracePeriodMinutes))
-            ->whereNull('arrived_at')
-            ->update(['status' => BookingStatus::NoShow]);
+        // NOTE: NoShow is now a MANUALLY triggered status only.
+        // A barber must intentionally click "No Show" to punish a client.
 
-        $this->info("Updated: {$confirmedCount} to In Progress, {$completedCount} to Completed, {$noShowCount} to No Show.");
+        $this->info("Updated: {$startedCount} started, {$completedCount} completed.");
     }
 }
