@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace App\Livewire\Booking;
 
 use App\Enums\BarberSelectionMode;
+use App\Enums\PaymentMode;
 use App\Models\Barber;
+use App\Models\Booking;
 use App\Models\Service;
 use App\Models\Shop;
 use App\Services\BookingService;
@@ -55,6 +57,14 @@ class CreateBooking extends Component
 
     public bool $showTermsModal = false;
 
+    public ?int $selectedPaymentMethodId = null;
+
+    public string $paymentReference = '';
+
+    public float $depositAmount = 0;
+
+    public ?int $pendingBookingId = null;
+
     public function mount(string $shopSlug, ?int $serviceId = null): void
     {
         $this->shopSlug = $shopSlug;
@@ -92,6 +102,10 @@ class CreateBooking extends Component
             $this->restoreFromDraft($draft);
         }
 
+        if ($this->selectedServiceId) {
+            $this->calculateTotals($draft['finalAmount'] ?? null);
+        }
+
         $this->dispatch('hide-bottom-nav');
     }
 
@@ -106,6 +120,8 @@ class CreateBooking extends Component
         $this->discountAmount = (float) ($draft['discountAmount'] ?? 0);
         $this->finalAmount = (float) ($draft['finalAmount'] ?? 0);
         $this->selectedCouponId = $draft['selectedCouponId'] ?? null;
+        $this->policyAccepted = (bool) ($draft['policyAccepted'] ?? false);
+        $this->pendingBookingId = $draft['pendingBookingId'] ?? null;
 
         if ($this->selectedDate && $this->selectedServiceId) {
             $this->loadSlots();
@@ -133,6 +149,10 @@ class CreateBooking extends Component
             'discountAmount' => $this->discountAmount,
             'finalAmount' => $this->finalAmount,
             'selectedCouponId' => $this->selectedCouponId,
+            'selectedPaymentMethodId' => $this->selectedPaymentMethodId,
+            'paymentReference' => $this->paymentReference,
+            'policyAccepted' => $this->policyAccepted,
+            'pendingBookingId' => $this->pendingBookingId,
         ]);
     }
 
@@ -175,8 +195,30 @@ class CreateBooking extends Component
     public function selectSlot(string $slot): void
     {
         $this->selectedSlot = $slot;
-        $this->step = 4;
         $this->calculateTotals();
+        $this->step = 4;
+        $this->saveDraft();
+    }
+
+    public function goToPayment(): void
+    {
+        if (! $this->policyAccepted) {
+            $this->toastError(__('messages.booking_policy_error'));
+
+            return;
+        }
+
+        if ($this->depositAmount > 0) {
+            $this->step = 5;
+            $this->saveDraft();
+        } else {
+            $this->confirmBooking(app(BookingService::class));
+        }
+    }
+
+    public function selectPaymentMethod(int $methodId): void
+    {
+        $this->selectedPaymentMethodId = $methodId;
         $this->saveDraft();
     }
 
@@ -200,8 +242,10 @@ class CreateBooking extends Component
             );
 
             $this->discountAmount = (float) $result['discount_amount'];
-            $this->finalAmount = (float) $result['final_amount'];
             $this->selectedCouponId = $result['coupon']->id;
+
+            // Recalculate deposit with the new final amount
+            $this->calculateTotals($result['final_amount']);
 
             $this->toastSuccess(__('messages.booking_coupon_applied'));
             $this->saveDraft();
@@ -212,12 +256,36 @@ class CreateBooking extends Component
         }
     }
 
-    private function calculateTotals(): void
+    public function removeCoupon(): void
+    {
+        $this->couponCode = '';
+        $this->selectedCouponId = null;
+        $this->discountAmount = 0;
+
+        $this->calculateTotals();
+        $this->saveDraft();
+
+        $this->toastSuccess(__('messages.booking_coupon_removed'));
+    }
+
+    private function calculateTotals(?float $overrideFinalAmount = null): void
     {
         $service = Service::find($this->selectedServiceId);
-        $this->finalAmount = (float) ($service?->price ?? 0);
-        $this->discountAmount = 0;
-        $this->selectedCouponId = null;
+        $this->finalAmount = $overrideFinalAmount ?? (float) ($service?->price ?? 0);
+
+        if ($overrideFinalAmount === null) {
+            $this->discountAmount = 0;
+            $this->selectedCouponId = null;
+        }
+
+        // Calculate deposit based on the CURRENT final amount (which might be discounted)
+        if ($this->shop->payment_mode === PaymentMode::FullPayment) {
+            $this->depositAmount = $this->finalAmount;
+        } elseif ($this->shop->payment_mode === PaymentMode::PartialDeposit) {
+            $this->depositAmount = ($this->finalAmount * (float) $this->shop->deposit_percentage) / 100;
+        } else {
+            $this->depositAmount = 0;
+        }
     }
 
     public function toggleTermsModal(): void
@@ -263,6 +331,12 @@ class CreateBooking extends Component
     }
 
     #[Computed]
+    public function totalSteps(): int
+    {
+        return $this->shop->payment_mode === PaymentMode::NoPayment ? 4 : 5;
+    }
+
+    #[Computed]
     public function availableBarbers()
     {
         if (! $this->selectedServiceId) {
@@ -280,6 +354,35 @@ class CreateBooking extends Component
 
                 return $providesService;
             });
+    }
+
+    #[Computed]
+    public function paymentMethods()
+    {
+        return $this->shop->paymentMethods()
+            ->where('is_active', true)
+            ->get()
+            ->map(function ($method) {
+                $method->type_enum = $method->type;
+
+                return $method;
+            });
+    }
+
+    #[Computed]
+    public function selectedPaymentMethod()
+    {
+        if (! $this->selectedPaymentMethodId) {
+            return null;
+        }
+
+        return $this->paymentMethods->firstWhere('id', $this->selectedPaymentMethodId);
+    }
+
+    #[Computed]
+    public function totalBeforeDiscount(): float
+    {
+        return (float) (Service::find($this->selectedServiceId)?->price ?? 0);
     }
 
     public function goBack(): void
@@ -314,18 +417,56 @@ class CreateBooking extends Component
             return;
         }
 
+        if ($this->depositAmount > 0) {
+            $this->paymentReference = trim($this->paymentReference);
+
+            if (! $this->selectedPaymentMethodId) {
+                $this->toastError(__('messages.booking_payment_method_required'));
+
+                return;
+            }
+
+            if (empty($this->paymentReference) || ! preg_match('/^[0-9]{12}$/', $this->paymentReference)) {
+                $this->toastError(__('messages.booking_payment_ref_invalid_length'));
+
+                return;
+            }
+
+            $validMethod = $this->shop->paymentMethods()
+                ->where('id', $this->selectedPaymentMethodId)
+                ->where('is_active', true)
+                ->exists();
+
+            if (! $validMethod) {
+                $this->toastError(__('messages.booking_payment_method_invalid'));
+
+                return;
+            }
+        }
+
         try {
-            $booking = $bookingService->initiate(
-                Auth::user(),
-                $this->shop,
-                [
-                    'service_id' => $this->selectedServiceId,
-                    'barber_id' => $this->selectedBarberId,
-                    'date' => $this->selectedDate,
-                    'time' => $this->selectedSlot,
-                    'coupon_code' => $this->couponCode,
-                ]
-            );
+            $data = [
+                'service_id' => $this->selectedServiceId,
+                'barber_id' => $this->selectedBarberId,
+                'date' => $this->selectedDate,
+                'time' => $this->selectedSlot,
+                'coupon_code' => $this->couponCode,
+                'payment_method_id' => $this->selectedPaymentMethodId,
+                'payment_reference' => $this->paymentReference,
+            ];
+
+            if ($this->pendingBookingId) {
+                $booking = Booking::findOrFail($this->pendingBookingId);
+                $booking = $bookingService->updatePending($booking, $data);
+            } else {
+                $booking = $bookingService->initiate(
+                    Auth::user(),
+                    $this->shop,
+                    $data
+                );
+                $this->pendingBookingId = $booking->id;
+                $this->saveDraft();
+            }
 
             session()->forget("booking_draft_{$this->shopSlug}");
             $this->flashToastSuccess(__('messages.booking_request_success'));
@@ -353,14 +494,6 @@ class CreateBooking extends Component
     }
 
     #[Computed]
-    public function totalBeforeDiscount(): float
-    {
-        $service = $this->shop->services->firstWhere('id', $this->selectedServiceId);
-
-        return (float) ($service?->price ?? 0);
-    }
-
-    #[Computed]
     public function filteredServices()
     {
         $services = $this->shop->services;
@@ -374,6 +507,6 @@ class CreateBooking extends Component
 
     public function render(): View
     {
-        return view('livewire.booking.create-booking');
+        return view('livewire.booking.create-booking')->layoutData(['hideBottomNav' => true]);
     }
 }

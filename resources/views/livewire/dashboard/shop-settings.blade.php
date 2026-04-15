@@ -192,6 +192,147 @@
             @endif
         </div>
 
+        <!-- Payment Methods Management -->
+        <div class="liquid-glass rounded-3xl p-5 border border-white/20 shadow-sm space-y-6">
+            <h2 class="text-xs font-black text-fadebook-accent uppercase tracking-[0.2em] mb-2">وسائل الدفع المتاحة
+            </h2>
+            <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest leading-relaxed">
+                أضف حساباتك (فودافون كاش أو انستا باي) لاستقبال العربون من العملاء
+            </p>
+
+            <div class="space-y-4">
+                @foreach ($existingPaymentMethods as $method)
+                    <div
+                        class="p-4 rounded-2xl bg-black/5 dark:bg-white/5 border border-white/10 group transition-all {{ $method['is_active'] ? '' : 'opacity-60 saturate-0' }}">
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="flex items-center gap-3">
+                                @php
+                                    $typeEnum = \App\Enums\PaymentMethodType::from((int) $method['type']);
+                                @endphp
+                                <div
+                                    class="w-11 h-11 rounded-2xl flex items-center justify-center shrink-0 shadow-inner border {{ $typeEnum->getColorClass() }}">
+                                    @if ($typeEnum == \App\Enums\PaymentMethodType::VodafoneCash)
+                                        <x-icons.vodafone-cash class="w-7 h-7" />
+                                    @else
+                                        <x-icons.instapay class="w-9 h-9" />
+                                    @endif
+                                </div>
+                                <div class="min-w-0">
+                                    <p
+                                        class="text-xs font-black text-gray-900 dark:text-white uppercase leading-none mb-1">
+                                        {{ $typeEnum->getLabel() }}
+                                    </p>
+                                    <p class="text-[11px] font-bold text-gray-400 tracking-widest whitespace-nowrap overflow-hidden text-ellipsis"
+                                        dir="rtl">{{ $method['phone_number'] }}</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-1.5">
+                                {{-- Edit Button --}}
+                                <button type="button" wire:click="editPaymentMethod({{ $method['id'] }})"
+                                    class="w-9 h-9 rounded-xl bg-fadebook-accent/10 flex items-center justify-center text-fadebook-accent shadow-sm active:scale-95 transition-all">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                        stroke-width="2.5" stroke="currentColor" class="w-4.5 h-4.5">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
+                                    </svg>
+                                </button>
+                                {{-- Toggle Active --}}
+                                <button type="button" wire:click="togglePaymentMethod({{ $method['id'] }})"
+                                    class="w-9 h-9 rounded-xl bg-white dark:bg-black/20 flex items-center justify-center shadow-sm active:scale-95 transition-all">
+                                    @if ($method['is_active'])
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                            stroke-width="2.5" stroke="currentColor"
+                                            class="w-4.5 h-4.5 text-gray-400">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                        </svg>
+                                    @else
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                            stroke-width="2.5" stroke="currentColor"
+                                            class="w-4.5 h-4.5 text-green-500">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="m4.5 12.75 6 6 9-13.5" />
+                                        </svg>
+                                    @endif
+                                </button>
+                                {{-- Delete Button (with alert) --}}
+                                <button type="button"
+                                    @click="$dispatch('open-ios-alert', {
+                                        title: 'حذف وسيلة الدفع؟',
+                                        message: 'هل أنت متأكد من رغبتك في حذف هذا الحساب؟',
+                                        action: 'deletePaymentMethod',
+                                        params: {{ $method['id'] }},
+                                        componentId: '{{ $this->getId() }}'
+                                    })"
+                                    class="w-9 h-9 rounded-xl bg-red-500/10 flex items-center justify-center text-red-500 active:scale-95 transition-all">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                        stroke-width="2" stroke="currentColor" class="w-4.5 h-4.5">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                        @if ($method['account_name'])
+                            <div class="flex items-center gap-1.5 mt-2 ms-1">
+                                <span
+                                    class="text-[10px] font-black text-gray-400 uppercase tracking-widest leading-none">الاسم:</span>
+                                <span
+                                    class="text-xs font-bold text-gray-900 dark:text-white leading-none pb-0.5">{{ $method['account_name'] }}</span>
+                            </div>
+                        @else
+                            <div class="h-2"></div>
+                        @endif
+                    </div>
+                @endforeach
+            </div>
+
+            {{-- Add/Edit New Method Form --}}
+            <div x-data="{ open: @entangle('editingMethodId').live ? true : false }" id="payment-form-section" class="pt-6 border-t border-white/10"
+                x-on:scroll-to-payment-form.window="open = true; $el.scrollIntoView({ behavior: 'smooth', block: 'center' })">
+
+                <button type="button" @click="open = !open; if(!open) $wire.resetPaymentForm()"
+                    class="w-full h-13 rounded-2xl border-2 border-dashed flex items-center justify-center gap-2.5 group transition-all
+                           {{ $editingMethodId ? 'border-fadebook-accent bg-fadebook-accent/10' : 'border-fadebook-accent/30 bg-fadebook-accent/5' }}">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3"
+                        stroke="currentColor"
+                        class="w-4.5 h-4.5 text-fadebook-accent transition-transform duration-300"
+                        :class="open ? 'rotate-45' : ''">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                    </svg>
+                    <span class="text-[13px] font-black text-fadebook-accent uppercase tracking-widest">
+                        {{ $editingMethodId ? 'تعديل وسيلة الدفع الحالية' : 'إضافة وسيلة دفع جديدة' }}
+                    </span>
+                </button>
+
+                <div x-show="open" x-collapse x-cloak
+                    class="mt-4 space-y-4 p-5 rounded-3xl bg-white/40 dark:bg-black/20 border border-white/20 shadow-inner">
+                    <x-ios-select label="النوع" wire:model="newMethodType" :options="[
+                        '1' => 'فودافون كاش (Vodafone Cash)',
+                        '2' => 'انستا باي (InstaPay)',
+                    ]" />
+                    <x-ios-input label="رقم الهاتف / المعرف" wire:model="newMethodPhone" type="text"
+                        dir="rtl" placeholder="01xxxxxxxxx" />
+                    <x-ios-input label="اسم الحساب" wire:model="newMethodAccount" type="text"
+                        placeholder="مثال: محمد أحمد" />
+                    <x-ios-input label="رابط الدفع السريع (اختياري)" wire:model="newMethodLink" type="url"
+                        dir="ltr" placeholder="https://..." />
+
+                    <div class="flex gap-2.5 pt-2">
+                        <x-ios-button type="button" wire:click="savePaymentMethod"
+                            class="flex-1 !py-3.5 !text-[11px] uppercase tracking-widest">
+                            {{ $editingMethodId ? 'حفظ التعديلات' : 'إضافة الآن' }}
+                        </x-ios-button>
+                        <x-ios-button type="button" variant="secondary"
+                            @click="open = false; $wire.resetPaymentForm()"
+                            class="px-7 !py-3.5 !text-[11px] uppercase tracking-widest">
+                            إلغاء
+                        </x-ios-button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Opening Hours -->
         <div class="liquid-glass rounded-3xl p-5 border border-white/20 shadow-sm space-y-4">
             <h2 class="text-xs font-black text-fadebook-accent uppercase tracking-[0.2em] mb-4">مواعيد العمل</h2>

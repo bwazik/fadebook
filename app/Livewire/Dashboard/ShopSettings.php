@@ -9,6 +9,7 @@ use App\Enums\PaymentMode;
 use App\Models\Area;
 use App\Models\Shop;
 use App\Models\User;
+use App\Rules\EgyptianPhone;
 use App\Traits\WithRateLimiting;
 use App\Traits\WithToast;
 use Illuminate\Contracts\View\View;
@@ -60,6 +61,18 @@ class ShopSettings extends Component
 
     public array $gallery = []; // To track existing gallery images for deletion
 
+    public array $existingPaymentMethods = [];
+
+    public int $newMethodType = 1;
+
+    public string $newMethodPhone = '';
+
+    public string $newMethodAccount = '';
+
+    public string $newMethodLink = '';
+
+    public ?int $editingMethodId = null;
+
     public function mount(): void
     {
         /** @var User $user */
@@ -108,6 +121,108 @@ class ShopSettings extends Component
             ])->toArray();
 
         $this->dispatch('show-bottom-nav');
+
+        $this->loadPaymentMethods();
+    }
+
+    public function loadPaymentMethods(): void
+    {
+        $this->existingPaymentMethods = $this->shop->paymentMethods()
+            ->orderBy('id', 'asc')
+            ->get()
+            ->toArray();
+    }
+
+    public function savePaymentMethod(): void
+    {
+        if ($this->isRateLimited('shop-settings-payment', 10, 60)) {
+            return;
+        }
+
+        try {
+            $this->validate([
+                'newMethodPhone' => ['required', 'string', new EgyptianPhone],
+                'newMethodAccount' => 'nullable|string|max:255',
+                'newMethodLink' => 'nullable|url|max:255',
+            ]);
+        } catch (ValidationException $e) {
+            $this->toastError(collect($e->errors())->flatten()->first() ?? 'في حاجة غلط في البيانات، راجعها تاني');
+            throw $e;
+        }
+
+        if ($this->editingMethodId) {
+            $method = $this->shop->paymentMethods()->find($this->editingMethodId);
+            if ($method) {
+                $method->update([
+                    'type' => $this->newMethodType,
+                    'phone_number' => $this->newMethodPhone,
+                    'account_name' => $this->newMethodAccount,
+                    'pay_link' => $this->newMethodLink,
+                ]);
+                $this->toastSuccess('تم تحديث وسيلة الدفع');
+            }
+        } else {
+            $this->shop->paymentMethods()->create([
+                'type' => $this->newMethodType,
+                'phone_number' => $this->newMethodPhone,
+                'account_name' => $this->newMethodAccount,
+                'pay_link' => $this->newMethodLink,
+                'is_active' => true,
+            ]);
+            $this->toastSuccess('تم إضافة وسيلة الدفع بنجاح');
+        }
+
+        $this->resetPaymentForm();
+        $this->loadPaymentMethods();
+    }
+
+    public function editPaymentMethod(int $id): void
+    {
+        $method = $this->shop->paymentMethods()->find($id);
+        if ($method) {
+            $this->editingMethodId = $id;
+            $this->newMethodType = (int) $method->type->value;
+            $this->newMethodPhone = $method->phone_number;
+            $this->newMethodAccount = $method->account_name ?? '';
+            $this->newMethodLink = $method->pay_link ?? '';
+            $this->dispatch('scroll-to-payment-form');
+        }
+    }
+
+    public function resetPaymentForm(): void
+    {
+        $this->editingMethodId = null;
+        $this->newMethodPhone = '';
+        $this->newMethodAccount = '';
+        $this->newMethodLink = '';
+        $this->newMethodType = 1;
+    }
+
+    public function togglePaymentMethod(int $id): void
+    {
+        if ($this->isRateLimited('shop-settings', 10, 60)) {
+            return;
+        }
+
+        $method = $this->shop->paymentMethods()->find($id);
+        if ($method) {
+            $method->update(['is_active' => ! $method->is_active]);
+            $this->loadPaymentMethods();
+        }
+    }
+
+    public function deletePaymentMethod(int $id): void
+    {
+        if ($this->isRateLimited('shop-settings', 10, 60)) {
+            return;
+        }
+
+        $method = $this->shop->paymentMethods()->find($id);
+        if ($method) {
+            $method->delete();
+            $this->loadPaymentMethods();
+            $this->toastSuccess('تم مسح وسيلة الدفع');
+        }
     }
 
     public function deleteGalleryImage(int $imageId): void

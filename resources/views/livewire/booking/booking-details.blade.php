@@ -62,7 +62,7 @@
         <x-booking.summary-row :label="__('messages.booking_label_shop')" :value="$booking->shop->name" border />
         <x-booking.summary-row :label="__('messages.booking_label_service')" :value="$booking->service?->name ?? __('messages.booking_service_deleted')" border />
 
-        @if($booking->barber_id)
+        @if ($booking->barber_id)
             <x-booking.summary-row :label="__('messages.booking_label_barber')" :value="$booking->barber?->name ?? __('messages.booking_barber_deleted')" border />
         @endif
 
@@ -70,33 +70,52 @@
         <x-booking.summary-row :label="__('messages.booking_label_time')" :value="$booking->scheduled_at->format('g:i A')" border />
 
         <div class="pt-2 border-t border-gray-100 dark:border-gray-800 space-y-2">
-            <x-booking.summary-row 
-                :label="__('messages.booking_label_total')" 
-                :value="number_format($booking->service_price, 0) . ' ' . __('messages.egp')" 
-                :class="$booking->discount_amount > 0 ? 'line-through opacity-50' : ''" 
-            />
+            <x-booking.summary-row :label="__('messages.booking_label_total')" :value="number_format($booking->service_price, 0) . ' ' . __('messages.egp')" :class="$booking->discount_amount > 0 ? 'line-through opacity-50' : ''" />
 
-            <x-booking.summary-row 
-                :label="__('messages.tax')" 
-                :value="'0 ' . __('messages.egp')" 
-            />
+            <x-booking.summary-row :label="__('messages.tax')" :value="'0 ' . __('messages.egp')" />
 
-            @if($booking->discount_amount > 0)
+            @if ($booking->discount_amount > 0)
                 <div class="transition-all animate-in fade-in slide-in-from-top-1">
-                    <x-booking.summary-row 
-                        :label="__('messages.booking_discount')" 
-                        :value="'-' . number_format($booking->discount_amount, 0) . ' ' . __('messages.egp')" 
-                        value-class="text-green-500" 
-                    />
+                    <x-booking.summary-row :label="__('messages.booking_discount')" :value="'-' . number_format($booking->discount_amount, 0) . ' ' . __('messages.egp')" value-class="text-green-500" />
                 </div>
             @endif
 
             <div class="flex justify-between items-center pt-2 border-t border-gray-100 dark:border-gray-800">
-                <span class="text-sm text-gray-900 dark:text-white font-black">{{ __('messages.booking_label_final_total') }}</span>
-                <span class="text-xl font-black text-fadebook-accent">
-                    {{ number_format($booking->final_amount, 0) }} <small class="text-[10px] ms-0.5">{{ __('messages.egp') }}</small>
+                <span
+                    class="text-sm text-gray-900 dark:text-white font-black">{{ __('messages.booking_label_final_total') }}</span>
+                <span class="text-xl font-black text-gray-900 dark:text-white">
+                    {{ number_format($booking->final_amount, 0) }} <small
+                        class="text-[10px] ms-0.5">{{ __('messages.egp') }}</small>
                 </span>
             </div>
+
+            @if ($booking->status === \App\Enums\BookingStatus::Completed)
+                <div class="pt-3 animate-in fade-in slide-in-from-top-2">
+                    <x-booking.summary-row
+                        :label="__('messages.booking_label_paid_total')"
+                        :value="number_format($booking->final_amount, 0) . ' ' . __('messages.egp')"
+                        value-class="text-green-600 dark:text-green-400"
+                    />
+                </div>
+            @else
+                <div class="pt-2 space-y-3">
+                    @if ($booking->paid_amount > 0)
+                        <x-booking.summary-row
+                            :label="__('messages.booking_label_paid')"
+                            :value="number_format($booking->paid_amount, 0) . ' ' . __('messages.egp')"
+                            value-class="text-green-600 dark:text-green-400"
+                        />
+                    @endif
+
+                    @if ($this->remainingAmount > 0)
+                        <x-booking.summary-row
+                            :label="__('messages.booking_label_remaining')"
+                            :value="number_format($this->remainingAmount, 0) . ' ' . __('messages.egp')"
+                            value-class="text-fadebook-accent text-xl font-black"
+                        />
+                    @endif
+                </div>
+            @endif
         </div>
     </div>
 
@@ -133,7 +152,9 @@
                     {{ __('messages.booking_cancel_timeout') }}
                 </p>
             </div>
-        @elseif($booking->status === \App\Enums\BookingStatus::Completed && !$booking->reviews()->where('user_id', Auth::id())->exists())
+        @elseif(
+            $booking->status === \App\Enums\BookingStatus::Completed &&
+                !$booking->reviews()->where('user_id', Auth::id())->exists())
             <x-ios-button href="{{ route('review.create', $booking->uuid) }}" wire:navigate>
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5"
                     stroke="currentColor" class="w-5 h-5">

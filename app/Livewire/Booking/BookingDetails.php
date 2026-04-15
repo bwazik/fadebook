@@ -74,6 +74,12 @@ class BookingDetails extends Component
         return now()->lt($cancellationCutoff);
     }
 
+    #[Computed]
+    public function remainingAmount(): float
+    {
+        return (float) ($this->booking->final_amount - $this->booking->paid_amount);
+    }
+
     public function render(): View
     {
         return view('livewire.booking.booking-details');

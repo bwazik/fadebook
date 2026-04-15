@@ -57,6 +57,7 @@
 @endphp
 
 {{-- Wrapper: dir=ltr so RTL doesn't reverse pill order --}}
+@if(!isset($hideBottomNav) || !$hideBottomNav)
 <div class="fixed bottom-[calc(2rem+env(safe-area-inset-bottom))] left-1/2 -translate-x-1/2
             flex items-center gap-2.5 z-50
             transition-all duration-300 ease-out"
@@ -123,6 +124,7 @@
     </button>
 
 </div>
+@endif
 
 <script>
     document.addEventListener('alpine:init', () => {

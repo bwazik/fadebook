@@ -25,6 +25,7 @@ class SettingsSeeder extends Seeder
             'max_pending_bookings_per_client' => '3',
             'no_show_grace_period_minutes' => '15',
             'cancellation_window_hours' => '2',
+            'max_cancellation_limit' => '5',
 
             // Rate Limiting Settings
             'rate_limit_login-attempt_attempts' => '5',

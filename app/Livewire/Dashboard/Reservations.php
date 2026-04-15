@@ -6,7 +6,6 @@ namespace App\Livewire\Dashboard;
 
 use App\Enums\BookingStatus;
 use App\Enums\CancelledBy;
-use App\Models\Booking;
 use App\Services\BookingService;
 use App\Traits\WithRateLimiting;
 use App\Traits\WithToast;
@@ -24,6 +23,10 @@ class Reservations extends Component
 
     public string $tab = 'upcoming'; // upcoming, completed, cancelled
 
+    public ?int $selectedBookingId = null;
+
+    public bool $showDetailsModal = false;
+
     #[Url(except: '')]
     public string $search = '';
 
@@ -32,6 +35,12 @@ class Reservations extends Component
     public function loadMore(): void
     {
         $this->perPage += 6;
+    }
+
+    public function openBookingDetails(int $id): void
+    {
+        $this->selectedBookingId = $id;
+        $this->showDetailsModal = true;
     }
 
     public function mount(): void
@@ -44,18 +53,20 @@ class Reservations extends Component
         $this->tab = $tab;
         $this->perPage = 6;
         $this->search = ''; // Clear search when explicitly switching tabs
+        $this->showDetailsModal = false;
+        $this->selectedBookingId = null;
     }
 
-    public function confirmReservation(int $bookingId, BookingService $bookingService): void
+    public function verifyPayment(int $bookingId, BookingService $bookingService): void
     {
         if ($this->isRateLimited('manage-bookings', 15, 60)) {
             return;
         }
 
-        $booking = Booking::findOrFail($bookingId);
+        $booking = Auth::user()->shop->bookings()->findOrFail($bookingId);
         if ($booking->status === BookingStatus::Pending) {
-            $bookingService->confirm($booking);
-            $this->toastSuccess('تم تأكيد الحجز');
+            $bookingService->verifyPayment($booking);
+            $this->toastSuccess(__('messages.payment_verified_success'));
         }
     }
 
@@ -65,7 +76,7 @@ class Reservations extends Component
             return;
         }
 
-        $booking = Booking::findOrFail($bookingId);
+        $booking = Auth::user()->shop->bookings()->findOrFail($bookingId);
         if ($booking->status === BookingStatus::Confirmed) {
             $bookingService->markArrived($booking);
             $this->toastSuccess('تم تسجيل وصول العميل');
@@ -78,7 +89,7 @@ class Reservations extends Component
             return;
         }
 
-        $booking = Booking::findOrFail($bookingId);
+        $booking = Auth::user()->shop->bookings()->findOrFail($bookingId);
         if ($booking->status === BookingStatus::InProgress) {
             $bookingService->markCompleted($booking);
             $this->toastSuccess('تم إنهاء الموعد');
@@ -91,7 +102,7 @@ class Reservations extends Component
             return;
         }
 
-        $booking = Booking::findOrFail($bookingId);
+        $booking = Auth::user()->shop->bookings()->findOrFail($bookingId);
         if ($booking->status === BookingStatus::InProgress || $booking->status === BookingStatus::Confirmed) {
             $bookingService->markNoShow($booking);
             $this->toastSuccess('تم تسجيل العميل كغائب');
@@ -104,7 +115,7 @@ class Reservations extends Component
             return;
         }
 
-        $booking = Booking::findOrFail($bookingId);
+        $booking = Auth::user()->shop->bookings()->findOrFail($bookingId);
         if ($booking->status === BookingStatus::Confirmed || $booking->status === BookingStatus::Pending) {
             $bookingService->cancel($booking, CancelledBy::Shop);
             $this->toastSuccess('تم إلغاء الموعد');
@@ -125,6 +136,18 @@ class Reservations extends Component
         $query = $this->getBaseQuery();
 
         return $query->count() > $this->perPage;
+    }
+
+    #[Computed]
+    public function selectedBooking()
+    {
+        if (! $this->selectedBookingId) {
+            return null;
+        }
+
+        return Auth::user()->shop->bookings()
+            ->with(['client', 'service', 'barber', 'paymentMethod', 'coupon'])
+            ->find($this->selectedBookingId);
     }
 
     private function getBaseQuery()

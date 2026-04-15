@@ -134,6 +134,11 @@ class Shop extends Model
         return $this->hasMany(Service::class);
     }
 
+    public function paymentMethods(): HasMany
+    {
+        return $this->hasMany(ShopPaymentMethod::class);
+    }
+
     /**
      * Get the bookings for this shop.
      */

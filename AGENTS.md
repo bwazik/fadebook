@@ -162,34 +162,24 @@ screen must feel like a native iOS 26 app.
 **Rationale**: Egyptian users overwhelmingly prefer
 WhatsApp; a single channel simplifies ops and reduces cost.
 
-### X. Payment Gateway Interface
+### X. Manual Payment Verification Interface
 
-- Payment integration MUST be built behind an adapter /
-  interface pattern (`PaymentGateway` contract).
-- The gateway MUST support split payments (marketplace /
-  sub-merchant model).
-- The concrete gateway (Fawaterk, Kashier, or other) MUST
-  be swappable without modifying business logic, service
-  classes, or controllers.
-- All payment and refund events MUST be logged in
-  dedicated database tables (`payments`, `refunds`).
+- Payment integration uses a manual verification pattern (InstaPay and Vodafone Cash).
+- Shops must configure at least one manual payment method in their settings.
+- The user must provide a Transaction Reference / ID after making the transfer outside the app.
+- All manual payments must be verified by the shop owner in their dashboard to move the booking to `Confirmed`.
+- All payment references and methods MUST be logged in the `bookings` table.
 
-**Rationale**: The gateway is TBD — the architecture must
-not couple to any single provider.
+**Rationale**: Programmatic gateways are difficult to obtain for individual barbers; manual transfers via VC/InstaPay are the dominant, trusted habit in Egypt.
 
-### XI. Multi-Tenancy & Commission
+### XI. Multi-Tenancy & Accounting
 
-- Each barbershop operates as a logical tenant with fully
-  isolated data (bookings, barbers, services, financials).
-- Commission percentage is set **per shop individually** by
-  the super admin — there is no global default rate.
-- Commission is deducted automatically at the gateway split
-  level — no manual transfers.
-- Both the platform admin and the shop owner MUST see a
-  transparent commission breakdown in their dashboards.
+- Each barbershop operates as a logical tenant with fully isolated data.
+- Commission percentage is set **per shop individually** by the super admin.
+- Commission is tracked as "Debt" for the shop; the system calculates the platform's cut based on completed bookings.
+- Super Admin uses end-of-month statistics to reconcile commission payments with shop owners.
 
-**Rationale**: Per-shop commission gives pricing flexibility;
-gateway-level splits eliminate manual accounting.
+**Rationale**: Per-shop commission gives pricing flexibility; accounting-based tracking simplifies setup for the MVP.
 
 ### XII. Booking Code Generation
 

@@ -28,6 +28,7 @@ use Illuminate\Notifications\Notifiable;
     'password',
     'role',
     'no_show_count',
+    'cancellation_count',
     'is_blocked',
     'whatsapp_notifications',
 ])]

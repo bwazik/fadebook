@@ -126,7 +126,7 @@ declare(strict_types=1);
 
             <!-- Bottom Navigation -->
             @if(!request()->routeIs('login', 'register', 'verification.notice', 'password.request', 'password.reset'))
-                <x-bottom-nav />
+                <x-bottom-nav :hide-bottom-nav="$hideBottomNav ?? false" />
             @endif
 
             <!-- Global Interactive Components -->
@@ -247,7 +247,7 @@ declare(strict_types=1);
         <!-- PWA Install Modal -->
         <div x-data="pwaPrompt">
             <div x-data="{ open: false }" x-on:open-pwa-modal.window="open = true; $dispatch('hide-bottom-nav')"
-                x-on:close-pwa-modal.window="open = false; $dispatch('show-bottom-nav')" x-show="open"
+                x-on:close-pwa-modal.window="open = false; if(!@json($hideBottomNav ?? false)) $dispatch('show-bottom-nav')" x-show="open"
                 style="display: none;" x-transition:enter="transition ease-out duration-300"
                 x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
                 x-transition:leave="transition ease-out duration-300" x-transition:leave-start="opacity-100"
@@ -291,7 +291,7 @@ declare(strict_types=1);
         <!-- Notification Permission Modal -->
         <div x-data="notificationPrompt">
             <div x-data="{ open: false }" x-on:open-notification-modal.window="open = true; $dispatch('hide-bottom-nav')"
-                x-on:close-notification-modal.window="open = false; $dispatch('show-bottom-nav')" x-show="open"
+                x-on:close-notification-modal.window="open = false; if(!@json($hideBottomNav ?? false)) $dispatch('show-bottom-nav')" x-show="open"
                 style="display: none;" x-transition:enter="transition ease-out duration-300"
                 x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
                 x-transition:leave="transition ease-out duration-300" x-transition:leave-start="opacity-100"

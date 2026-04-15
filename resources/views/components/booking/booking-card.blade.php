@@ -6,13 +6,17 @@
 @endphp
 
 <{{ $tag }}
-    @if (!$isOwner) href="{{ route('booking.show', $booking->uuid) }}" wire:navigate @endif
-    {{ $attributes->merge(['class' => 'block liquid-glass ' . (!$isOwner ? 'liquid-button' : '') . ' rounded-[1.5rem] p-4 border border-white/20 shadow-sm transition-all relative overflow-hidden']) }}>
+    @if (!$isOwner)
+        href="{{ route('booking.show', $booking->uuid) }}" wire:navigate
+    @else
+        wire:click="openBookingDetails({{ $booking->id }})"
+    @endif
+    {{ $attributes->merge(['class' => 'block liquid-glass ' . (!$isOwner ? 'liquid-button' : 'cursor-pointer active:scale-[0.99]') . ' rounded-[1.5rem] p-4 border border-white/20 shadow-sm transition-all relative overflow-hidden']) }}>
     <div class="flex justify-between items-start mb-3">
         <div class="flex items-center gap-3">
             @if (!$isOwner)
                 @php $logo = $booking->shop->getImage('logo')->first(); @endphp
-                <div class="shrink-0">
+                <div class="shrink-0 text-right">
                     @if ($logo)
                         <img src="{{ Storage::url($logo->path) }}" alt="{{ $booking->shop->name }}"
                             class="w-10 h-10 rounded-full object-cover border border-black/5 dark:border-white/10 shadow-sm bg-white dark:bg-[#1c1c1e]">
@@ -37,7 +41,7 @@
                 </div>
             @else
                 @php $avatar = $booking->client?->getImage('avatar')->first(); @endphp
-                <div class="shrink-0">
+                <div class="shrink-0 text-right">
                     @if ($avatar)
                         <img src="{{ Storage::url($avatar->path) }}" alt="{{ $booking->client->name }}"
                             class="w-10 h-10 rounded-full object-cover border border-black/5 dark:border-white/10 shadow-sm bg-white dark:bg-[#1c1c1e]">
@@ -85,37 +89,60 @@
         </div>
     </div>
 
-    <!-- Owner Actions -->
+    <!-- Owner Actions & Payment Info -->
     @if ($isOwner)
+        @if ($booking->payment_method_id && $booking->status === \App\Enums\BookingStatus::Pending)
+            <div class="mt-4 p-3 rounded-2xl bg-fadebook-accent/5 border border-fadebook-accent/10 space-y-2">
+                <div class="flex justify-between items-center">
+                    <span class="text-[9px] font-black text-gray-400 uppercase tracking-widest">{{ __('messages.booking_payment_method_title') }}</span>
+                    <span class="text-[10px] font-black text-gray-900 dark:text-white text-left">
+                         {{ $booking->paymentMethod?->type->getLabel() ?? 'N/A' }}
+                    </span>
+                </div>
+                <div class="flex justify-between items-center">
+                    <span class="text-[9px] font-black text-gray-400 uppercase tracking-widest">{{ __('messages.booking_payment_ref_label') }}</span>
+                    <span class="text-[11px] font-black text-fadebook-accent tracking-widest text-left" dir="ltr">
+                        {{ $booking->payment_reference }}
+                    </span>
+                </div>
+                <div class="flex justify-between items-center pt-1 border-t border-fadebook-accent/5">
+                    <span class="text-[9px] font-black text-gray-400 uppercase tracking-widest">{{ __('messages.booking_deposit_label') }}</span>
+                    <span class="text-[11px] font-black text-gray-900 dark:text-white text-left">
+                        {{ number_format($booking->deposit_amount, 0) }} {{ __('messages.egp') }}
+                    </span>
+                </div>
+            </div>
+        @endif
+
         @if ($booking->status === \App\Enums\BookingStatus::Pending)
             <div class="flex gap-2 mt-4">
                 <x-ios-button type="button"
-                    @click="$dispatch('open-ios-alert', {
-                        title: 'تأكيد الحجز',
-                        message: 'هل أنت متأكد من تأكيد هذا الحجز؟',
-                        action: 'confirmReservation',
+                    @click.stop="$dispatch('open-ios-alert', {
+                        title: '{{ $booking->deposit_amount > 0 ? __('messages.booking_payment_verify_button') : __('messages.status_confirmed') }}',
+                        message: '{{ $booking->deposit_amount > 0 ? 'هل تأكدت من وصول المبلغ على محفظتك؟' : 'هل أنت متأكد من تأكيد هذا الحجز؟' }}',
+                        action: 'verifyPayment',
                         params: {{ $booking->id }},
                         componentId: '{{ $componentId }}'
                     })"
                     class="flex-1 !py-2.5 !text-[11px] uppercase tracking-widest">
-                    تأكيد الحجز
+                    {{ $booking->deposit_amount > 0 ? __('messages.booking_payment_verify_button') : __('messages.status_confirmed') }}
                 </x-ios-button>
                 <x-ios-button type="button" variant="danger"
-                    @click="$dispatch('open-ios-alert', {
-                        title: 'إلغاء الحجز',
-                        message: 'هل أنت متأكد من إلغاء هذا الحجز؟ لا يمكن التراجع عن هذا الإجراء.',
+                    @click.stop="$dispatch('open-ios-alert', {
+                        title: '{{ __('messages.booking_cancel_button') }}',
+                        message: '{{ __('messages.booking_cancel_confirm') }}',
                         action: 'cancelBooking',
                         params: {{ $booking->id }},
                         componentId: '{{ $componentId }}'
                     })"
                     class="flex-1 !py-2.5 !text-[11px] uppercase tracking-widest">
-                    إلغاء
+                    {{ __('messages.cancel') }}
                 </x-ios-button>
             </div>
         @elseif($booking->status === \App\Enums\BookingStatus::Confirmed)
             <div class="flex gap-2 mt-4">
                 <x-ios-button type="button"
-                    @click="$dispatch('open-ios-alert', {
+                    @click.stop="$dispatch('open-ios-alert', {
                         title: 'وصول العميل',
                         message: 'هل وصل العميل بالفعل لبدء الموعد؟',
                         action: 'markArrived',
@@ -123,10 +150,10 @@
                         componentId: '{{ $componentId }}'
                     })"
                     class="flex-1 !py-2.5 !text-[11px] uppercase tracking-widest">
-                    وصل؟
+                    {{ __('messages.status_arrived') }}
                 </x-ios-button>
                 <x-ios-button type="button" variant="danger"
-                    @click="$dispatch('open-ios-alert', {
+                    @click.stop="$dispatch('open-ios-alert', {
                         title: 'إلغاء الحجز',
                         message: 'هل أنت متأكد من إلغاء هذا الحجز؟',
                         action: 'cancelBooking',
@@ -140,7 +167,7 @@
         @elseif($booking->status === \App\Enums\BookingStatus::InProgress)
             <div class="flex gap-2 mt-4">
                 <x-ios-button type="button"
-                    @click="$dispatch('open-ios-alert', {
+                    @click.stop="$dispatch('open-ios-alert', {
                         title: 'أنهى الموعد',
                         message: 'هل انتهى العميل من الخدمة؟ سيتم تحويل الموعد للمنتهية.',
                         action: 'markCompleted',
@@ -151,7 +178,7 @@
                     خلص؟
                 </x-ios-button>
                 <x-ios-button type="button" variant="secondary"
-                    @click="$dispatch('open-ios-alert', {
+                    @click.stop="$dispatch('open-ios-alert', {
                         title: 'تسجيل كغائب',
                         message: 'هل لم يحضر العميل للموعد؟ سيتم تسجيله كغائب.',
                         action: 'markNoShow',

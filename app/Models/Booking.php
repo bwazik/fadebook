@@ -35,6 +35,11 @@ use Illuminate\Database\Eloquent\SoftDeletes;
     'completed_at',
     'cancelled_at',
     'cancelled_by',
+    'payment_method_id',
+    'payment_reference',
+    'deposit_amount',
+    'commission_amount',
+    'payment_verified_at',
 ])]
 class Booking extends Model
 {
@@ -108,6 +113,9 @@ class Booking extends Model
             'discount_amount' => 'decimal:2',
             'paid_amount' => 'decimal:2',
             'final_amount' => 'decimal:2',
+            'deposit_amount' => 'decimal:2',
+            'commission_amount' => 'decimal:2',
+            'payment_verified_at' => 'datetime',
         ];
     }
 
@@ -149,6 +157,11 @@ class Booking extends Model
     public function coupon(): BelongsTo
     {
         return $this->belongsTo(Coupon::class);
+    }
+
+    public function paymentMethod(): BelongsTo
+    {
+        return $this->belongsTo(ShopPaymentMethod::class, 'payment_method_id');
     }
 
     /**
