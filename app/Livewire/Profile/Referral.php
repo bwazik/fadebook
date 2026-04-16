@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace App\Livewire\Profile;
 
 use App\Enums\ReferralStatus;
+use App\Enums\ShopStatus;
 use App\Models\Referral as ReferralModel;
+use App\Models\Shop;
 use App\Models\User;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Auth;
@@ -18,9 +20,17 @@ class Referral extends Component
 {
     public ?int $selectedReferralId = null;
 
+    public ?int $selectedShopId = null;
+
     public function mount(): void
     {
         $this->dispatch('hide-bottom-nav');
+
+        // Auto-select a shop if any are available
+        $firstShop = $this->availableShops->first();
+        if ($firstShop) {
+            $this->selectedShopId = $firstShop->id;
+        }
     }
 
     public function openReferral(int $id): void
@@ -57,9 +67,22 @@ class Referral extends Component
     }
 
     #[Computed]
+    public function availableShops()
+    {
+        return Shop::where('status', ShopStatus::Active)
+            ->where('referral_enabled', true)
+            ->get(['id', 'name']);
+    }
+
+    #[Computed]
     public function referralLink(): string
     {
-        return route('register', ['ref' => $this->user->referral_code]);
+        $params = ['ref' => $this->user->referral_code];
+        if ($this->selectedShopId) {
+            $params['shop'] = $this->selectedShopId;
+        }
+
+        return route('register', $params);
     }
 
     #[Computed]

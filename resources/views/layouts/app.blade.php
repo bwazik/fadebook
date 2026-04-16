@@ -343,13 +343,19 @@ declare(strict_types=1);
                 });
             }
 
-            // Re-apply dark mode and update route state on Livewire navigation
+            // Re-apply dark mode, accent color, and update route state on Livewire navigation
             function onNavigate() {
                 // Update Dark Mode
                 if (localStorage.getItem('darkMode') === 'true' || (!('darkMode' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
                     document.documentElement.classList.add('dark');
                 } else {
                     document.documentElement.classList.remove('dark');
+                }
+
+                // Re-apply Accent Color
+                const savedAccent = localStorage.getItem('fadebook_accent');
+                if (savedAccent) {
+                    document.documentElement.style.setProperty('--color-fadebook-accent', savedAccent);
                 }
 
                 // Update Route Info

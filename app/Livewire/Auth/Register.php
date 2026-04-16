@@ -26,6 +26,8 @@ class Register extends Component
 
     public $ref;
 
+    public $shop;
+
     public $name;
 
     public $phone;
@@ -60,6 +62,7 @@ class Register extends Component
     public function mount()
     {
         $this->ref = request()->query('ref');
+        $this->shop = request()->query('shop');
     }
 
     public function nextStep()
@@ -151,7 +154,7 @@ class Register extends Component
             );
 
             if ($this->ref) {
-                app(ReferralService::class)->handleRegistration($user, $this->ref);
+                app(ReferralService::class)->handleRegistration($user, $this->ref, $this->shop);
             }
 
             if ($this->role === 'barber_owner') {

@@ -39,6 +39,7 @@ class BookingList extends Component
     public function bookings()
     {
         $query = $this->getBaseQuery();
+
         return $query->limit($this->perPage)->get();
     }
 
@@ -46,6 +47,7 @@ class BookingList extends Component
     public function hasMore(): bool
     {
         $query = $this->getBaseQuery();
+
         return $query->count() > $this->perPage;
     }
 

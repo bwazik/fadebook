@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
     'uuid',
     'referrer_id',
     'invitee_id',
+    'shop_id',
     'booking_id',
     'coupon_id',
     'status',
@@ -75,6 +76,14 @@ class Referral extends Model
     public function invitee(): BelongsTo
     {
         return $this->belongsTo(User::class, 'invitee_id');
+    }
+
+    /**
+     * Get the shop this referral is tied to.
+     */
+    public function shop(): BelongsTo
+    {
+        return $this->belongsTo(Shop::class, 'shop_id');
     }
 
     /**

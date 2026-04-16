@@ -19,7 +19,7 @@ class ReferralService
     /**
      * Called from the Register Livewire component after the new user is persisted.
      */
-    public function handleRegistration(User $invitee, string $referralCode): void
+    public function handleRegistration(User $invitee, string $referralCode, ?string $shopId = null): void
     {
         $settings = app(SettingsService::class);
         $isReferralEnabled = filter_var($settings->get('referral_enabled', 'true'), FILTER_VALIDATE_BOOLEAN);
@@ -44,6 +44,7 @@ class ReferralService
             'referrer_id' => $referrer->id,
             'invitee_id' => $invitee->id,
         ], [
+            'shop_id' => $shopId ? (int) $shopId : null,
             'status' => ReferralStatus::Pending,
         ]);
     }
@@ -65,6 +66,11 @@ class ReferralService
             ->first();
 
         if (! $referral) {
+            return;
+        }
+
+        // If the referral is tied to a specific shop, ensure the invitee booked at that shop
+        if ($referral->shop_id && $referral->shop_id !== $booking->shop_id) {
             return;
         }
 

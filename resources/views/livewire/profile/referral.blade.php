@@ -39,6 +39,18 @@
                     </div>
                 </div>
 
+                {{-- Shop Selector --}}
+                @if($this->availableShops->count() > 0)
+                <div class="px-2">
+                    <p class="text-[10px] font-bold text-white/50 uppercase tracking-widest mb-2">اختر الصالون اللي هتدعو صاحبك ليه</p>
+                    <x-ios-select wire:model.live="selectedShopId">
+                        @foreach($this->availableShops as $shop)
+                            <option value="{{ $shop->id }}">{{ $shop->name }}</option>
+                        @endforeach
+                    </x-ios-select>
+                </div>
+                @endif
+
                 {{-- Full Link Sharing Area --}}
                 <div
                     class="relative h-14 bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl px-5 flex items-center justify-between group/link overflow-hidden">
