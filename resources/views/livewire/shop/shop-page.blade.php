@@ -35,7 +35,7 @@
                 <div
                     class="absolute bottom-6 left-6 z-20 bg-black/40 backdrop-blur-md px-3 py-1 rounded-full text-white text-[10px] font-bold border border-white/20 flex items-center shadow-lg">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
-                        stroke="currentColor" class="w-3 h-3 me-1.5 text-fadebook-accent">
+                        stroke="currentColor" class="w-3 h-3 me-1.5 text-banhafade-accent">
                         <path stroke-linecap="round" stroke-linejoin="round"
                             d="M6.827 6.175A2.31 2.31 0 0 1 5.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 0 0-1.134-.175 2.31 2.31 0 0 1-1.64-1.055l-.822-1.316a2.192 2.192 0 0 0-1.736-1.039 48.774 48.774 0 0 0-5.232 0 2.192 2.192 0 0 0-1.736 1.039l-.821 1.316Z" />
                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -69,7 +69,7 @@
                     {{ $shop->name }}</h1>
                 <p class="text-sm text-gray-500 dark:text-gray-400 font-bold mt-1.5 flex items-center gap-1.5">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
-                        class="w-4 h-4 text-fadebook-accent">
+                        class="w-4 h-4 text-banhafade-accent">
                         <path fill-rule="evenodd"
                             d="m9.69 18.933.003.001C9.89 19.02 10 19 10 19s.11 0 .308-.066l.002-.001.006-.003.018-.008a5.741 5.741 0 0 0 .281-.14c.186-.096.446-.24.757-.433.62-.384 1.445-.966 2.274-1.765C15.302 14.988 17 12.493 17 9A7 7 0 1 0 3 9c0 3.492 1.698 5.988 3.355 7.584a13.731 13.731 0 0 0 2.273 1.765 11.842 11.842 0 0 0 .976.544l.062.029.018.008.006.003zM10 11.25a2.25 2.25 0 1 0 0-4.5 2.25 2.25 0 0 0 0 4.5z"
                             clip-rule="evenodd" />
@@ -105,7 +105,7 @@
         <x-shop.carousel gap="gap-3" pb="pb-4" class="mt-6">
             <!-- Rating Stat -->
             <x-shop.stat-bubble>
-                @if(($shop->total_reviews ?? 0) > 0 && (float) $shop->average_rating > 0)
+                @if (($shop->total_reviews ?? 0) > 0 && (float) $shop->average_rating > 0)
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
                         class="w-4 h-4 text-yellow-500">
                         <path fill-rule="evenodd"
@@ -116,9 +116,12 @@
                         class="text-sm font-black text-gray-900 dark:text-white">{{ (float) $shop->average_rating }}</span>
                     <span class="text-[10px] text-gray-500 font-bold ms-0.5">({{ $shop->total_reviews }})</span>
                 @else
-                    <div class="bg-blue-500/10 p-1.5 rounded-lg border border-blue-500/20 flex items-center justify-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 text-blue-500">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 0 1-1.043 3.296 3.745 3.745 0 0 1-3.296 1.043A3.745 3.745 0 0 1 12 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 0 1-3.296-1.043 3.745 3.745 0 0 1-1.043-3.296A3.745 3.745 0 0 1 3 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 0 1 1.043-3.296 3.746 3.746 0 0 1 3.296-1.043A3.746 3.746 0 0 1 12 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 0 1 3.296 1.043 3.746 3.746 0 0 1 1.043 3.296A3.745 3.745 0 0 1 21 12Z" />
+                    <div
+                        class="bg-blue-500/10 p-1.5 rounded-lg border border-blue-500/20 flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                            stroke="currentColor" class="w-4 h-4 text-blue-500">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M9 12.75 11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 0 1-1.043 3.296 3.745 3.745 0 0 1-3.296 1.043A3.745 3.745 0 0 1 12 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 0 1-3.296-1.043 3.745 3.745 0 0 1-1.043-3.296A3.745 3.745 0 0 1 3 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 0 1 1.043-3.296 3.746 3.746 0 0 1 3.296-1.043A3.746 3.746 0 0 1 12 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 0 1 3.296 1.043 3.746 3.746 0 0 1 1.043 3.296A3.745 3.745 0 0 1 21 12Z" />
                         </svg>
                     </div>
                 @endif
@@ -175,7 +178,7 @@
                 </p>
                 @if (mb_strlen($shop->description) > 80)
                     <button @click="expanded = !expanded"
-                        class="mt-2 text-[10px] font-black text-fadebook-accent uppercase tracking-[0.2em] cursor-pointer flex items-center gap-1">
+                        class="mt-2 text-[10px] font-black text-banhafade-accent uppercase tracking-[0.2em] cursor-pointer flex items-center gap-1">
                         <span
                             x-text="expanded ? '{{ __('messages.hide') }}' : '{{ __('messages.read_more') }}'"></span>
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3.5"
@@ -222,7 +225,7 @@
                     <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest leading-none">
                         {{ __('messages.contact') }}</p>
                     <a href="tel:{{ $shop->phone }}"
-                        class="text-sm font-black text-fadebook-accent mt-1.5 inline-block liquid-button">{{ $shop->phone }}</a>
+                        class="text-sm font-black text-banhafade-accent mt-1.5 inline-block liquid-button">{{ $shop->phone }}</a>
                 </div>
             </div>
 
@@ -241,7 +244,7 @@
                         <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest leading-none">
                             {{ __('messages.working_hours') }}</p>
                         <button @click="expanded = !expanded"
-                            class="text-fadebook-accent text-xs font-black uppercase cursor-pointer">
+                            class="text-banhafade-accent text-xs font-black uppercase cursor-pointer">
                             <span
                                 x-text="expanded ? '{{ __('messages.hide') }}' : '{{ __('messages.view_all') }}'"></span>
                         </button>
@@ -282,7 +285,7 @@
         <div class="mt-12">
             <div class="px-2 mb-4">
                 <h2 class="text-xl font-black text-gray-900 dark:text-white uppercase tracking-tighter">
-                    {{ __('messages.fadebook_artists') }}</h2>
+                    {{ __('messages.banhafade_artists') }}</h2>
             </div>
             <x-shop.carousel gap="gap-4" pb="pb-6">
                 @foreach ($shop->barbers->where('is_active', true) as $barber)
@@ -395,7 +398,7 @@
                     class="snap-start shrink-0 w-24 flex items-center justify-center">
                     <div
                         class="w-12 h-12 rounded-full liquid-glass flex items-center justify-center animate-pulse border-white/40">
-                        <svg class="animate-spin h-5 w-5 text-fadebook-accent" xmlns="http://www.w3.org/2000/svg"
+                        <svg class="animate-spin h-5 w-5 text-banhafade-accent" xmlns="http://www.w3.org/2000/svg"
                             fill="none" viewBox="0 0 24 24">
                             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
                                 stroke-width="4"></circle>
@@ -436,7 +439,7 @@
                     @if ($shop->is_online)
                         <a href="{{ route('booking.create', $shop->slug) }}" wire:navigate class="block w-full">
                             <button
-                                class="w-full h-12 rounded-[1.5rem] bg-fadebook-accent text-white text-[11px] font-black uppercase tracking-[0.1em] cursor-pointer transition-all active:scale-[0.98] shadow-md shadow-fadebook-accent/30">
+                                class="w-full h-12 rounded-[1.5rem] bg-banhafade-accent text-white text-[11px] font-black uppercase tracking-[0.1em] cursor-pointer transition-all active:scale-[0.98] shadow-md shadow-banhafade-accent/30">
                                 {{ __('messages.book_your_spot_now') }}
                             </button>
                         </a>
@@ -450,7 +453,7 @@
                 @else
                     <a href="{{ route('login') }}" wire:navigate class="block w-full">
                         <button
-                            class="w-full h-12 rounded-[1.5rem] bg-fadebook-accent text-white text-[11px] font-black cursor-pointer transition-all active:scale-[0.98] shadow-md shadow-fadebook-accent/30">
+                            class="w-full h-12 rounded-[1.5rem] bg-banhafade-accent text-white text-[11px] font-black cursor-pointer transition-all active:scale-[0.98] shadow-md shadow-banhafade-accent/30">
                             {{ __('messages.login_to_book') }}
                         </button>
                     </a>

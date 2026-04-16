@@ -1,4 +1,4 @@
-# FadeBook — Implementation Plan
+# BanhaFade — Implementation Plan
 
 > For AI-assisted development. Each phase is a fully working vertical slice.
 
@@ -62,8 +62,8 @@ Replace the default Tailwind config with the CSS-first v4 configuration:
 
 @theme {
     --font-sans: "Tajawal", ui-sans-serif, system-ui, sans-serif;
-    --color-fadebook-dark: #0f172a;
-    --color-fadebook-accent: #ff2d55;
+    --color-banhafade-dark: #0f172a;
+    --color-banhafade-accent: #ff2d55;
     --radius-card: 2rem;
     --radius-button: 1rem;
     --safe-area-top: env(safe-area-inset-top);
@@ -450,7 +450,7 @@ Methods:
 View: `resources/views/livewire/auth/login.blade.php`
 
 - Glass card centered on screen
-- FadeBook logo at top
+- BanhaFade logo at top
 - iOS input group with phone (dir="ltr") and password fields
 - iOS button "دخول"
 - Links to register and forgot password using `wire:navigate`
@@ -575,7 +575,7 @@ Methods:
 
 View: `resources/views/livewire/home.blade.php`
 
-- Sticky header with FadeBook logo and search icon (navigates to `/search`)
+- Sticky header with BanhaFade logo and search icon (navigates to `/search`)
 - Horizontal scrollable area filter chips
 - Grid of shop cards (2 columns on mobile)
 - Each shop card (glass card style) shows:
@@ -1390,7 +1390,7 @@ Add to `config/whatsapp.php` a new template key `referral_reward_issued`:
 مبروك! {referrer_name}، صاحبك سجّل وخلّص أول حجز بيه.
 اتبعتلك كوبون خصم {discount_value} صالح لمدة {expiry_days} أيام.
 الكود بتاعك: {coupon_code}
-استخدمه في أي حجز جاي على FadeBook 🎉
+استخدمه في أي حجز جاي على BanhaFade 🎉
 ```
 
 ---
@@ -1815,6 +1815,6 @@ tests/
 
 ---
 
-_Plan Version: 1.1 — FadeBook Implementation Plan for AI-assisted development_
+_Plan Version: 1.1 — BanhaFade Implementation Plan for AI-assisted development_
 _Companion documents: blueprint-v2.md, constitution-v1.md_
 _v1.1: Added Phase 7 — Referral System & Offers Page; renumbered old phases 7–10_

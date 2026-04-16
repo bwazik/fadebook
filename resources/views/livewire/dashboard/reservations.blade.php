@@ -6,7 +6,7 @@
 
         @if ($search)
             <button wire:click="$set('search', '')"
-                class="text-[10px] font-black uppercase text-fadebook-accent bg-fadebook-accent/10 px-3 py-1 rounded-lg">
+                class="text-[10px] font-black uppercase text-banhafade-accent bg-banhafade-accent/10 px-3 py-1 rounded-lg">
                 {{ __('messages.clear_search') }} X
             </button>
         @endif
@@ -64,8 +64,8 @@
             <div
                 class="flex items-center gap-2 px-4 py-2 rounded-full border border-black/5 dark:border-white/10 bg-white/40 dark:bg-white/5 backdrop-blur-xl">
                 <span class="text-xs font-bold text-gray-500">{{ __('messages.loading_more_dashboard') }}</span>
-                <svg class="animate-spin h-4 w-4 text-fadebook-accent" xmlns="http://www.w3.org/2000/svg" fill="none"
-                    viewBox="0 0 24 24">
+                <svg class="animate-spin h-4 w-4 text-banhafade-accent" xmlns="http://www.w3.org/2000/svg"
+                    fill="none" viewBox="0 0 24 24">
                     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
                         stroke-width="4"></circle>
                     <path class="opacity-75" fill="currentColor"
@@ -129,10 +129,9 @@
 
                 {{-- Financial Breakdown --}}
                 <div
-                    class="p-6 rounded-[2rem] bg-fadebook-accent/5 dark:bg-white/5 border border-fadebook-accent/10 dark:border-white/10 space-y-4 shadow-sm">
+                    class="p-6 rounded-[2rem] bg-banhafade-accent/5 dark:bg-white/5 border border-banhafade-accent/10 dark:border-white/10 space-y-4 shadow-sm">
                     <div class="space-y-2.5">
-                        <x-booking.summary-row :label="__('messages.booking_label_total')" :value="number_format($this->selectedBooking->service_price, 0) . ' ' . __('messages.egp')"
-                            :class="$this->selectedBooking->discount_amount > 0 ? 'line-through opacity-50' : ''" />
+                        <x-booking.summary-row :label="__('messages.booking_label_total')" :value="number_format($this->selectedBooking->service_price, 0) . ' ' . __('messages.egp')" :class="$this->selectedBooking->discount_amount > 0 ? 'line-through opacity-50' : ''" />
 
                         @if ($this->selectedBooking->discount_amount > 0)
                             <x-booking.summary-row :label="__('messages.booking_discount')" :value="'-' .
@@ -141,16 +140,17 @@
                                 __('messages.egp')" value-class="text-green-500" />
                         @endif
 
-                        <div class="flex justify-between items-center pt-2 border-t border-fadebook-accent/10">
-                            <span class="text-sm text-gray-900 dark:text-white font-black">{{ __('messages.booking_label_final_total') }}</span>
+                        <div class="flex justify-between items-center pt-2 border-t border-banhafade-accent/10">
+                            <span
+                                class="text-sm text-gray-900 dark:text-white font-black">{{ __('messages.booking_label_final_total') }}</span>
                             <span class="text-xl font-black text-gray-900 dark:text-white">
-                                {{ number_format($this->selectedBooking->final_amount, 0) }} 
+                                {{ number_format($this->selectedBooking->final_amount, 0) }}
                                 <small class="text-[10px] ms-0.5">{{ __('messages.egp') }}</small>
                             </span>
                         </div>
                     </div>
 
-                    <div class="pt-4 border-t border-fadebook-accent/10 dark:border-white/10 space-y-2.5">
+                    <div class="pt-4 border-t border-banhafade-accent/10 dark:border-white/10 space-y-2.5">
                         <x-booking.summary-row :label="__('messages.booking_label_paid')" :value="number_format($this->selectedBooking->paid_amount, 0) . ' ' . __('messages.egp')"
                             value-class="text-green-600 dark:text-green-400 font-black" />
                         <x-booking.summary-row :label="__('messages.booking_label_remaining')" :value="number_format(
@@ -159,7 +159,7 @@
                         ) .
                             ' ' .
                             __('messages.egp')"
-                            value-class="text-fadebook-accent text-xl font-black" />
+                            value-class="text-banhafade-accent text-xl font-black" />
                     </div>
                 </div>
 
@@ -185,7 +185,7 @@
                     <span
                         class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">{{ __('messages.booking_code') }}</span>
                     <span
-                        class="text-4xl font-black text-fadebook-accent tracking-[0.5em] ms-[0.5em] selection:bg-fadebook-accent selection:text-white"
+                        class="text-4xl font-black text-banhafade-accent tracking-[0.5em] ms-[0.5em] selection:bg-banhafade-accent selection:text-white"
                         dir="ltr">
                         {{ $this->selectedBooking->booking_code }}
                     </span>

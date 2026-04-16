@@ -39,7 +39,7 @@ class ManageBarbers extends Component
 
     public ?string $newUnavailabilityDate = null;
 
-    public string $password = 'fadebook123';
+    public string $password = 'banhafade123';
 
     public $avatar;
 
@@ -73,7 +73,7 @@ class ManageBarbers extends Component
         }
 
         $barber = $this->shop->barbers()->findOrFail($barberId);
-        $barber->update(['is_active' => ! $barber->is_active]);
+        $barber->update(['is_active' => !$barber->is_active]);
         $this->toastSuccess($barber->is_active ? 'تم تفعيل الحلاق' : 'تم إيقاف الحلاق');
     }
 
@@ -93,11 +93,11 @@ class ManageBarbers extends Component
         $this->unavailabilityDates = $barber->unavailabilities()
             ->get()
             ->pluck('unavailable_date')
-            ->map(fn ($d) => $d->format('Y-m-d'))
+            ->map(fn($d) => $d->format('Y-m-d'))
             ->toArray();
         $this->daysOff = $barber->days_off ?? [];
         $this->avatar = null;
-        $this->selectedServices = $barber->services->pluck('id')->map(fn ($id) => (string) $id)->toArray();
+        $this->selectedServices = $barber->services->pluck('id')->map(fn($id) => (string) $id)->toArray();
         $this->showForm = true;
     }
 
@@ -110,7 +110,7 @@ class ManageBarbers extends Component
         try {
             $this->validate([
                 'name' => 'required|string|max:255',
-                'phone' => 'required|string|max:20|unique:barbers,phone,'.($this->editingId ?? 'NULL').',id,shop_id,'.$this->shop->id.',deleted_at,NULL',
+                'phone' => 'required|string|max:20|unique:barbers,phone,' . ($this->editingId ?? 'NULL') . ',id,shop_id,' . $this->shop->id . ',deleted_at,NULL',
                 'avatar' => 'nullable|image|max:2048',
                 'selectedServices' => 'array',
             ], [
@@ -129,7 +129,7 @@ class ManageBarbers extends Component
         // 1. Find or Create User
         $user = User::where('phone', $this->phone)->first();
 
-        if (! $user) {
+        if (!$user) {
             $user = User::create([
                 'name' => $this->name,
                 'phone' => $this->phone,
@@ -205,7 +205,7 @@ class ManageBarbers extends Component
         $this->editingId = null;
         $this->name = '';
         $this->phone = '';
-        $this->password = 'fadebook123';
+        $this->password = 'banhafade123';
         $this->avatar = null;
         $this->selectedServices = [];
         $this->unavailabilityDates = [];
@@ -215,7 +215,7 @@ class ManageBarbers extends Component
 
     public function addUnavailabilityDate(): void
     {
-        if (! $this->newUnavailabilityDate) {
+        if (!$this->newUnavailabilityDate) {
             return;
         }
 
@@ -231,7 +231,7 @@ class ManageBarbers extends Component
 
     public function removeUnavailabilityDate(string $date): void
     {
-        $this->unavailabilityDates = array_filter($this->unavailabilityDates, fn ($d) => $d !== $date);
+        $this->unavailabilityDates = array_filter($this->unavailabilityDates, fn($d) => $d !== $date);
     }
 
     public function deleteBarber(int $barberId): void

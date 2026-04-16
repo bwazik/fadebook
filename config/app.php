@@ -124,7 +124,7 @@ return [
     ],
 
     'super_admin' => [
-        'name' => env('SUPER_ADMIN_NAME', 'FadeBook Super Admin'),
+        'name' => env('SUPER_ADMIN_NAME', 'BanhaFade Super Admin'),
         'phone' => env('SUPER_ADMIN_PHONE', '01000000000'),
         'password' => env('SUPER_ADMIN_PASSWORD', 'password123'),
     ],

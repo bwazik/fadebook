@@ -8,7 +8,7 @@ use Illuminate\Console\Attributes\Description;
 use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
 
-#[Signature('fadebook:send-review-requests')]
+#[Signature('banhafade:send-review-requests')]
 #[Description('Send review requests to users after their booking is completed')]
 class SendBookingReviewRequests extends Command
 {
@@ -29,7 +29,7 @@ class SendBookingReviewRequests extends Command
             return 0;
         }
 
-        $this->info('Processing '.$bookings->count().' booking review requests...');
+        $this->info('Processing ' . $bookings->count() . ' booking review requests...');
 
         foreach ($bookings as $booking) {
             // TODO: The notification logic will be added here later (WhatsApp)

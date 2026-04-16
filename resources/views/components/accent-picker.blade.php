@@ -10,11 +10,11 @@
 @endphp
 
 <div x-data="{
-    current: localStorage.getItem('fadebook_accent') || '#ff9f0a',
+    current: localStorage.getItem('banhafade_accent') || '#ff9f0a',
     setAccent(color) {
         this.current = color;
-        document.documentElement.style.setProperty('--color-fadebook-accent', color);
-        localStorage.setItem('fadebook_accent', color);
+        document.documentElement.style.setProperty('--color-banhafade-accent', color);
+        localStorage.setItem('banhafade_accent', color);
     }
 }">
     <div class="flex items-center gap-3 justify-center py-2">

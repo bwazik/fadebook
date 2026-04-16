@@ -33,11 +33,12 @@
     <!-- Booking Code Card -->
     <div class="liquid-glass rounded-[2rem] p-8 border-2 shadow-2xl text-center mb-8 relative overflow-hidden transition-all duration-500"
         :class="'{{ $booking->status->value }}'
-        === '{{ \App\Enums\BookingStatus::Confirmed->value }}' ? 'border-fadebook-accent/30 bg-fadebook-accent/[0.03]' :
+        === '{{ \App\Enums\BookingStatus::Confirmed->value }}' ?
+            'border-banhafade-accent/30 bg-banhafade-accent/[0.03]' :
             'border-white/50 dark:border-white/10'">
 
         <div
-            class="absolute -top-12 -right-12 w-32 h-32 bg-fadebook-accent/10 rounded-full blur-3xl pointer-events-none">
+            class="absolute -top-12 -right-12 w-32 h-32 bg-banhafade-accent/10 rounded-full blur-3xl pointer-events-none">
         </div>
 
         <p
@@ -91,28 +92,19 @@
 
             @if ($booking->status === \App\Enums\BookingStatus::Completed)
                 <div class="pt-3 animate-in fade-in slide-in-from-top-2">
-                    <x-booking.summary-row
-                        :label="__('messages.booking_label_paid_total')"
-                        :value="number_format($booking->final_amount, 0) . ' ' . __('messages.egp')"
-                        value-class="text-green-600 dark:text-green-400"
-                    />
+                    <x-booking.summary-row :label="__('messages.booking_label_paid_total')" :value="number_format($booking->final_amount, 0) . ' ' . __('messages.egp')"
+                        value-class="text-green-600 dark:text-green-400" />
                 </div>
             @else
                 <div class="pt-2 space-y-3">
                     @if ($booking->paid_amount > 0)
-                        <x-booking.summary-row
-                            :label="__('messages.booking_label_paid')"
-                            :value="number_format($booking->paid_amount, 0) . ' ' . __('messages.egp')"
-                            value-class="text-green-600 dark:text-green-400"
-                        />
+                        <x-booking.summary-row :label="__('messages.booking_label_paid')" :value="number_format($booking->paid_amount, 0) . ' ' . __('messages.egp')"
+                            value-class="text-green-600 dark:text-green-400" />
                     @endif
 
                     @if ($this->remainingAmount > 0)
-                        <x-booking.summary-row
-                            :label="__('messages.booking_label_remaining')"
-                            :value="number_format($this->remainingAmount, 0) . ' ' . __('messages.egp')"
-                            value-class="text-fadebook-accent text-xl font-black"
-                        />
+                        <x-booking.summary-row :label="__('messages.booking_label_remaining')" :value="number_format($this->remainingAmount, 0) . ' ' . __('messages.egp')"
+                            value-class="text-banhafade-accent text-xl font-black" />
                     @endif
                 </div>
             @endif

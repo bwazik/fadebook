@@ -24,7 +24,7 @@
                                 class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                                 alt="">
                         @else
-                            <div class="absolute inset-0 bg-gradient-to-br from-fadebook-accent/40 to-purple-600/40">
+                            <div class="absolute inset-0 bg-gradient-to-br from-banhafade-accent/40 to-purple-600/40">
                             </div>
                         @endif
 
@@ -88,7 +88,7 @@
                         <div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
                         {{-- Discount Badge --}}
                         <div
-                            class="absolute top-2 left-2 px-1.5 py-0.5 rounded-lg bg-fadebook-accent text-white text-[8px] font-black shadow-lg">
+                            class="absolute top-2 left-2 px-1.5 py-0.5 rounded-lg bg-banhafade-accent text-white text-[8px] font-black shadow-lg">
                             @if ($offer->coupon)
                                 @if ($offer->coupon->discount_type === \App\Enums\DiscountType::Percentage)
                                     -{{ $offer->coupon->discount_value }}%
@@ -108,14 +108,14 @@
                     <div class="flex-grow min-w-0 space-y-1">
                         <div class="flex items-center gap-1.5">
                             <span
-                                class="text-[9px] font-black text-fadebook-accent uppercase tracking-wider">{{ $offer->shop->name }}</span>
+                                class="text-[9px] font-black text-banhafade-accent uppercase tracking-wider">{{ $offer->shop->name }}</span>
                             <span class="w-1 h-1 rounded-full bg-gray-300 dark:bg-white/20"></span>
                             <span
                                 class="text-[9px] font-bold text-gray-400 uppercase tracking-tighter">{{ $offer->shop->area->name }}</span>
                         </div>
 
                         <h4
-                            class="text-sm font-black text-gray-900 dark:text-white leading-snug group-hover:text-fadebook-accent transition-colors">
+                            class="text-sm font-black text-gray-900 dark:text-white leading-snug group-hover:text-banhafade-accent transition-colors">
                             {{ $offer->title }}
                         </h4>
 
@@ -128,7 +128,7 @@
                                 {{ $offer->end_date ? $offer->end_date->translatedFormat('d M') : '' }}
                             </span>
                             <div
-                                class="w-7 h-7 rounded-full bg-black/5 dark:bg-white/5 flex items-center justify-center text-gray-400 group-hover:bg-fadebook-accent group-hover:text-white transition-all">
+                                class="w-7 h-7 rounded-full bg-black/5 dark:bg-white/5 flex items-center justify-center text-gray-400 group-hover:bg-banhafade-accent group-hover:text-white transition-all">
                                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3"
                                         d="M15 19l-7-7 7-7"></path>
@@ -210,7 +210,7 @@
                         class="p-5 rounded-[2rem] bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/5 flex flex-col items-center justify-center space-y-1">
                         <span
                             class="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">{{ __('messages.offers_modal_discount') }}</span>
-                        <span class="text-2xl font-black text-fadebook-accent">
+                        <span class="text-2xl font-black text-banhafade-accent">
                             @if ($selectedOffer->coupon)
                                 @if ($selectedOffer->coupon->discount_type === \App\Enums\DiscountType::Percentage)
                                     {{ $selectedOffer->coupon->discount_value }}%
@@ -218,7 +218,8 @@
                                     {{ $selectedOffer->coupon->discount_value }} {{ __('messages.egp') }}
                                 @endif
                             @else
-                                <span class="text-xl font-black text-fadebook-accent/80 text-nowrap">{{ __('messages.offers_referral_reward_label') }}</span>
+                                <span
+                                    class="text-xl font-black text-banhafade-accent/80 text-nowrap">{{ __('messages.offers_referral_reward_label') }}</span>
                             @endif
                         </span>
                     </div>
@@ -270,7 +271,7 @@
                     </div>
                 @else
                     <div
-                        class="relative p-6 rounded-[2.5rem] bg-gradient-to-br from-fadebook-accent to-pink-600 border border-white/20 shadow-xl overflow-hidden group">
+                        class="relative p-6 rounded-[2.5rem] bg-gradient-to-br from-banhafade-accent to-pink-600 border border-white/20 shadow-xl overflow-hidden group">
                         {{-- Decorative --}}
                         <div class="absolute -top-10 -right-10 w-24 h-24 bg-white/10 rounded-full blur-2xl"></div>
 
@@ -290,7 +291,7 @@
                                     {{ __('messages.offers_referral_desc') }}</p>
                             </div>
                             <x-ios-button href="{{ route('profile.referral') }}" wire:navigate
-                                class="!h-10 px-6 bg-white !text-fadebook-accent !rounded-xl font-black shadow-xl active:scale-95 transition-all text-[11px] uppercase">
+                                class="!h-10 px-6 bg-white !text-banhafade-accent !rounded-xl font-black shadow-xl active:scale-95 transition-all text-[11px] uppercase">
                                 {{ __('messages.offers_referral_btn') }}
                             </x-ios-button>
                         </div>

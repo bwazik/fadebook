@@ -20,8 +20,8 @@ return [
     ],
 
     'referral_reward_issued' => [
-        'ar' => "مبروك! صاحبك عمل حجز باستخدام الكود بتاعك، وتقديراً ليك ضفنالك كود خصم ({discount_amount}) تقدر تستخدمه في حلاقتك الجاية.\n\nكود الخصم: {coupon_code}\n\nشكراً لثقتك في FadeBook!",
+        'ar' => "مبروك! صاحبك عمل حجز باستخدام الكود بتاعك، وتقديراً ليك ضفنالك كود خصم ({discount_amount}) تقدر تستخدمه في حلاقتك الجاية.\n\nكود الخصم: {coupon_code}\n\nشكراً لثقتك في BanhaFade!",
     ],
 
-    // future FadeBook templates go here (booking_confirmed, booking_cancelled, etc.)
+    // future BanhaFade templates go here (booking_confirmed, booking_cancelled, etc.)
 ];

@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'app_name' => 'FadeBook',
+    'app_name' => 'BanhaFade',
     'app_slogan' => 'الحلاقة بطريقة جديدة',
     'app_description' => 'منصة حجز صالونات الحلاقة في مصر',
 
@@ -144,7 +144,7 @@ return [
 
     // Home Page specific
     'home_welcome_back' => 'أهلاً بيك، :name 👋',
-    'home_welcome_guest' => 'أهلاً بيك في FadeBook 👋',
+    'home_welcome_guest' => 'أهلاً بيك في BanhaFade 👋',
     'home_title' => 'حلاقين قريبين منك',
     'home_upcoming_bookings' => 'عندك :count حجوزات جاية',
     'home_view_details' => 'اضغط هنا عشان تشوف التفاصيل',
@@ -180,7 +180,7 @@ return [
     'address' => 'العنوان',
     'contact' => 'للتواصل',
     'working_hours' => 'مواعيد العمل',
-    'fadebook_artists' => 'فنانين الفايدي بوك',
+    'banhafade_artists' => 'فنانين الفايدي بوك',
     'services' => 'الخدمات',
     'services_ar' => 'خدمات',
     'no_services' => 'لسه مفيش خدمات',
@@ -214,7 +214,7 @@ return [
 
     'onboarding_pending_title' => 'جاري التحقق',
     'onboarding_pending_welcome' => 'شكراً لتسجيل محلك :name',
-    'onboarding_pending_description' => 'تم استقبال بيانات محلك وهي قيد المراجعة من قبل فريق FadeBook. سيتم التواصل معك عبر WhatsApp في أقرب وقت بنتيجة التحقق.',
+    'onboarding_pending_description' => 'تم استقبال بيانات محلك وهي قيد المراجعة من قبل فريق BanhaFade. سيتم التواصل معك عبر WhatsApp في أقرب وقت بنتيجة التحقق.',
     'onboarding_shop_name' => 'اسم المحل:',
     'onboarding_shop_phone' => 'رقم تليفون المحل:',
     'onboarding_owner_phone' => 'رقم صاحب المحل:',
@@ -596,7 +596,7 @@ return [
     'profile_referral_step_2_desc' => 'لمّا صاحبك يسجل بالرابط ويكمل أول حجز ليه',
     'profile_referral_step_3_title' => 'اكسب الكوبون',
     'profile_referral_step_3_desc' => 'هتاخد كود خصم فوري تستخدمه في حجزك الجاي',
-    'profile_reward_default_title' => 'مكافأة FadeBook',
+    'profile_reward_default_title' => 'مكافأة BanhaFade',
 
     // Account & Settings
     'profile_appearance_section' => 'المظهر والإشعارات',
@@ -655,7 +655,7 @@ return [
     'saving' => 'جاري الحفظ...',
     'profile_coupons_title' => 'كوبوناتي',
     'profile_coupon_discount' => 'قيمة الخصم',
-    'profile_platform_coupon' => 'عرض خاص من FadeBook',
+    'profile_platform_coupon' => 'عرض خاص من BanhaFade',
     'profile_coupon_expires' => 'ينتهي خلال :days يوم',
     'role_client' => 'عميل',
     'role_barber' => 'حلاق',

@@ -16,7 +16,7 @@
             class="relative w-full rounded-[2rem] p-6 text-white overflow-hidden shadow-2xl bg-gradient-to-br from-[#1a1a1c] to-[#2d2d30] border border-white/10 group">
             {{-- Ambient Glass Effects --}}
             <div
-                class="absolute top-0 right-0 w-32 h-32 bg-fadebook-accent/30 rounded-full blur-[40px] -mr-10 -mt-10 group-hover:scale-125 transition-transform duration-1000">
+                class="absolute top-0 right-0 w-32 h-32 bg-banhafade-accent/30 rounded-full blur-[40px] -mr-10 -mt-10 group-hover:scale-125 transition-transform duration-1000">
             </div>
             <div
                 class="absolute bottom-0 left-0 w-40 h-40 bg-blue-500/20 rounded-full blur-[50px] -ml-10 -mb-10 group-hover:scale-125 transition-transform duration-1000 delay-150">
@@ -26,7 +26,7 @@
                 <div class="flex justify-between items-start">
                     <div class="space-y-1">
                         <p class="text-white/40 text-[9px] font-black uppercase tracking-[0.3em]">عضوية التميز</p>
-                        <h2 class="text-2xl font-black tracking-tighter uppercase px-0.5">FADEBOOK REWARDS</h2>
+                        <h2 class="text-2xl font-black tracking-tighter uppercase px-0.5">BANHAFADE REWARDS</h2>
                     </div>
 
                     <div
@@ -40,15 +40,16 @@
                 </div>
 
                 {{-- Shop Selector --}}
-                @if($this->availableShops->count() > 0)
-                <div class="px-2">
-                    <p class="text-[10px] font-bold text-white/50 uppercase tracking-widest mb-2">اختر الصالون اللي هتدعو صاحبك ليه</p>
-                    <x-ios-select wire:model.live="selectedShopId">
-                        @foreach($this->availableShops as $shop)
-                            <option value="{{ $shop->id }}">{{ $shop->name }}</option>
-                        @endforeach
-                    </x-ios-select>
-                </div>
+                @if ($this->availableShops->count() > 0)
+                    <div class="px-2">
+                        <p class="text-[10px] font-bold text-white/50 uppercase tracking-widest mb-2">اختر الصالون اللي
+                            هتدعو صاحبك ليه</p>
+                        <x-ios-select wire:model.live="selectedShopId">
+                            @foreach ($this->availableShops as $shop)
+                                <option value="{{ $shop->id }}">{{ $shop->name }}</option>
+                            @endforeach
+                        </x-ios-select>
+                    </div>
                 @endif
 
                 {{-- Full Link Sharing Area --}}
@@ -58,19 +59,19 @@
                         {{ str_replace(['http://', 'https://'], '', $this->referralLink) }}
                     </span>
                     <x-copy-button :value="$this->referralLink"
-                        class="!bg-fadebook-accent !text-white !w-10 !h-10 !rounded-xl !border-0 shadow-lg shadow-fadebook-accent/20 hover:scale-105 active:scale-95 transition-all cursor-pointer" />
+                        class="!bg-banhafade-accent !text-white !w-10 !h-10 !rounded-xl !border-0 shadow-lg shadow-banhafade-accent/20 hover:scale-105 active:scale-95 transition-all cursor-pointer" />
                 </div>
 
                 <div class="flex justify-between items-end">
                     <div>
-                        <p class="text-white/30 text-[8px] font-mono tracking-[0.2em] uppercase">FADEBOOK • REWARDS
+                        <p class="text-white/30 text-[8px] font-mono tracking-[0.2em] uppercase">BANHAFADE • REWARDS
                             MEMBER</p>
                         <p class="text-white/80 font-black text-[13px] tracking-tight uppercase">{{ $this->user->name }}
                         </p>
                     </div>
 
                     <div class="flex gap-1 opacity-50">
-                        <div class="w-2.5 h-2.5 rounded-full bg-fadebook-accent"></div>
+                        <div class="w-2.5 h-2.5 rounded-full bg-banhafade-accent"></div>
                         <div class="w-2.5 h-2.5 rounded-full bg-white/20"></div>
                     </div>
                 </div>
@@ -86,7 +87,7 @@
 
         <div class="grid grid-cols-2 gap-4 mt-4">
             <div
-                class="bg-black/5 dark:bg-white/5 rounded-[2.5rem] p-6 text-center group border border-transparent hover:border-fadebook-accent/10 transition-colors shadow-sm">
+                class="bg-black/5 dark:bg-white/5 rounded-[2.5rem] p-6 text-center group border border-transparent hover:border-banhafade-accent/10 transition-colors shadow-sm">
                 <p class="text-3xl font-black text-gray-900 dark:text-white group-hover:scale-110 transition-transform">
                     {{ $this->stats['total_invites'] }}</p>
                 <span class="text-[9px] font-black text-gray-400 uppercase tracking-widest mt-1 block">إجمالي
@@ -111,7 +112,7 @@
         <div class="space-y-6 mt-6">
             <div class="flex gap-5 group">
                 <div
-                    class="w-12 h-12 rounded-[1.25rem] bg-fadebook-accent/10 flex items-center justify-center text-fadebook-accent font-black shrink-0 transition-all group-hover:rotate-6 group-hover:scale-110 shadow-sm border border-fadebook-accent/5">
+                    class="w-12 h-12 rounded-[1.25rem] bg-banhafade-accent/10 flex items-center justify-center text-banhafade-accent font-black shrink-0 transition-all group-hover:rotate-6 group-hover:scale-110 shadow-sm border border-banhafade-accent/5">
                     1</div>
                 <div class="pt-1">
                     <h4 class="text-sm font-black text-gray-900 dark:text-white uppercase tracking-tight mb-1">
@@ -158,7 +159,7 @@
                     <div class="flex items-center gap-4">
                         <div class="flex items-center gap-3">
                             <div
-                                class="w-10 h-10 rounded-[1rem] bg-fadebook-accent/10 flex items-center justify-center text-xs font-black text-fadebook-accent">
+                                class="w-10 h-10 rounded-[1rem] bg-banhafade-accent/10 flex items-center justify-center text-xs font-black text-banhafade-accent">
                                 {{ mb_substr($referral->invitee->name, 0, 1) }}
                             </div>
                             <div>
@@ -212,7 +213,8 @@
     <x-bottom-sheet wire:model="selectedReferralId" title="{{ __('messages.referral_details_title') }}">
         <x-slot:icon>
             <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                    d="M13 10V3L4 14h7v7l9-11h-7z">
                 </path>
             </svg>
         </x-slot:icon>
@@ -221,7 +223,7 @@
             <div class="space-y-8 animate-in zoom-in-95 duration-300">
                 {{-- Premium Header Card (Banner Style) --}}
                 <div class="relative rounded-[2.5rem] overflow-hidden group shadow-2xl">
-                    <div class="h-32 bg-gradient-to-br from-fadebook-accent/80 to-purple-700/80">
+                    <div class="h-32 bg-gradient-to-br from-banhafade-accent/80 to-purple-700/80">
                         <div
                             class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-20">
                         </div>
@@ -230,7 +232,7 @@
 
                     <div class="absolute bottom-5 left-6 right-6 flex items-center gap-4">
                         <div
-                            class="w-16 h-16 rounded-2xl border-4 border-white dark:border-gray-900 shadow-xl overflow-hidden shrink-0 bg-white flex items-center justify-center text-xl font-black text-fadebook-accent">
+                            class="w-16 h-16 rounded-2xl border-4 border-white dark:border-gray-900 shadow-xl overflow-hidden shrink-0 bg-white flex items-center justify-center text-xl font-black text-banhafade-accent">
                             {{ mb_substr($this->selectedReferral->invitee->name, 0, 1) }}
                         </div>
                         <div class="min-w-0">
@@ -238,7 +240,8 @@
                                 {{ $this->selectedReferral->invitee->name }}
                             </h3>
                             <p class="text-white/70 text-[10px] font-bold uppercase mt-1 tracking-widest">
-                                {{ __('messages.referral_joined_on') }} {{ $this->selectedReferral->created_at->translatedFormat('d M Y') }}
+                                {{ __('messages.referral_joined_on') }}
+                                {{ $this->selectedReferral->created_at->translatedFormat('d M Y') }}
                             </p>
                         </div>
                     </div>
@@ -280,7 +283,7 @@
                         class="p-5 rounded-[2rem] bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/5 flex flex-col items-center justify-center space-y-1">
                         <span
                             class="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">{{ __('messages.offers_modal_discount') }}</span>
-                        <span class="text-2xl font-black text-fadebook-accent">
+                        <span class="text-2xl font-black text-banhafade-accent">
                             @if ($this->selectedReferral->status === \App\Enums\ReferralStatus::Rewarded && $this->selectedReferral->coupon)
                                 @if ($this->selectedReferral->coupon->discount_type === \App\Enums\DiscountType::Percentage)
                                     {{ (int) $this->selectedReferral->coupon->discount_value }}%

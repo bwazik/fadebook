@@ -1,78 +1,76 @@
-@if(!isset($hideBottomNav) || !$hideBottomNav)
-<div class="fixed bottom-[calc(2rem+env(safe-area-inset-bottom))] left-1/2 -translate-x-1/2
+@if (!isset($hideBottomNav) || !$hideBottomNav)
+    <div class="fixed bottom-[calc(2rem+env(safe-area-inset-bottom))] left-1/2 -translate-x-1/2
             flex items-center gap-2.5 z-50
             transition-all duration-300 ease-out"
-    dir="ltr" x-data
-    :class="$store.nav.hidden ? 'opacity-0 translate-y-24 pointer-events-none' : 'opacity-100 translate-y-0'">
+        dir="ltr" x-data
+        :class="$store.nav.hidden ? 'opacity-0 translate-y-24 pointer-events-none' : 'opacity-100 translate-y-0'">
 
-    {{-- ═══════════════════════════════ --}}
-    {{-- LEFT PILL — Navigation Tabs     --}}
-    {{-- ═══════════════════════════════ --}}
-    <nav x-data="navLeftPill()" dir="rtl" @touchstart="touchStart($event)" @touchmove.prevent="touchMove($event)"
-        @touchend="touchEnd($event)"
-        class="flex items-center p-1.5 rounded-[2rem] liquid-glass transform-gpu touch-none relative">
+        {{-- ═══════════════════════════════ --}}
+        {{-- LEFT PILL — Navigation Tabs     --}}
+        {{-- ═══════════════════════════════ --}}
+        <nav x-data="navLeftPill()" dir="rtl" @touchstart="touchStart($event)" @touchmove.prevent="touchMove($event)"
+            @touchend="touchEnd($event)"
+            class="flex items-center p-1.5 rounded-[2rem] liquid-glass transform-gpu touch-none relative">
 
-        {{-- Glass gradient overlay --}}
-        <div
-            class="absolute inset-0 rounded-[2rem] pointer-events-none
+            {{-- Glass gradient overlay --}}
+            <div
+                class="absolute inset-0 rounded-[2rem] pointer-events-none
                     bg-gradient-to-b from-white/70 via-white/20 to-white/5
                     dark:from-white/10 dark:via-white/5 dark:to-transparent">
-        </div>
+            </div>
 
-        {{-- Animated active pill --}}
-        <div x-ref="pill"
-            class="absolute top-1.5 bottom-1.5 right-0
+            {{-- Animated active pill --}}
+            <div x-ref="pill"
+                class="absolute top-1.5 bottom-1.5 right-0
                     bg-white/40 dark:bg-white/10
                     backdrop-blur-md rounded-full pointer-events-none"
-            style="will-change: transform, width;"></div>
+                style="will-change: transform, width;"></div>
 
-        {{-- Tab items --}}
-        @foreach ($navItems as $item)
-            @php
-                $routeBase = str_replace('.index', '', $item['route']);
-            @endphp
-            <a href="{{ route($item['route']) }}"
-               id="tour-nav-{{ $item['route'] }}"
-               @auth wire:navigate @endauth
-               data-route="{{ $item['route'] }}"
-               data-base-route="{{ $routeBase }}"
-               class="flex flex-col items-center justify-center py-2 px-[1.1rem] relative z-10 liquid-transition whitespace-nowrap"
-               :class="isActive('{{ $item['route'] }}') ? 'text-fadebook-accent drop-shadow-[0_0_8px_rgba(1,101,225,0.4)]' : 'text-gray-500 dark:text-gray-400'">
+            {{-- Tab items --}}
+            @foreach ($navItems as $item)
+                @php
+                    $routeBase = str_replace('.index', '', $item['route']);
+                @endphp
+                <a href="{{ route($item['route']) }}" id="tour-nav-{{ $item['route'] }}" @auth wire:navigate @endauth
+                    data-route="{{ $item['route'] }}" data-base-route="{{ $routeBase }}"
+                    class="flex flex-col items-center justify-center py-2 px-[1.1rem] relative z-10 liquid-transition whitespace-nowrap"
+                    :class="isActive('{{ $item['route'] }}') ?
+                        'text-banhafade-accent drop-shadow-[0_0_8px_rgba(1,101,225,0.4)]' :
+                        'text-gray-500 dark:text-gray-400'">
 
-                <div class="relative">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                        :stroke-width="isActive('{{ $item['route'] }}') ? '2' : '1.5'" stroke="currentColor"
-                        class="w-[22px] h-[22px] liquid-transition"
-                        :class="isActive('{{ $item['route'] }}') ? 'scale-110' : 'scale-100'">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="{{ $item['icon'] }}" />
-                    </svg>
+                    <div class="relative">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                            :stroke-width="isActive('{{ $item['route'] }}') ? '2' : '1.5'" stroke="currentColor"
+                            class="w-[22px] h-[22px] liquid-transition"
+                            :class="isActive('{{ $item['route'] }}') ? 'scale-110' : 'scale-100'">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="{{ $item['icon'] }}" />
+                        </svg>
 
-                    @if (($item['badge'] ?? false) && $offerCount > 0)
-                        <span class="absolute -top-1.5 -right-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-fadebook-accent text-[10px] font-bold text-white shadow-sm ring-2 ring-white/20 dark:ring-white/10 translate-x-1 animate-in zoom-in duration-300">
-                            {{ $offerCount > 9 ? '9+' : $offerCount }}
-                        </span>
-                    @endif
-                </div>
-                <span class="text-[10px] font-semibold mt-0.5">{{ $item['label'] }}</span>
-            </a>
-        @endforeach
-    </nav>
+                        @if (($item['badge'] ?? false) && $offerCount > 0)
+                            <span
+                                class="absolute -top-1.5 -right-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-banhafade-accent text-[10px] font-bold text-white shadow-sm ring-2 ring-white/20 dark:ring-white/10 translate-x-1 animate-in zoom-in duration-300">
+                                {{ $offerCount > 9 ? '9+' : $offerCount }}
+                            </span>
+                        @endif
+                    </div>
+                    <span class="text-[10px] font-semibold mt-0.5">{{ $item['label'] }}</span>
+                </a>
+            @endforeach
+        </nav>
 
-    {{-- ═══════════════════════════════ --}}
-    {{-- RIGHT PILL — Search Icon Only  --}}
-    {{-- ═══════════════════════════════ --}}
-    <button type="button"
-        @click="$dispatch('open-global-search')"
-        class="flex items-center justify-center p-3 rounded-[2rem] liquid-glass liquid-button text-gray-500 dark:text-gray-400">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-            stroke-width="1.5" stroke="currentColor"
-            class="w-[22px] h-[22px] liquid-transition scale-100">
-            <path stroke-linecap="round" stroke-linejoin="round"
-                d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 15.803a7.5 7.5 0 0010.607 0z" />
-        </svg>
-    </button>
+        {{-- ═══════════════════════════════ --}}
+        {{-- RIGHT PILL — Search Icon Only  --}}
+        {{-- ═══════════════════════════════ --}}
+        <button type="button" @click="$dispatch('open-global-search')"
+            class="flex items-center justify-center p-3 rounded-[2rem] liquid-glass liquid-button text-gray-500 dark:text-gray-400">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                stroke="currentColor" class="w-[22px] h-[22px] liquid-transition scale-100">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 15.803a7.5 7.5 0 0010.607 0z" />
+            </svg>
+        </button>
 
-</div>
+    </div>
 @endif
 
 <script>
@@ -92,19 +90,22 @@
                     // Re-calculate on Livewire navigation
                     document.addEventListener('livewire:navigated', () => {
                         this.$nextTick(() => {
-                            const activeTab = this.tabs.find(t => this.isActive(t.dataset.route)) || this.tabs[
+                            const activeTab = this.tabs.find(t => this.isActive(t
+                                .dataset.route)) || this.tabs[
                                 0];
                             this.snapTo(activeTab, true);
                         });
                     });
 
                     setTimeout(() => {
-                        const activeTab = this.tabs.find(t => this.isActive(t.dataset.route)) || this.tabs[0];
+                        const activeTab = this.tabs.find(t => this.isActive(t.dataset.route)) ||
+                            this.tabs[0];
                         this.snapTo(activeTab, true);
                     }, 50);
 
                     window.addEventListener('resize', () => {
-                        const activeTab = this.tabs.find(t => this.isActive(t.dataset.route)) || this.tabs[0];
+                        const activeTab = this.tabs.find(t => this.isActive(t.dataset.route)) ||
+                            this.tabs[0];
                         this.snapTo(activeTab, true);
                     });
                 },

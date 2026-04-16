@@ -11,11 +11,11 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <!-- Logo Upload -->
             <div class="liquid-glass rounded-3xl p-5 border border-white/20 shadow-sm flex flex-col items-center">
-                <h2 class="text-xs font-black text-fadebook-accent uppercase tracking-[0.2em] mb-4 w-full text-center">
+                <h2 class="text-xs font-black text-banhafade-accent uppercase tracking-[0.2em] mb-4 w-full text-center">
                     شعار المحل</h2>
                 <div class="relative group">
                     <div
-                        class="w-24 h-24 rounded-full overflow-hidden border-2 border-fadebook-accent/30 shadow-lg bg-black/5 dark:bg-white/5 flex items-center justify-center relative">
+                        class="w-24 h-24 rounded-full overflow-hidden border-2 border-banhafade-accent/30 shadow-lg bg-black/5 dark:bg-white/5 flex items-center justify-center relative">
                         @if ($logo)
                             <img src="{{ $logo->temporaryUrl() }}" class="w-full h-full object-cover">
                         @elseif($shop->getImage('logo')->exists())
@@ -43,17 +43,17 @@
                     </div>
                 </div>
                 <div wire:loading wire:target="logo" class="mt-2">
-                    <p class="text-[9px] font-black text-fadebook-accent animate-pulse">جاري الرفع...</p>
+                    <p class="text-[9px] font-black text-banhafade-accent animate-pulse">جاري الرفع...</p>
                 </div>
             </div>
 
             <!-- Banner Upload -->
             <div class="liquid-glass rounded-3xl p-5 border border-white/20 shadow-sm flex flex-col items-center">
-                <h2 class="text-xs font-black text-fadebook-accent uppercase tracking-[0.2em] mb-4 w-full text-center">
+                <h2 class="text-xs font-black text-banhafade-accent uppercase tracking-[0.2em] mb-4 w-full text-center">
                     غلاف المحل</h2>
                 <div class="relative group w-full">
                     <div
-                        class="w-full h-24 rounded-2xl overflow-hidden border-2 border-fadebook-accent/30 shadow-lg bg-black/5 dark:bg-white/5 flex items-center justify-center relative">
+                        class="w-full h-24 rounded-2xl overflow-hidden border-2 border-banhafade-accent/30 shadow-lg bg-black/5 dark:bg-white/5 flex items-center justify-center relative">
                         @if ($banner)
                             <img src="{{ $banner->temporaryUrl() }}" class="w-full h-full object-cover">
                         @elseif($shop->getImage('banner')->exists())
@@ -79,14 +79,14 @@
                     </div>
                 </div>
                 <div wire:loading wire:target="banner" class="mt-2">
-                    <p class="text-[9px] font-black text-fadebook-accent animate-pulse">جاري الرفع...</p>
+                    <p class="text-[9px] font-black text-banhafade-accent animate-pulse">جاري الرفع...</p>
                 </div>
             </div>
         </div>
 
         <!-- Gallery -->
         <div class="liquid-glass rounded-3xl p-5 border border-white/20 shadow-sm">
-            <h2 class="text-xs font-black text-fadebook-accent uppercase tracking-[0.2em] mb-4">معرض الصور</h2>
+            <h2 class="text-xs font-black text-banhafade-accent uppercase tracking-[0.2em] mb-4">معرض الصور</h2>
 
             <div class="grid grid-cols-3 gap-3">
                 <!-- Existing Gallery -->
@@ -107,9 +107,9 @@
                 <!-- New Gallery Previews -->
                 @foreach ($newGalleryImages as $index => $img)
                     <div
-                        class="relative aspect-square rounded-xl overflow-hidden border border-fadebook-accent/30 shadow-sm">
+                        class="relative aspect-square rounded-xl overflow-hidden border border-banhafade-accent/30 shadow-sm">
                         <img src="{{ $img->temporaryUrl() }}" class="w-full h-full object-cover">
-                        <div class="absolute inset-0 bg-fadebook-accent/20 flex items-center justify-center">
+                        <div class="absolute inset-0 bg-banhafade-accent/20 flex items-center justify-center">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                 stroke-width="2.5" stroke="currentColor" class="w-4 h-4 text-white animate-pulse">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
@@ -120,20 +120,20 @@
 
                 <!-- Upload Button -->
                 <label
-                    class="aspect-square rounded-xl border-2 border-dashed border-fadebook-accent/30 bg-fadebook-accent/5 flex flex-col items-center justify-center cursor-pointer active:scale-95 transition-all group overflow-hidden relative">
+                    class="aspect-square rounded-xl border-2 border-dashed border-banhafade-accent/30 bg-banhafade-accent/5 flex flex-col items-center justify-center cursor-pointer active:scale-95 transition-all group overflow-hidden relative">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                         stroke="currentColor"
-                        class="w-6 h-6 text-fadebook-accent group-hover:scale-110 transition-transform">
+                        class="w-6 h-6 text-banhafade-accent group-hover:scale-110 transition-transform">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                     </svg>
-                    <span class="text-[8px] font-black text-fadebook-accent uppercase tracking-widest mt-1">إضافة
+                    <span class="text-[8px] font-black text-banhafade-accent uppercase tracking-widest mt-1">إضافة
                         صورة</span>
                     <input type="file" wire:model="newGalleryImages" class="hidden" multiple accept="image/*">
 
                     <div wire:loading wire:target="newGalleryImages"
                         class="absolute inset-0 bg-white/60 dark:bg-black/60 backdrop-blur-sm flex items-center justify-center">
                         <div
-                            class="w-4 h-4 border-2 border-fadebook-accent border-t-transparent rounded-full animate-spin">
+                            class="w-4 h-4 border-2 border-banhafade-accent border-t-transparent rounded-full animate-spin">
                         </div>
                     </div>
                 </label>
@@ -142,7 +142,7 @@
 
         <!-- Basic Info -->
         <div class="liquid-glass rounded-3xl p-5 border border-white/20 shadow-sm space-y-4">
-            <h2 class="text-xs font-black text-fadebook-accent uppercase tracking-[0.2em] mb-4">البيانات الأساسية</h2>
+            <h2 class="text-xs font-black text-banhafade-accent uppercase tracking-[0.2em] mb-4">البيانات الأساسية</h2>
 
             <x-ios-input label="اسم المحل" wire:model="name" type="text" />
             <x-ios-input label="رقم الهاتف" wire:model="phone" type="tel" dir="ltr" />
@@ -155,7 +155,7 @@
 
         <!-- Booking Settings -->
         <div class="liquid-glass rounded-3xl p-5 border border-white/20 shadow-sm space-y-6">
-            <h2 class="text-xs font-black text-fadebook-accent uppercase tracking-[0.2em] mb-4">إعدادات الحجز</h2>
+            <h2 class="text-xs font-black text-banhafade-accent uppercase tracking-[0.2em] mb-4">إعدادات الحجز</h2>
 
             <!-- Online Toggle -->
             <div @click="$refs.onlineToggle.click()"
@@ -168,7 +168,7 @@
                 <div class="relative inline-flex items-center">
                     <input type="checkbox" wire:model="is_online" x-ref="onlineToggle" class="sr-only peer">
                     <div
-                        class="w-11 h-6 bg-gray-200/50 peer-focus:outline-none rounded-full peer dark:bg-white/5 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-fadebook-accent">
+                        class="w-11 h-6 bg-gray-200/50 peer-focus:outline-none rounded-full peer dark:bg-white/5 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-banhafade-accent">
                     </div>
                 </div>
             </div>
@@ -194,7 +194,7 @@
 
         <!-- Payment Methods Management -->
         <div class="liquid-glass rounded-3xl p-5 border border-white/20 shadow-sm space-y-6">
-            <h2 class="text-xs font-black text-fadebook-accent uppercase tracking-[0.2em] mb-2">وسائل الدفع المتاحة
+            <h2 class="text-xs font-black text-banhafade-accent uppercase tracking-[0.2em] mb-2">وسائل الدفع المتاحة
             </h2>
             <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest leading-relaxed">
                 أضف حساباتك (فودافون كاش أو انستا باي) لاستقبال العربون من العملاء
@@ -229,7 +229,7 @@
                             <div class="flex items-center gap-1.5">
                                 {{-- Edit Button --}}
                                 <button type="button" wire:click="editPaymentMethod({{ $method['id'] }})"
-                                    class="w-9 h-9 rounded-xl bg-fadebook-accent/10 flex items-center justify-center text-fadebook-accent shadow-sm active:scale-95 transition-all">
+                                    class="w-9 h-9 rounded-xl bg-banhafade-accent/10 flex items-center justify-center text-banhafade-accent shadow-sm active:scale-95 transition-all">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                         stroke-width="2.5" stroke="currentColor" class="w-4.5 h-4.5">
                                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -293,14 +293,14 @@
 
                 <button type="button" @click="open = !open; if(!open) $wire.resetPaymentForm()"
                     class="w-full h-13 rounded-2xl border-2 border-dashed flex items-center justify-center gap-2.5 group transition-all
-                           {{ $editingMethodId ? 'border-fadebook-accent bg-fadebook-accent/10' : 'border-fadebook-accent/30 bg-fadebook-accent/5' }}">
+                           {{ $editingMethodId ? 'border-banhafade-accent bg-banhafade-accent/10' : 'border-banhafade-accent/30 bg-banhafade-accent/5' }}">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3"
                         stroke="currentColor"
-                        class="w-4.5 h-4.5 text-fadebook-accent transition-transform duration-300"
+                        class="w-4.5 h-4.5 text-banhafade-accent transition-transform duration-300"
                         :class="open ? 'rotate-45' : ''">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                     </svg>
-                    <span class="text-[13px] font-black text-fadebook-accent uppercase tracking-widest">
+                    <span class="text-[13px] font-black text-banhafade-accent uppercase tracking-widest">
                         {{ $editingMethodId ? 'تعديل وسيلة الدفع الحالية' : 'إضافة وسيلة دفع جديدة' }}
                     </span>
                 </button>
@@ -335,7 +335,7 @@
 
         <!-- Opening Hours -->
         <div class="liquid-glass rounded-3xl p-5 border border-white/20 shadow-sm space-y-4">
-            <h2 class="text-xs font-black text-fadebook-accent uppercase tracking-[0.2em] mb-4">مواعيد العمل</h2>
+            <h2 class="text-xs font-black text-banhafade-accent uppercase tracking-[0.2em] mb-4">مواعيد العمل</h2>
 
             <div class="space-y-3">
                 @foreach ($days as $day)
@@ -350,7 +350,7 @@
                                 <input type="checkbox" wire:model.live="opening_hours.{{ $day }}.is_open"
                                     x-ref="toggle_{{ $day }}" class="sr-only peer">
                                 <div
-                                    class="w-11 h-6 bg-gray-200/50 peer-focus:outline-none rounded-full peer dark:bg-white/5 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-fadebook-accent">
+                                    class="w-11 h-6 bg-gray-200/50 peer-focus:outline-none rounded-full peer dark:bg-white/5 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-banhafade-accent">
                                 </div>
                             </div>
                         </div>
@@ -361,13 +361,13 @@
                                     <label
                                         class="block text-[8px] font-black text-gray-400 uppercase tracking-[0.2em] mb-1.5 ms-2">من</label>
                                     <input type="time" wire:model="opening_hours.{{ $day }}.open"
-                                        class="w-full bg-black/5 dark:bg-white/5 rounded-xl border-0 text-gray-900 dark:text-white text-xs font-bold p-3 focus:ring-2 focus:ring-fadebook-accent/50 outline-none">
+                                        class="w-full bg-black/5 dark:bg-white/5 rounded-xl border-0 text-gray-900 dark:text-white text-xs font-bold p-3 focus:ring-2 focus:ring-banhafade-accent/50 outline-none">
                                 </div>
                                 <div class="flex-1">
                                     <label
                                         class="block text-[8px] font-black text-gray-400 uppercase tracking-[0.2em] mb-1.5 ms-2">إلى</label>
                                     <input type="time" wire:model="opening_hours.{{ $day }}.close"
-                                        class="w-full bg-black/5 dark:bg-white/5 rounded-xl border-0 text-gray-900 dark:text-white text-xs font-bold p-3 focus:ring-2 focus:ring-fadebook-accent/50 outline-none">
+                                        class="w-full bg-black/5 dark:bg-white/5 rounded-xl border-0 text-gray-900 dark:text-white text-xs font-bold p-3 focus:ring-2 focus:ring-banhafade-accent/50 outline-none">
                                 </div>
                             </div>
                         @else

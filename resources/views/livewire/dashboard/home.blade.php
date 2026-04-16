@@ -12,10 +12,10 @@
         <div class="flex items-center gap-3">
             @if ($this->isOwner)
                 <a href="{{ route('home') }}" wire:navigate
-                    class="w-12 h-12 rounded-2xl bg-fadebook-accent/10 border-2 border-fadebook-accent/20 shadow-sm overflow-hidden flex items-center justify-center liquid-button group">
+                    class="w-12 h-12 rounded-2xl bg-banhafade-accent/10 border-2 border-banhafade-accent/20 shadow-sm overflow-hidden flex items-center justify-center liquid-button group">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
                         stroke="currentColor"
-                        class="w-6 h-6 text-fadebook-accent group-hover:scale-110 transition-transform">
+                        class="w-6 h-6 text-banhafade-accent group-hover:scale-110 transition-transform">
                         <path stroke-linecap="round" stroke-linejoin="round"
                             d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
                     </svg>
@@ -39,19 +39,21 @@
 
     <div class="grid grid-cols-3 gap-2.5 mb-6">
         <div class="liquid-glass rounded-2xl p-3.5 border border-white/20 shadow-sm transition-all hover:scale-[1.02]">
-            <p class="text-[9px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-1.5 leading-none">
+            <p
+                class="text-[9px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-1.5 leading-none">
                 {{ __('messages.month_bookings') }}
             </p>
             <p class="text-xl font-black text-gray-900 dark:text-white leading-none">
                 {{ $this->stats['total_bookings'] }}
             </p>
         </div>
-        <div class="liquid-glass rounded-2xl p-3.5 border border-white/20 shadow-sm relative overflow-hidden transition-all hover:scale-[1.02]">
-            <div class="absolute inset-0 bg-fadebook-accent/5 pointer-events-none"></div>
-            <p class="text-[9px] font-bold text-fadebook-accent uppercase tracking-widest mb-1.5 leading-none">
+        <div
+            class="liquid-glass rounded-2xl p-3.5 border border-white/20 shadow-sm relative overflow-hidden transition-all hover:scale-[1.02]">
+            <div class="absolute inset-0 bg-banhafade-accent/5 pointer-events-none"></div>
+            <p class="text-[9px] font-bold text-banhafade-accent uppercase tracking-widest mb-1.5 leading-none">
                 {{ __('messages.net_amount_egp') }}
             </p>
-            <p class="text-xl font-black text-fadebook-accent leading-none">
+            <p class="text-xl font-black text-banhafade-accent leading-none">
                 {{ number_format($this->stats['net_payout'], 0) }}
             </p>
         </div>
@@ -63,13 +65,18 @@
                 <p class="text-xl font-black text-gray-900 dark:text-white leading-none">
                     {{ (float) $this->stats['average_rating'] }}
                 </p>
-                @if($this->stats['average_rating'] > 0)
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-3.5 h-3.5 text-yellow-400">
-                        <path fill-rule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006z" clip-rule="evenodd" />
+                @if ($this->stats['average_rating'] > 0)
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+                        class="w-3.5 h-3.5 text-yellow-400">
+                        <path fill-rule="evenodd"
+                            d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006z"
+                            clip-rule="evenodd" />
                     </svg>
                 @else
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-3.5 h-3.5 text-blue-500">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 0 1-1.043 3.296 3.745 3.745 0 0 1-3.296 1.043A3.745 3.745 0 0 1 12 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 0 1-3.296-1.043 3.745 3.745 0 0 1-1.043-3.296A3.745 3.745 0 0 1 3 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 0 1 1.043-3.296 3.746 3.746 0 0 1 3.296-1.043A3.746 3.746 0 0 1 12 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 0 1 3.296 1.043 3.746 3.746 0 0 1 1.043 3.296A3.745 3.745 0 0 1 21 12Z" />
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                        stroke="currentColor" class="w-3.5 h-3.5 text-blue-500">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M9 12.75 11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 0 1-1.043 3.296 3.745 3.745 0 0 1-3.296 1.043A3.745 3.745 0 0 1 12 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 0 1-3.296-1.043 3.745 3.745 0 0 1-1.043-3.296A3.745 3.745 0 0 1 3 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 0 1 1.043-3.296 3.746 3.746 0 0 1 3.296-1.043A3.746 3.746 0 0 1 12 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 0 1 3.296 1.043 3.746 3.746 0 0 1 1.043 3.296A3.745 3.745 0 0 1 21 12Z" />
                     </svg>
                 @endif
             </div>
@@ -77,8 +84,8 @@
     </div>
 
     @if ($this->pendingCount > 0)
-        <x-home.info-card :href="route('dashboard.reservations')" title="{{ __('messages.pending_confirmations') }}" :subtitle="__('messages.pending_confirmations_desc', ['count' => $this->pendingCount])" color="fadebook-accent"
-            class="mb-8 !px-0 animate-in fade-in slide-in-from-top-4 duration-500">
+        <x-home.info-card :href="route('dashboard.reservations')" title="{{ __('messages.pending_confirmations') }}" :subtitle="__('messages.pending_confirmations_desc', ['count' => $this->pendingCount])"
+            color="banhafade-accent" class="mb-8 !px-0 animate-in fade-in slide-in-from-top-4 duration-500">
             <x-slot name="icon">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5"
                     stroke="currentColor" class="w-5 h-5">
@@ -148,7 +155,7 @@
     </div>
 
     <!-- Barber Performance Carousel -->
-    @if($this->barberPerformance->isNotEmpty())
+    @if ($this->barberPerformance->isNotEmpty())
         <div class="mb-8">
             <div class="flex items-center justify-between mb-4">
                 <h2 class="text-lg font-black text-gray-900 dark:text-white uppercase tracking-tighter">
@@ -156,33 +163,46 @@
                 </h2>
             </div>
             <div class="flex gap-4 overflow-x-auto no-scrollbar -mx-4 px-4 pb-2 snap-x">
-                @foreach($this->barberPerformance as $barber)
-                    <div class="shrink-0 snap-start w-32 liquid-glass rounded-2xl p-4 border border-white/20 shadow-sm flex flex-col items-center">
+                @foreach ($this->barberPerformance as $barber)
+                    <div
+                        class="shrink-0 snap-start w-32 liquid-glass rounded-2xl p-4 border border-white/20 shadow-sm flex flex-col items-center">
                         <div class="relative mb-3">
                             @php $photo = $barber->getImage('photo')->first(); @endphp
                             @if ($photo)
                                 <img src="{{ Storage::url($photo->path) }}" alt="{{ $barber->name }}"
                                     class="w-14 h-14 rounded-full object-cover border-2 border-white/50 shadow-sm">
                             @else
-                                <div class="w-14 h-14 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center border-2 border-white/50 shadow-sm">
-                                    <span class="text-xl text-gray-400 font-black uppercase">{{ mb_substr($barber->name, 0, 1) }}</span>
+                                <div
+                                    class="w-14 h-14 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center border-2 border-white/50 shadow-sm">
+                                    <span
+                                        class="text-xl text-gray-400 font-black uppercase">{{ mb_substr($barber->name, 0, 1) }}</span>
                                 </div>
                             @endif
-                            <div class="absolute -bottom-1 left-1/2 -translate-x-1/2 bg-yellow-400 text-white text-[9px] font-black px-1.5 py-0.5 rounded-full shadow-md flex items-center gap-0.5">
-                                @if($barber->average_rating > 0)
+                            <div
+                                class="absolute -bottom-1 left-1/2 -translate-x-1/2 bg-yellow-400 text-white text-[9px] font-black px-1.5 py-0.5 rounded-full shadow-md flex items-center gap-0.5">
+                                @if ($barber->average_rating > 0)
                                     <span>{{ (float) $barber->average_rating }}</span>
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-2 h-2">
-                                        <path fill-rule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006z" clip-rule="evenodd" />
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+                                        class="w-2 h-2">
+                                        <path fill-rule="evenodd"
+                                            d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006z"
+                                            clip-rule="evenodd" />
                                     </svg>
                                 @else
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-2.5 h-2.5">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 0 1-1.043 3.296 3.745 3.745 0 0 1-3.296 1.043A3.745 3.745 0 0 1 12 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 0 1-3.296-1.043 3.745 3.745 0 0 1-1.043-3.296A3.745 3.745 0 0 1 3 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 0 1 1.043-3.296 3.746 3.746 0 0 1 3.296-1.043A3.746 3.746 0 0 1 12 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 0 1 3.296 1.043 3.746 3.746 0 0 1 1.043 3.296A3.745 3.745 0 0 1 21 12Z" />
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                        stroke-width="2" stroke="currentColor" class="w-2.5 h-2.5">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M9 12.75 11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 0 1-1.043 3.296 3.745 3.745 0 0 1-3.296 1.043A3.745 3.745 0 0 1 12 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 0 1-3.296-1.043 3.745 3.745 0 0 1-1.043-3.296A3.745 3.745 0 0 1 3 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 0 1 1.043-3.296 3.746 3.746 0 0 1 3.296-1.043A3.746 3.746 0 0 1 12 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 0 1 3.296 1.043 3.746 3.746 0 0 1 1.043 3.296A3.745 3.745 0 0 1 21 12Z" />
                                     </svg>
                                 @endif
                             </div>
                         </div>
-                        <h3 class="text-[11px] font-black text-gray-900 dark:text-white uppercase truncate w-full text-center">{{ $barber->name }}</h3>
-                        <span class="text-[9px] text-gray-400 font-bold mt-1 uppercase tracking-tighter">{{ $barber->total_reviews }} {{ __('messages.reviews') }}</span>
+                        <h3
+                            class="text-[11px] font-black text-gray-900 dark:text-white uppercase truncate w-full text-center">
+                            {{ $barber->name }}</h3>
+                        <span
+                            class="text-[9px] text-gray-400 font-bold mt-1 uppercase tracking-tighter">{{ $barber->total_reviews }}
+                            {{ __('messages.reviews') }}</span>
                     </div>
                 @endforeach
             </div>
@@ -195,14 +215,16 @@
             <h2 class="text-lg font-black text-gray-900 dark:text-white uppercase tracking-tighter">
                 {{ __('messages.today_bookings') }}
             </h2>
-            <span class="text-[10px] font-black text-gray-400 bg-black/5 dark:bg-white/5 px-2 py-1 rounded-full uppercase tracking-widest">
+            <span
+                class="text-[10px] font-black text-gray-400 bg-black/5 dark:bg-white/5 px-2 py-1 rounded-full uppercase tracking-widest">
                 {{ $this->todayBookings->count() }} {{ __('messages.booking_unit') }}
             </span>
         </div>
 
         <div class="space-y-3">
             @forelse($this->todayBookings as $booking)
-                <div class="liquid-glass rounded-2xl p-4 border border-white/20 shadow-sm flex items-center justify-between">
+                <div
+                    class="liquid-glass rounded-2xl p-4 border border-white/20 shadow-sm flex items-center justify-between">
                     <div>
                         <p class="text-xs font-black text-gray-900 dark:text-white uppercase mb-1">
                             {{ $booking->client->name }}
@@ -213,7 +235,7 @@
                         </p>
                     </div>
                     <div class="text-left">
-                        <p class="text-sm font-black text-fadebook-accent tracking-widest" dir="ltr">
+                        <p class="text-sm font-black text-banhafade-accent tracking-widest" dir="ltr">
                             {{ $booking->scheduled_at->format('g:i A') }}
                         </p>
                         <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mt-1">
@@ -222,7 +244,8 @@
                     </div>
                 </div>
             @empty
-                <x-empty-state title="{{ __('messages.no_bookings_today') }}" description="{{ __('messages.no_bookings_today_desc') }}">
+                <x-empty-state title="{{ __('messages.no_bookings_today') }}"
+                    description="{{ __('messages.no_bookings_today_desc') }}">
                     <x-slot name="icon">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                             stroke-width="1.5" stroke="currentColor" class="w-8 h-8 opacity-60">
@@ -236,12 +259,13 @@
 
         <!-- Infinite Scroll Sentinel -->
         @if ($this->hasMore)
-            <div wire:key="sentinel-{{ $this->perPage }}" wire:intersect="loadMore" class="flex justify-center py-8">
+            <div wire:key="sentinel-{{ $this->perPage }}" wire:intersect="loadMore"
+                class="flex justify-center py-8">
                 <div
                     class="flex items-center gap-2 px-4 py-2 rounded-full border border-black/5 dark:border-white/10 bg-white/40 dark:bg-white/5 backdrop-blur-xl">
                     <span class="text-xs font-bold text-gray-500">{{ __('messages.loading_more_dashboard') }}</span>
-                    <svg class="animate-spin h-4 w-4 text-fadebook-accent" xmlns="http://www.w3.org/2000/svg" fill="none"
-                        viewBox="0 0 24 24">
+                    <svg class="animate-spin h-4 w-4 text-banhafade-accent" xmlns="http://www.w3.org/2000/svg"
+                        fill="none" viewBox="0 0 24 24">
                         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
                             stroke-width="4"></circle>
                         <path class="opacity-75" fill="currentColor"

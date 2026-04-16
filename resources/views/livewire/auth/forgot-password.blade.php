@@ -18,10 +18,13 @@
         </div>
 
         <!-- Step 1: Phone -->
-        <div x-show="step === 1" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 translate-x-4" x-transition:enter-end="opacity-100 translate-x-0" style="display: none;">
+        <div x-show="step === 1" x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="opacity-0 translate-x-4" x-transition:enter-end="opacity-100 translate-x-0"
+            style="display: none;">
             <form wire:submit="sendOtp" class="space-y-4">
                 <div class="mb-4 space-y-4">
-                    <x-ios-input label="{{ __('messages.phone') }}" wire:model="phone" type="tel" id="phone" dir="ltr" placeholder="01xxxxxxxxx" />
+                    <x-ios-input label="{{ __('messages.phone') }}" wire:model="phone" type="tel" id="phone"
+                        dir="ltr" placeholder="01xxxxxxxxx" />
                 </div>
 
                 <x-ios-button target="sendOtp">{{ __('messages.send_verification_code') }}</x-ios-button>
@@ -29,7 +32,9 @@
         </div>
 
         <!-- Step 2: OTP -->
-        <div x-show="step === 2" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 translate-x-4" x-transition:enter-end="opacity-100 translate-x-0" style="display: none;">
+        <div x-show="step === 2" x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="opacity-0 translate-x-4" x-transition:enter-end="opacity-100 translate-x-0"
+            style="display: none;">
             <form wire:submit="verifyOtp" class="space-y-4">
                 <p class="text-sm text-center text-gray-600 dark:text-gray-400 mb-4">
                     {!! __('messages.otp_whatsapp_hint', ['phone' => '<span dir="ltr" class="inline-block">' . $phone . '</span>']) !!}
@@ -37,11 +42,14 @@
                 <div class="mb-4">
                     <x-otp-input model="otp" :digits="6" />
                 </div>
-                @error('otp') <span class="text-red-500 text-xs block text-right mb-4">{{ $message }}</span> @enderror
+                @error('otp')
+                    <span class="text-red-500 text-xs block text-right mb-4">{{ $message }}</span>
+                @enderror
 
                 <div class="flex gap-3">
                     <div class="w-1/3">
-                        <x-ios-button type="button" wire:click="goBack" variant="secondary">{{ __('messages.back') }}</x-ios-button>
+                        <x-ios-button type="button" wire:click="goBack"
+                            variant="secondary">{{ __('messages.back') }}</x-ios-button>
                     </div>
                     <div class="w-2/3">
                         <x-ios-button target="verifyOtp">{{ __('messages.confirm_otp') }}</x-ios-button>
@@ -51,10 +59,14 @@
 
             <div class="mt-6 text-sm text-gray-500 font-tajawal text-center">
                 {{ __('messages.didnt_get_code') }}
-                <button type="button" wire:click="resendOtp" wire:loading.attr="disabled" :disabled="cooldown > 0" :class="cooldown > 0 ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'" class="text-fadebook-accent hover:text-red-600 hover:underline font-bold transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                <button type="button" wire:click="resendOtp" wire:loading.attr="disabled" :disabled="cooldown > 0"
+                    :class="cooldown > 0 ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'"
+                    class="text-banhafade-accent hover:text-red-600 hover:underline font-bold transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
                     <span wire:loading.remove wire:target="resendOtp">
                         <span x-show="cooldown <= 0">{{ __('messages.resend_code') }}</span>
-                        <span x-show="cooldown > 0" x-text="'{{ __('messages.otp_resend_countdown', ['seconds' => '']) }}'.replace(':seconds', cooldown)" dir="rtl"></span>
+                        <span x-show="cooldown > 0"
+                            x-text="'{{ __('messages.otp_resend_countdown', ['seconds' => '']) }}'.replace(':seconds', cooldown)"
+                            dir="rtl"></span>
                     </span>
                     <span wire:loading wire:target="resendOtp">{{ __('messages.sending_code') }}</span>
                 </button>
@@ -62,22 +74,27 @@
         </div>
 
         <!-- Step 3: New Password -->
-        <div x-show="step === 3" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 translate-x-4" x-transition:enter-end="opacity-100 translate-x-0" style="display: none;">
+        <div x-show="step === 3" x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="opacity-0 translate-x-4" x-transition:enter-end="opacity-100 translate-x-0"
+            style="display: none;">
             <form wire:submit="resetPassword" class="space-y-4">
                 <div class="mb-4 space-y-4">
-                    <x-ios-input label="{{ __('messages.new_password') }}" wire:model="password" type="password" id="new_password" dir="ltr" placeholder="••••••••" />
-                    <x-ios-input label="{{ __('messages.confirm_password') }}" wire:model="password_confirmation" type="password" id="password_confirmation" dir="ltr" placeholder="••••••••" />
+                    <x-ios-input label="{{ __('messages.new_password') }}" wire:model="password" type="password"
+                        id="new_password" dir="ltr" placeholder="••••••••" />
+                    <x-ios-input label="{{ __('messages.confirm_password') }}" wire:model="password_confirmation"
+                        type="password" id="password_confirmation" dir="ltr" placeholder="••••••••" />
                 </div>
 
                 <x-ios-button target="resetPassword">{{ __('messages.save_password') }}</x-ios-button>
             </form>
         </div>
 
-        @if($step === 1)
-        <div class="mt-8 text-center text-sm text-gray-600 dark:text-gray-400">
-            {{ __('messages.remembered_password') }}
-            <a href="{{ route('login') }}" wire:navigate class="font-bold text-fadebook-accent hover:text-red-600 hover:underline">{{ __('messages.login') }}</a>
-        </div>
+        @if ($step === 1)
+            <div class="mt-8 text-center text-sm text-gray-600 dark:text-gray-400">
+                {{ __('messages.remembered_password') }}
+                <a href="{{ route('login') }}" wire:navigate
+                    class="font-bold text-banhafade-accent hover:text-red-600 hover:underline">{{ __('messages.login') }}</a>
+            </div>
         @endif
     </div>
 </div>

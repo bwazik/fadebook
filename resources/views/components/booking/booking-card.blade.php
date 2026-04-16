@@ -6,11 +6,9 @@
 @endphp
 
 <{{ $tag }}
-    @if (!$isOwner)
-        href="{{ route('booking.show', $booking->uuid) }}" wire:navigate
+    @if (!$isOwner) href="{{ route('booking.show', $booking->uuid) }}" wire:navigate
     @else
-        wire:click="openBookingDetails({{ $booking->id }})"
-    @endif
+        wire:click="openBookingDetails({{ $booking->id }})" @endif
     {{ $attributes->merge(['class' => 'block liquid-glass ' . (!$isOwner ? 'liquid-button' : 'cursor-pointer active:scale-[0.99]') . ' rounded-[1.5rem] p-4 border border-white/20 shadow-sm transition-all relative overflow-hidden']) }}>
     <div class="flex justify-between items-start mb-3">
         <div class="flex items-center gap-3">
@@ -83,7 +81,7 @@
         <div class="shrink-0 text-left">
             <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest leading-none mb-1">
                 {{ __('messages.booking_code') }}</p>
-            <p class="text-xs font-black text-fadebook-accent tracking-widest" dir="ltr">
+            <p class="text-xs font-black text-banhafade-accent tracking-widest" dir="ltr">
                 #{{ $booking->booking_code }}
             </p>
         </div>
@@ -92,21 +90,24 @@
     <!-- Owner Actions & Payment Info -->
     @if ($isOwner)
         @if ($booking->payment_method_id && $booking->status === \App\Enums\BookingStatus::Pending)
-            <div class="mt-4 p-3 rounded-2xl bg-fadebook-accent/5 border border-fadebook-accent/10 space-y-2">
+            <div class="mt-4 p-3 rounded-2xl bg-banhafade-accent/5 border border-banhafade-accent/10 space-y-2">
                 <div class="flex justify-between items-center">
-                    <span class="text-[9px] font-black text-gray-400 uppercase tracking-widest">{{ __('messages.booking_payment_method_title') }}</span>
+                    <span
+                        class="text-[9px] font-black text-gray-400 uppercase tracking-widest">{{ __('messages.booking_payment_method_title') }}</span>
                     <span class="text-[10px] font-black text-gray-900 dark:text-white text-left">
-                         {{ $booking->paymentMethod?->type->getLabel() ?? 'N/A' }}
+                        {{ $booking->paymentMethod?->type->getLabel() ?? 'N/A' }}
                     </span>
                 </div>
                 <div class="flex justify-between items-center">
-                    <span class="text-[9px] font-black text-gray-400 uppercase tracking-widest">{{ __('messages.booking_payment_ref_label') }}</span>
-                    <span class="text-[11px] font-black text-fadebook-accent tracking-widest text-left" dir="ltr">
+                    <span
+                        class="text-[9px] font-black text-gray-400 uppercase tracking-widest">{{ __('messages.booking_payment_ref_label') }}</span>
+                    <span class="text-[11px] font-black text-banhafade-accent tracking-widest text-left" dir="ltr">
                         {{ $booking->payment_reference }}
                     </span>
                 </div>
-                <div class="flex justify-between items-center pt-1 border-t border-fadebook-accent/5">
-                    <span class="text-[9px] font-black text-gray-400 uppercase tracking-widest">{{ __('messages.booking_deposit_label') }}</span>
+                <div class="flex justify-between items-center pt-1 border-t border-banhafade-accent/5">
+                    <span
+                        class="text-[9px] font-black text-gray-400 uppercase tracking-widest">{{ __('messages.booking_deposit_label') }}</span>
                     <span class="text-[11px] font-black text-gray-900 dark:text-white text-left">
                         {{ number_format($booking->deposit_amount, 0) }} {{ __('messages.egp') }}
                     </span>

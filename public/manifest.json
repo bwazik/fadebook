@@ -1,6 +1,6 @@
 {
-    "name": "FadeBook - احجز قصتك",
-    "short_name": "FadeBook",
+    "name": "BanhaFade - احجز قصتك",
+    "short_name": "BanhaFade",
     "description": "منصة حجز صالونات الحلاقة في مصر",
     "start_url": "/",
     "display": "standalone",
@@ -24,6 +24,9 @@
         }
     ],
     "screenshots": [],
-    "categories": ["lifestyle", "shopping"],
+    "categories": [
+        "lifestyle",
+        "shopping"
+    ],
     "prefer_related_applications": false
 }

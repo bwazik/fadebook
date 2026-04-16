@@ -3,7 +3,7 @@
     <div class="px-4 pt-[calc(1.5rem+var(--safe-area-top))] pb-6">
         <div class="flex items-center justify-between mb-8">
             <div>
-                <h1 class="text-3xl font-black text-fadebook-accent tracking-tighter">{{ __('messages.app_name') }}</h1>
+                <h1 class="text-3xl font-black text-banhafade-accent tracking-tighter">{{ __('messages.app_name') }}</h1>
                 <p class="text-xs font-black text-gray-500 dark:text-gray-400 mt-0.5 uppercase tracking-[0.1em]">
                     {{ __('messages.app_slogan') }}</p>
             </div>
@@ -11,9 +11,10 @@
             <div class="flex items-center gap-3">
                 @if ($this->isOwner)
                     <a href="{{ route('dashboard.home') }}" wire:navigate
-                        class="w-12 h-12 rounded-2xl bg-fadebook-accent/10 border-2 border-fadebook-accent/20 shadow-sm overflow-hidden flex items-center justify-center liquid-button group">
+                        class="w-12 h-12 rounded-2xl bg-banhafade-accent/10 border-2 border-banhafade-accent/20 shadow-sm overflow-hidden flex items-center justify-center liquid-button group">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
-                            stroke="currentColor" class="w-6 h-6 text-fadebook-accent group-hover:scale-110 transition-transform">
+                            stroke="currentColor"
+                            class="w-6 h-6 text-banhafade-accent group-hover:scale-110 transition-transform">
                             <path stroke-linecap="round" stroke-linejoin="round"
                                 d="M13.5 21v-7.5a.75.75 0 0 1 .75-.75h3a.75.75 0 0 1 .75.75V21m-4.5 0H2.36m11.14 0H18m0 0h3.64m-1.39 0V9.349M3.75 21V9.349m0 0a3.001 3.001 0 0 0 3.75-.615A2.993 2.993 0 0 0 9.75 9.75c.896 0 1.7-.393 2.25-1.016a2.993 2.993 0 0 0 2.25 1.016c.896 0 1.7-.393 2.25-1.015a3.001 3.001 0 0 0 3.75.614m-16.5 0a3.004 3.004 0 0 1-.621-4.72l1.189-1.19A1.5 1.5 0 0 1 5.378 3h13.243a1.5 1.5 0 0 1 1.06.44l1.19 1.189a3 3 0 0 1-.621 4.72M6.75 18h3.75a.75.75 0 0 0 .75-.75V13.5a.75.75 0 0 0-.75-.75H6.75a.75.75 0 0 0-.75.75v3.75c0 .414.336.75.75.75Z" />
                         </svg>
@@ -181,7 +182,7 @@
                                     {{ $shop->name }}</h3>
                                 <p class="text-xs text-gray-500 dark:text-gray-400 mt-1 flex items-center gap-1">
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
-                                        class="w-3 h-3 text-fadebook-accent">
+                                        class="w-3 h-3 text-banhafade-accent">
                                         <path fill-rule="evenodd"
                                             d="M9.69 18.933l.003.001C9.89 19.02 10 19 10 19s.11 0 .308-.066l.002-.001.006-.003.018-.008a5.741 5.741 0 00.281-.14c.186-.096.446-.24.757-.433.62-.384 1.445-.966 2.274-1.765C15.302 14.988 17 12.493 17 9A7 7 0 103 9c0 3.492 1.698 5.988 3.355 7.584a13.731 13.731 0 002.273 1.765 11.842 11.842 0 00.976.544l.062.029.018.008.006.003zM10 11.25a2.25 2.25 0 100-4.5 2.25 2.25 0 000 4.5z"
                                             clip-rule="evenodd" />
@@ -191,13 +192,13 @@
                             </div>
 
                             <div class="flex flex-col items-center shrink-0">
-                                @if(($shop->total_reviews ?? 0) > 0 && (float) $shop->average_rating > 0)
+                                @if (($shop->total_reviews ?? 0) > 0 && (float) $shop->average_rating > 0)
                                     <div
                                         class="flex items-center gap-1 bg-yellow-400/10 px-2 py-0.5 rounded-xl border border-yellow-400/20">
                                         <span
                                             class="text-xs font-bold text-yellow-600 dark:text-yellow-500">{{ (float) $shop->average_rating }}</span>
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
-                                            class="w-3 h-3 text-yellow-500">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                            fill="currentColor" class="w-3 h-3 text-yellow-500">
                                             <path fill-rule="evenodd"
                                                 d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006z"
                                                 clip-rule="evenodd" />
@@ -209,8 +210,11 @@
                                 @else
                                     <div class="flex flex-col items-center">
                                         <div class="bg-blue-500/10 p-1.5 rounded-xl border border-blue-500/20">
-                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 text-blue-500">
-                                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 0 1-1.043 3.296 3.745 3.745 0 0 1-3.296 1.043A3.745 3.745 0 0 1 12 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 0 1-3.296-1.043 3.745 3.745 0 0 1-1.043-3.296A3.745 3.745 0 0 1 3 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 0 1 1.043-3.296 3.746 3.746 0 0 1 3.296-1.043A3.746 3.746 0 0 1 12 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 0 1 3.296 1.043 3.746 3.746 0 0 1 1.043 3.296A3.745 3.745 0 0 1 21 12Z" />
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none"
+                                                viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+                                                class="w-4 h-4 text-blue-500">
+                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                    d="M9 12.75 11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 0 1-1.043 3.296 3.745 3.745 0 0 1-3.296 1.043A3.745 3.745 0 0 1 12 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 0 1-3.296-1.043 3.745 3.745 0 0 1-1.043-3.296A3.745 3.745 0 0 1 3 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 0 1 1.043-3.296 3.746 3.746 0 0 1 3.296-1.043A3.746 3.746 0 0 1 12 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 0 1 3.296 1.043 3.746 3.746 0 0 1 1.043 3.296A3.745 3.745 0 0 1 21 12Z" />
                                             </svg>
                                         </div>
                                         <span class="text-[9px] text-gray-400 font-bold mt-1 whitespace-nowrap">
@@ -245,7 +249,7 @@
                             </div>
 
                             <div
-                                class="py-1.5 px-4 rounded-xl font-bold text-xs transition-all flex items-center gap-1 cursor-pointer {{ $shop->is_online ? 'bg-fadebook-accent text-white shadow-md' : 'bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-500' }}">
+                                class="py-1.5 px-4 rounded-xl font-bold text-xs transition-all flex items-center gap-1 cursor-pointer {{ $shop->is_online ? 'bg-banhafade-accent text-white shadow-md' : 'bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-500' }}">
                                 {{ __('messages.book_now') }}
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                     stroke-width="3" stroke="currentColor" class="w-3 h-3 rtl:rotate-180">
@@ -279,7 +283,7 @@
                 <div
                     class="flex items-center gap-2 px-4 py-2 rounded-full border border-black/5 dark:border-white/10 bg-white/40 dark:bg-white/5 backdrop-blur-xl">
                     <span class="text-xs font-bold text-gray-500">{{ __('messages.home_loading_more') }}</span>
-                    <svg class="animate-spin h-4 w-4 text-fadebook-accent" xmlns="http://www.w3.org/2000/svg"
+                    <svg class="animate-spin h-4 w-4 text-banhafade-accent" xmlns="http://www.w3.org/2000/svg"
                         fill="none" viewBox="0 0 24 24">
                         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
                             stroke-width="4"></circle>

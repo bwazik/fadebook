@@ -47,7 +47,7 @@
                 {{ __('messages.back') }}
             </button>
             <button @click="confirm()"
-                class="flex-1 py-3 text-[17px] font-black text-fadebook-accent active:bg-black/5 dark:active:bg-white/10 transition-colors cursor-pointer">
+                class="flex-1 py-3 text-[17px] font-black text-banhafade-accent active:bg-black/5 dark:active:bg-white/10 transition-colors cursor-pointer">
                 {{ __('messages.confirm') }}
             </button>
         </div>

@@ -1,4 +1,4 @@
-# FadeBook Constitution
+# BanhaFade Constitution
 
 ## Core Principles
 
@@ -9,16 +9,16 @@ dependencies for the platform. No alternative frameworks,
 ORMs, or front-end libraries may be introduced without a
 formal constitution amendment.
 
-| Layer | Technology | Version Lock |
-|---|---|---|
-| Backend framework | Laravel | 13 |
-| Admin panel | Filament | 5 |
-| Reactive UI | Livewire | 4 |
-| Frontend interactivity | Alpine.js | latest |
-| Styling | Tailwind CSS | 4 |
-| Database | MySQL | 8+ |
-| Testing | Pest | 4 |
-| Code formatting | Pint | 1 |
+| Layer                  | Technology   | Version Lock |
+| ---------------------- | ------------ | ------------ |
+| Backend framework      | Laravel      | 13           |
+| Admin panel            | Filament     | 5            |
+| Reactive UI            | Livewire     | 4            |
+| Frontend interactivity | Alpine.js    | latest       |
+| Styling                | Tailwind CSS | 4            |
+| Database               | MySQL        | 8+           |
+| Testing                | Pest         | 4            |
+| Code formatting        | Pint         | 1            |
 
 **Rationale**: A locked stack eliminates version-drift
 surprises across phases and ensures every agent or developer
@@ -250,13 +250,13 @@ most inclusive check-in method across literacy levels.
   description, version bump rationale, and a migration plan
   for affected code.
 - Version increments follow Semantic Versioning:
-  - **MAJOR**: Principle removed or fundamentally redefined.
-  - **MINOR**: New principle added or materially expanded.
-  - **PATCH**: Wording clarifications or typo fixes.
+    - **MAJOR**: Principle removed or fundamentally redefined.
+    - **MINOR**: New principle added or materially expanded.
+    - **PATCH**: Wording clarifications or typo fixes.
 - Compliance with this constitution MUST be verified at each
   phase checkpoint before proceeding to the next phase.
 - The `PLAN.md` document serves as the authoritative
-  product blueprint; this constitution governs *how* it is
+  product blueprint; this constitution governs _how_ it is
   built.
 
 <laravel-boost-guidelines>
@@ -359,7 +359,7 @@ This project has domain-specific skills available. You MUST activate the relevan
 
 - Execute PHP in app context for debugging and testing code. Do not create models without user approval, prefer tests with factories instead. Prefer existing Artisan commands over custom tinker code.
 - Always use single quotes to prevent shell expansion: `php artisan tinker --execute 'Your::code();'`
-  - Double quotes for PHP strings inside: `php artisan tinker --execute 'User::where("active", true)->count();'`
+    - Double quotes for PHP strings inside: `php artisan tinker --execute 'User::where("active", true)->count();'`
 
 === php rules ===
 

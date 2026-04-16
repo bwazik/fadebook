@@ -221,7 +221,7 @@
                     description="{{ __('messages.booking_select_date_prompt_desc') }}">
                     <x-slot name="icon">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
-                            stroke="currentColor" class="w-8 h-8 text-fadebook-accent">
+                            stroke="currentColor" class="w-8 h-8 text-banhafade-accent">
                             <path stroke-linecap="round" stroke-linejoin="round"
                                 d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" />
                         </svg>
@@ -258,7 +258,7 @@
                     <div class="flex justify-between items-center pt-2 border-t border-gray-100 dark:border-gray-800">
                         <span
                             class="text-sm text-gray-900 dark:text-white font-black">{{ __('messages.booking_label_final_total') }}</span>
-                        <span class="text-xl font-black text-fadebook-accent">
+                        <span class="text-xl font-black text-banhafade-accent">
                             {{ number_format($finalAmount, 0) }} <small
                                 class="text-[10px]">{{ __('messages.egp') }}</small>
                         </span>
@@ -301,7 +301,7 @@
                         {{ __('messages.booking_terms_agreement_text') }}
                     </span>
                     <button type="button" wire:click="toggleTermsModal"
-                        class="text-xs text-fadebook-accent font-black underline transition-colors hover:text-fadebook-accent/80 cursor-pointer">
+                        class="text-xs text-banhafade-accent font-black underline transition-colors hover:text-banhafade-accent/80 cursor-pointer">
                         {{ __('messages.booking_terms_link') }}
                     </button>
                     @if ($policyAccepted)
@@ -317,7 +317,7 @@
 
             <div class="flex gap-4">
                 <x-ios-button wire:click="goToPayment"
-                    class="!rounded-[1.5rem] py-4 shadow-lg shadow-fadebook-accent/20">
+                    class="!rounded-[1.5rem] py-4 shadow-lg shadow-banhafade-accent/20">
                     {{ $depositAmount > 0 ? __('messages.next') : __('messages.booking_confirm_button') }}
                 </x-ios-button>
             </div>
@@ -337,15 +337,20 @@
             </header>
 
             {{-- Manual Payment Alert --}}
-            <div class="mb-6 p-4 rounded-[1.5rem] bg-fadebook-accent/10 border border-fadebook-accent/20 backdrop-blur-3xl animate-in fade-in slide-in-from-top-4 duration-700">
+            <div
+                class="mb-6 p-4 rounded-[1.5rem] bg-banhafade-accent/10 border border-banhafade-accent/20 backdrop-blur-3xl animate-in fade-in slide-in-from-top-4 duration-700">
                 <div class="flex gap-4">
-                    <div class="w-10 h-10 rounded-xl bg-fadebook-accent/20 flex items-center justify-center shrink-0 shadow-inner">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-5 h-5 text-fadebook-accent">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
+                    <div
+                        class="w-10 h-10 rounded-xl bg-banhafade-accent/20 flex items-center justify-center shrink-0 shadow-inner">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                            stroke-width="2.5" stroke="currentColor" class="w-5 h-5 text-banhafade-accent">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
                         </svg>
                     </div>
                     <div class="flex-1">
-                        <h3 class="text-xs font-black text-fadebook-accent uppercase tracking-widest">{{ __('messages.booking_manual_payment_alert_title') }}</h3>
+                        <h3 class="text-xs font-black text-banhafade-accent uppercase tracking-widest">
+                            {{ __('messages.booking_manual_payment_alert_title') }}</h3>
                         <p class="text-[11px] text-gray-700 dark:text-gray-300 font-bold leading-relaxed mt-1">
                             {{ __('messages.booking_manual_payment_alert_desc') }}
                         </p>
@@ -357,7 +362,7 @@
             <div class="grid grid-cols-2 gap-4 pb-2">
                 @foreach ($this->paymentMethods as $method)
                     <button wire:click="selectPaymentMethod({{ $method->id }})"
-                        class="relative liquid-panel p-5 rounded-[2rem] border transition-all duration-300 group overflow-hidden flex flex-col items-center gap-3 active:scale-95 {{ $selectedPaymentMethodId === $method->id ? 'border-fadebook-accent ring-2 ring-fadebook-accent/10' : 'border-white/20' }} cursor-pointer">
+                        class="relative liquid-panel p-5 rounded-[2rem] border transition-all duration-300 group overflow-hidden flex flex-col items-center gap-3 active:scale-95 {{ $selectedPaymentMethodId === $method->id ? 'border-banhafade-accent ring-2 ring-banhafade-accent/10' : 'border-white/20' }} cursor-pointer">
 
                         {{-- Icon Backdrop --}}
                         <div
@@ -377,7 +382,7 @@
                         {{-- Active Indicator --}}
                         @if ($selectedPaymentMethodId === $method->id)
                             <div
-                                class="absolute top-3 left-3 w-5 h-5 rounded-full bg-fadebook-accent flex items-center justify-center text-white animate-in zoom-in-50">
+                                class="absolute top-3 left-3 w-5 h-5 rounded-full bg-banhafade-accent flex items-center justify-center text-white animate-in zoom-in-50">
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
                                     class="w-3-3">
                                     <path fill-rule="evenodd"
@@ -396,7 +401,7 @@
                     <div
                         class="liquid-glass rounded-[2rem] p-6 border border-white/20 shadow-xl space-y-5 relative overflow-hidden">
                         {{-- Subtle background decoration --}}
-                        <div class="absolute -top-10 -right-10 w-32 h-32 bg-fadebook-accent/5 rounded-full blur-3xl">
+                        <div class="absolute -top-10 -right-10 w-32 h-32 bg-banhafade-accent/5 rounded-full blur-3xl">
                         </div>
 
                         <div class="grid grid-cols-1 gap-4">
@@ -441,7 +446,7 @@
 
                         @if ($this->selectedPaymentMethod->pay_link)
                             <a href="{{ $this->selectedPaymentMethod->pay_link }}" target="_blank"
-                                class="flex items-center justify-center gap-3 w-full p-4 rounded-2xl bg-fadebook-accent text-white active:scale-[0.98] transition-all font-black text-xs shadow-lg shadow-fadebook-accent/20 cursor-pointer">
+                                class="flex items-center justify-center gap-3 w-full p-4 rounded-2xl bg-banhafade-accent text-white active:scale-[0.98] transition-all font-black text-xs shadow-lg shadow-banhafade-accent/20 cursor-pointer">
                                 {{ __('messages.booking_payment_pay_link') }}
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                     stroke-width="2.5" stroke="currentColor" class="w-4 h-4 rtl:rotate-180">
@@ -463,19 +468,19 @@
                                     @endif
                                 </span>
                                 <button type="button" @click="showHint = !showHint"
-                                    class="text-fadebook-accent underline decoration-dotted font-black text-[9px] cursor-pointer active:scale-95 transition-transform uppercase">
+                                    class="text-banhafade-accent underline decoration-dotted font-black text-[9px] cursor-pointer active:scale-95 transition-transform uppercase">
                                     {{ __('messages.booking_payment_show_hint') }}
                                 </button>
                             </label>
 
-                            <x-ios-input wire:model="paymentReference" dir="rtl" type="tel" inputmode="numeric"
-                                maxlength="12" x-mask="999999999999"
+                            <x-ios-input wire:model="paymentReference" dir="rtl" type="tel"
+                                inputmode="numeric" maxlength="12" x-mask="999999999999"
                                 placeholder="{{ $this->selectedPaymentMethod->type_enum === \App\Enums\PaymentMethodType::InstaPay ? __('messages.booking_payment_ref_placeholder_instapay') : __('messages.booking_payment_ref_placeholder_vfcash') }}" />
 
                             {{-- Help Image Hint --}}
                             <div x-show="showHint" x-collapse x-cloak class="mt-4">
                                 <div
-                                    class="relative rounded-2xl overflow-hidden border border-fadebook-accent/10 bg-white dark:bg-black p-2 shadow-inner">
+                                    class="relative rounded-2xl overflow-hidden border border-banhafade-accent/10 bg-white dark:bg-black p-2 shadow-inner">
                                     <img src="{{ $this->selectedPaymentMethod->type_enum === \App\Enums\PaymentMethodType::InstaPay ? asset('images/help/instapay-ref.png') : asset('images/help/vf-cash-ref.png') }}"
                                         alt="Help" class="w-full rounded-xl opacity-90">
                                     <div
@@ -511,7 +516,7 @@
                     <div class="pt-2">
                         <x-ios-button wire:click="confirmBooking" wire:loading.attr="disabled"
                             target="confirmBooking"
-                            class="!rounded-[2rem] py-4.5 shadow-2xl shadow-fadebook-accent/30 text-sm font-black uppercase tracking-tight cursor-pointer">
+                            class="!rounded-[2rem] py-4.5 shadow-2xl shadow-banhafade-accent/30 text-sm font-black uppercase tracking-tight cursor-pointer">
                             <span wire:loading.remove wire:target="confirmBooking">
                                 {{ __('messages.booking_payment_verify_button') }}
                             </span>
@@ -542,7 +547,7 @@
                 <!-- 1. Payment Policy -->
                 <div class="flex gap-4">
                     <div
-                        class="w-1.5 h-1.5 rounded-full bg-fadebook-accent mt-2 shrink-0 shadow-[0_0_8px_rgba(1,101,225,0.4)]">
+                        class="w-1.5 h-1.5 rounded-full bg-banhafade-accent mt-2 shrink-0 shadow-[0_0_8px_rgba(1,101,225,0.4)]">
                     </div>
                     <p class="text-[13px] text-gray-700 dark:text-gray-300 font-bold leading-relaxed">
                         @if ($shop->payment_mode->value === \App\Enums\PaymentMode::NoPayment->value)
@@ -583,7 +588,7 @@
                 <!-- 4. Late Policy -->
                 <div class="flex gap-4">
                     <div
-                        class="w-1.5 h-1.5 rounded-full bg-fadebook-accent mt-2 shrink-0 shadow-[0_0_8px_rgba(1,101,225,0.4)]">
+                        class="w-1.5 h-1.5 rounded-full bg-banhafade-accent mt-2 shrink-0 shadow-[0_0_8px_rgba(1,101,225,0.4)]">
                     </div>
                     <p class="text-[13px] text-gray-700 dark:text-gray-300 font-bold leading-relaxed">
                         {{ __('messages.term_5') }}

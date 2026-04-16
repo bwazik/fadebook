@@ -12,7 +12,7 @@
             <div
                 class="liquid-glass rounded-[2.5rem] p-7 border border-white/40 dark:border-white/5 shadow-2xl relative overflow-hidden">
                 {{-- Decorative background in card --}}
-                <div class="absolute -top-10 -right-10 w-32 h-32 bg-fadebook-accent/10 rounded-full blur-2xl"></div>
+                <div class="absolute -top-10 -right-10 w-32 h-32 bg-banhafade-accent/10 rounded-full blur-2xl"></div>
 
                 {{-- Header: Avatar + Info --}}
                 <div class="flex items-center gap-5 mb-6 relative z-10 transition-all duration-300">
@@ -34,7 +34,7 @@
                     @foreach ($this->badges as $badge)
                         <span @class([
                             'px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border transition-all',
-                            'bg-fadebook-accent/10 text-fadebook-accent border-fadebook-accent/20' =>
+                            'bg-banhafade-accent/10 text-banhafade-accent border-banhafade-accent/20' =>
                                 $badge['type'] === 'accent',
                             'bg-green-500/10 text-green-600 dark:text-green-400 border-green-500/20' =>
                                 $badge['type'] === 'success',
@@ -49,7 +49,7 @@
                 {{-- Stats Grid --}}
                 <div class="grid grid-cols-3 gap-3 relative z-10">
                     <div
-                        class="bg-black/5 dark:bg-white/5 rounded-3xl p-4 text-center group border border-transparent hover:border-fadebook-accent/10 transition-colors">
+                        class="bg-black/5 dark:bg-white/5 rounded-3xl p-4 text-center group border border-transparent hover:border-banhafade-accent/10 transition-colors">
                         <p
                             class="text-xl font-black text-gray-900 dark:text-white group-hover:scale-110 transition-transform">
                             {{ $this->stats['total_bookings'] }}</p>

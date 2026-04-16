@@ -22,7 +22,7 @@
     handleInput(e, index) {
         const val = e.target.value.replace(/\D/g, '');
         const digit = val ? val[val.length - 1] : '';
-        
+
         this.otp[index] = digit;
         e.target.value = digit;
 
@@ -40,7 +40,7 @@
     },
     handleBackspace(e, index) {
         const inputs = e.target.parentElement.querySelectorAll('input');
-        
+
         if (!e.target.value && inputs[index - 1]) {
             inputs[index - 1].focus();
         }
@@ -69,24 +69,17 @@
     }
 }" class="flex gap-2.5 justify-center" dir="ltr">
 
-    @for($i = 0; $i < $digits; $i++)
-        <input
-            type="tel"
-            maxlength="1"
-            inputmode="numeric"
-            pattern="[0-9]*"
-            autocomplete="{{ $i === 0 ? 'one-time-code' : 'off' }}"
-            @input="handleInput($event, {{ $i }})"
-            @keydown.backspace="handleBackspace($event, {{ $i }})"
-            @paste.prevent="handlePaste($event)"
+    @for ($i = 0; $i < $digits; $i++)
+        <input type="tel" maxlength="1" inputmode="numeric" pattern="[0-9]*"
+            autocomplete="{{ $i === 0 ? 'one-time-code' : 'off' }}" @input="handleInput($event, {{ $i }})"
+            @keydown.backspace="handleBackspace($event, {{ $i }})" @paste.prevent="handlePaste($event)"
             class="w-11 h-14 text-center text-xl font-black rounded-2xl
                    bg-black/5 dark:bg-white/10
                    border-2 border-transparent
-                   focus:border-fadebook-accent focus:ring-0 focus:bg-white dark:focus:bg-[#2c2c2e]
+                   focus:border-banhafade-accent focus:ring-0 focus:bg-white dark:focus:bg-[#2c2c2e]
                    text-gray-900 dark:text-white
                    transition-all duration-200 outline-none
                    [&:-webkit-autofill]:[transition:background-color_9999999s_ease-in-out_0s]
-                   [&:-webkit-autofill]:[-webkit-text-fill-color:inherit]"
-        >
+                   [&:-webkit-autofill]:[-webkit-text-fill-color:inherit]">
     @endfor
 </div>

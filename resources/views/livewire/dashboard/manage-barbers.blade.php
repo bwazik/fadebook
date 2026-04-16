@@ -10,7 +10,7 @@
             </p>
         </div>
         <button wire:click="create"
-            class="w-10 h-10 rounded-full bg-fadebook-accent text-white flex items-center justify-center shadow-md shadow-fadebook-accent/30 active:scale-95 transition-transform cursor-pointer">
+            class="w-10 h-10 rounded-full bg-banhafade-accent text-white flex items-center justify-center shadow-md shadow-banhafade-accent/30 active:scale-95 transition-transform cursor-pointer">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5"
                 stroke="currentColor" class="w-5 h-5">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
@@ -72,7 +72,7 @@
                         <input type="checkbox" class="sr-only peer" {{ $barber->is_active ? 'checked' : '' }}
                             wire:click="toggleActive({{ $barber->id }})">
                         <div
-                            class="w-9 h-5 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-fadebook-accent">
+                            class="w-9 h-5 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-banhafade-accent">
                         </div>
                     </label>
                 </div>
@@ -114,7 +114,7 @@
                         {{ __('messages.phone_number_note') }}
                         @if (!$editingId)
                             <br> {{ __('messages.default_password_note') }} <span
-                                class="text-fadebook-accent">{{ $password }}</span>
+                                class="text-banhafade-accent">{{ $password }}</span>
                         @endif
                     </p>
                 </div>
@@ -157,12 +157,12 @@
                         <div class="flex flex-wrap gap-2 p-1">
                             @foreach ($unavailabilityDates as $date)
                                 <div wire:key="undate-{{ $date }}"
-                                    class="flex items-center gap-1.5 px-3 py-2 bg-[--color-fadebook-accent]/10 border border-[--color-fadebook-accent]/20 rounded-xl">
+                                    class="flex items-center gap-1.5 px-3 py-2 bg-[--color-banhafade-accent]/10 border border-[--color-banhafade-accent]/20 rounded-xl">
                                     <span
-                                        class="text-[10px] font-bold text-[--color-fadebook-accent]">{{ \Carbon\Carbon::parse($date)->format('Y/m/d') }}</span>
+                                        class="text-[10px] font-bold text-[--color-banhafade-accent]">{{ \Carbon\Carbon::parse($date)->format('Y/m/d') }}</span>
                                     <button type="button"
                                         wire:click="removeUnavailabilityDate('{{ $date }}')"
-                                        class="text-[--color-fadebook-accent]/60 hover:text-[--color-fadebook-accent] transition-colors">
+                                        class="text-[--color-banhafade-accent]/60 hover:text-[--color-banhafade-accent] transition-colors">
                                         <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24"
                                             stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"

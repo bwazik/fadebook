@@ -29,7 +29,7 @@ enum PaymentMethodType: int
     {
         return match ($this) {
             self::VodafoneCash => 'text-red-500 bg-red-500/10 border-red-500/20',
-            self::InstaPay => 'text-fadebook-accent bg-fadebook-accent/10 border-fadebook-accent/20',
+            self::InstaPay => 'text-banhafade-accent bg-banhafade-accent/10 border-banhafade-accent/20',
         };
     }
 }

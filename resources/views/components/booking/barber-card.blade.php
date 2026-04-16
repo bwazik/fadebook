@@ -1,8 +1,9 @@
 @props(['barber', 'selected' => false])
 
-<button {{ $attributes->merge(['class' => 'w-full liquid-glass liquid-button rounded-[1.5rem] p-4 flex items-center gap-4 border-2 transition-all shadow-sm text-right group']) }}
-    :class="{{ $selected }} ? 'border-fadebook-accent bg-fadebook-accent/5' : 'border-white/50 dark:border-white/10'">
-    
+<button
+    {{ $attributes->merge(['class' => 'w-full liquid-glass liquid-button rounded-[1.5rem] p-4 flex items-center gap-4 border-2 transition-all shadow-sm text-right group']) }}
+    :class="{{ $selected }} ? 'border-banhafade-accent bg-banhafade-accent/5' : 'border-white/50 dark:border-white/10'">
+
     @php $img = $barber->images->first(); @endphp
     <div class="shrink-0">
         @if ($img)
@@ -25,9 +26,12 @@
     </div>
 
     {{-- Selected Indicator --}}
-    <div x-show="{{ $selected }}" x-transition:enter="transition transform duration-300" x-transition:enter-start="scale-0" x-transition:enter-end="scale-100" class="shrink-0">
-        <div class="w-6 h-6 rounded-full bg-fadebook-accent flex items-center justify-center shadow-[0_0_10px_rgba(1,101,225,0.4)]">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor" class="w-3.5 h-3.5 text-white">
+    <div x-show="{{ $selected }}" x-transition:enter="transition transform duration-300"
+        x-transition:enter-start="scale-0" x-transition:enter-end="scale-100" class="shrink-0">
+        <div
+            class="w-6 h-6 rounded-full bg-banhafade-accent flex items-center justify-center shadow-[0_0_10px_rgba(1,101,225,0.4)]">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3"
+                stroke="currentColor" class="w-3.5 h-3.5 text-white">
                 <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
             </svg>
         </div>
