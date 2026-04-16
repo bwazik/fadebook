@@ -1,12 +1,6 @@
-{{-- Section Header with optional "See All" link --}}
-@props(['title' => '', 'href' => null, 'linkLabel' => 'الكل'])
+@props(['title' => '', 'color' => 'text-fadebook-accent'])
 
-<div class="flex items-center justify-between mb-3">
-    <h2 class="text-base font-bold text-gray-900 dark:text-white">{{ $title }}</h2>
-    @if($href)
-        <a href="{{ $href }}" wire:navigate
-           class="text-sm font-semibold text-[--color-fadebook-accent] active:opacity-70 transition">
-            {{ $linkLabel }}
-        </a>
-    @endif
+<div class="flex items-center gap-3 px-1 mb-5">
+    <h2 class="text-[11px] font-black {{ $color }} uppercase tracking-[0.2em] whitespace-nowrap">{{ $title }}</h2>
+    <div class="flex-1 h-px {{ str_replace('text-', 'bg-', $color) }}/10"></div>
 </div>

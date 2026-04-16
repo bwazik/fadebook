@@ -27,15 +27,14 @@
     x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-150"
     x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
     class="fixed inset-0 z-[110] flex items-center justify-center bg-black/40 backdrop-blur-sm">
-    
-    <div x-show="show" 
-        x-transition:enter="transition ease-out duration-200"
+
+    <div x-show="show" x-transition:enter="transition ease-out duration-200"
         x-transition:enter-start="opacity-0 scale-90" x-transition:enter-end="opacity-100 scale-100"
         x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100 scale-100"
         x-transition:leave-end="opacity-0 scale-90"
         class="w-[270px] bg-white/80 dark:bg-[#2c2c2e]/80 backdrop-blur-3xl rounded-[1.25rem] flex flex-col text-center overflow-hidden border border-black/5 dark:border-white/10 shadow-2xl"
         @click.stop>
-        
+
         {{-- Content --}}
         <div class="px-5 pt-5 pb-4">
             <h3 class="text-[17px] font-black text-gray-900 dark:text-white mb-1 leading-tight" x-text="title"></h3>

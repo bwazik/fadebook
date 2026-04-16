@@ -74,12 +74,7 @@
     {{-- 3. EXPLORE CATEGORIES / TABS    --}}
     {{-- ═══════════════════════════════ --}}
     <div class="px-4 space-y-8 mt-2">
-        <div class="flex items-center gap-3">
-            <h2
-                class="text-[11px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-[0.2em] whitespace-nowrap">
-                {{ __('messages.offers_discovery_title') }}</h2>
-            <div class="flex-1 h-px bg-black/5 dark:bg-white/5"></div>
-        </div>
+        <x-section-header :title="__('messages.offers_discovery_title')" />
 
         {{-- Discovery List --}}
         <div class="space-y-6">
@@ -294,7 +289,7 @@
                                 <p class="text-[10px] font-bold text-white/70 leading-relaxed px-4">
                                     {{ __('messages.offers_referral_desc') }}</p>
                             </div>
-                            <x-ios-button href="{{ route('profile.index') }}" wire:navigate
+                            <x-ios-button href="{{ route('profile.referral') }}" wire:navigate
                                 class="!h-10 px-6 bg-white !text-fadebook-accent !rounded-xl font-black shadow-xl active:scale-95 transition-all text-[11px] uppercase">
                                 {{ __('messages.offers_referral_btn') }}
                             </x-ios-button>

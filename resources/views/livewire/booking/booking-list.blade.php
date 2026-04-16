@@ -1,4 +1,4 @@
-<div class="pb-[calc(5rem+var(--safe-area-bottom)+64px)] min-h-screen pt-4 px-4 relative">
+<div class="pb-[calc(5rem+var(--safe-area-bottom)+64px)] relative min-h-screen pt-4 px-4">
     <div class="mb-6 mt-4">
         <h1 class="text-2xl font-black text-gray-900 dark:text-white uppercase tracking-tighter">
             {{ __('messages.booking_list_title') }}
@@ -8,11 +8,11 @@
     <!-- Tabs -->
     <div class="flex liquid-panel bg-black/[0.03] dark:bg-transparent p-1 rounded-[1.2rem] mb-6 relative">
         <div class="absolute inset-y-1 bg-white/90 dark:bg-white/10 rounded-xl shadow-sm transition-all duration-500 ease-[cubic-bezier(0.2,0.8,0.2,1)]"
-            :style="$wire.tab === 'upcoming' ? 'width: calc(33.333% - 0.25rem); right: 0.25rem;' : 
-                    ($wire.tab === 'completed' ? 'width: calc(33.333% - 0.25rem); right: calc(33.333% + 0.125rem);' : 
+            :style="$wire.tab === 'upcoming' ? 'width: calc(33.333% - 0.25rem); right: 0.25rem;' :
+                    ($wire.tab === 'completed' ? 'width: calc(33.333% - 0.25rem); right: calc(33.333% + 0.125rem);' :
                     'width: calc(33.333% - 0.25rem); right: calc(66.666% + 0.125rem);')">
         </div>
-        
+
         <button wire:click="setTab('upcoming')"
             class="flex-1 py-2 text-[11px] font-black relative z-10 transition-colors uppercase tracking-wider cursor-pointer"
             :class="$wire.tab === 'upcoming' ? 'text-gray-900 dark:text-white' : 'text-gray-500 hover:text-gray-700 dark:hover:text-gray-300'">
@@ -35,7 +35,7 @@
         @forelse($this->bookings as $booking)
             <x-booking.booking-card :booking="$booking" />
         @empty
-            <x-empty-state 
+            <x-empty-state
                 title="{{ __('messages.booking_empty_state') }}"
                 description="{{ __('messages.booking_empty_state_hint') }}"
             >

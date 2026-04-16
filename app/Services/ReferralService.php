@@ -95,7 +95,7 @@ class ReferralService
             return;
         }
 
-        $isUnlimited = filter_var($settings->get('referral_unlimited_mode', 'true'), FILTER_VALIDATE_BOOLEAN);
+        $isUnlimited = filter_var($settings->get('referral_reward_unlimited_mode', 'true'), FILTER_VALIDATE_BOOLEAN);
         $canEarn = $this->canReferrerEarn($referrer, $isUnlimited);
 
         if (! $canEarn) {
@@ -108,7 +108,7 @@ class ReferralService
         DB::transaction(function () use ($referral, $referrer, $booking, $settings) {
             $discountType = (int) $settings->get('referral_reward_discount_type', DiscountType::Percentage->value);
             $discountValue = (float) $settings->get('referral_reward_discount_value', 15);
-            $expiryDays = (int) $settings->get('referral_reward_expiry_days', 7);
+            $expiryDays = (int) $settings->get('referral_reward_coupon_expiry_days', 7);
 
             $couponCode = 'REF-'.strtoupper(Str::random(6));
 

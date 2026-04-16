@@ -1,4 +1,5 @@
 # FadeBook — Implementation Plan
+
 > For AI-assisted development. Each phase is a fully working vertical slice.
 
 ---
@@ -33,6 +34,7 @@ Before touching any phase, internalize these rules. They are non-negotiable and 
 ## Project Starting State
 
 The following are already installed and configured. Do NOT re-install or re-scaffold:
+
 - Laravel 13
 - Laravel Fortify (with existing controller-based auth files)
 - Livewire 4
@@ -59,22 +61,27 @@ Replace the default Tailwind config with the CSS-first v4 configuration:
 @import "tailwindcss";
 
 @theme {
-  --font-sans: "Tajawal", ui-sans-serif, system-ui, sans-serif;
-  --color-fadebook-dark: #0f172a;
-  --color-fadebook-accent: #ff2d55;
-  --radius-card: 2rem;
-  --radius-button: 1rem;
-  --safe-area-top: env(safe-area-inset-top);
-  --safe-area-bottom: env(safe-area-inset-bottom);
-  --safe-area-left: env(safe-area-inset-left);
-  --safe-area-right: env(safe-area-inset-right);
+    --font-sans: "Tajawal", ui-sans-serif, system-ui, sans-serif;
+    --color-fadebook-dark: #0f172a;
+    --color-fadebook-accent: #ff2d55;
+    --radius-card: 2rem;
+    --radius-button: 1rem;
+    --safe-area-top: env(safe-area-inset-top);
+    --safe-area-bottom: env(safe-area-inset-bottom);
+    --safe-area-left: env(safe-area-inset-left);
+    --safe-area-right: env(safe-area-inset-right);
 }
 
-* { -webkit-tap-highlight-color: transparent; }
-body { @apply font-sans antialiased; }
+* {
+    -webkit-tap-highlight-color: transparent;
+}
+body {
+    @apply font-sans antialiased;
+}
 ```
 
 Add to `resources/views/layouts/app.blade.php`:
+
 - `<html lang="ar" dir="rtl">`
 - Tajawal font from Google Fonts
 - `<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">`
@@ -89,21 +96,22 @@ Add to `resources/views/layouts/app.blade.php`:
 
 Create all the following reusable Blade components in `resources/views/components/`. Each component must be fully implemented exactly as defined in the constitution:
 
-| Component file | Description |
-|---|---|
-| `glass-card.blade.php` | Frosted glass card with backdrop blur |
-| `ios-button.blade.php` | Full-width accent button with Livewire loading state |
-| `ios-input.blade.php` | Borderless input with label, inside input group |
-| `ios-input-group.blade.php` | Container for ios-input rows |
-| `ios-textarea.blade.php` | Rounded textarea with focus ring |
-| `ios-toggle.blade.php` | iOS-style toggle switch |
-| `ios-select.blade.php` | Custom styled select |
-| `ios-alert.blade.php` | Inline alert component (success, error, warning) |
-| `toast.blade.php` | Toast notification (dispatched via Livewire events) |
-| `bottom-sheet.blade.php` | Bottom sheet modal with drag handle and safe area |
-| `bottom-nav.blade.php` | Fixed bottom navigation bar with safe area padding |
+| Component file              | Description                                          |
+| --------------------------- | ---------------------------------------------------- |
+| `glass-card.blade.php`      | Frosted glass card with backdrop blur                |
+| `ios-button.blade.php`      | Full-width accent button with Livewire loading state |
+| `ios-input.blade.php`       | Borderless input with label, inside input group      |
+| `ios-input-group.blade.php` | Container for ios-input rows                         |
+| `ios-textarea.blade.php`    | Rounded textarea with focus ring                     |
+| `ios-toggle.blade.php`      | iOS-style toggle switch                              |
+| `ios-select.blade.php`      | Custom styled select                                 |
+| `ios-alert.blade.php`       | Inline alert component (success, error, warning)     |
+| `toast.blade.php`           | Toast notification (dispatched via Livewire events)  |
+| `bottom-sheet.blade.php`    | Bottom sheet modal with drag handle and safe area    |
+| `bottom-nav.blade.php`      | Fixed bottom navigation bar with safe area padding   |
 
 **Bottom nav items (client):**
+
 - الرئيسية → `home`
 - حجوزاتي → `bookings.index`
 - البحث → `search`
@@ -118,6 +126,7 @@ Create all the following reusable Blade components in `resources/views/component
 **File:** `resources/views/layouts/app.blade.php`
 
 This is the single layout for all PWA pages. It must:
+
 - Include the bottom nav component (hidden on auth pages)
 - Include the toast component
 - Add safe area padding to the main content area
@@ -130,20 +139,20 @@ This is the single layout for all PWA pages. It must:
 
 Create all backed PHP Enum classes in `app/Enums/`. Each enum must have a `getLabel(): string` method returning Egyptian Arabic labels, and where applicable a `getColor(): string` method for Filament badge colors.
 
-| File | Cases |
-|---|---|
-| `UserRole.php` | `Client = 1`, `BarberOwner = 2`, `SuperAdmin = 3` |
-| `ShopStatus.php` | `Pending = 0`, `Active = 1`, `Suspended = 2`, `Rejected = 3` |
-| `BookingStatus.php` | `Pending = 0`, `Confirmed = 1`, `InProgress = 2`, `Completed = 3`, `Cancelled = 4`, `NoShow = 5` |
-| `CancelledBy.php` | `Client = 1`, `Shop = 2` |
-| `OtpType.php` | `Registration = 1`, `PhoneVerification = 2`, `PasswordReset = 3`, `BookingConfirmation = 4` |
-| `PaymentMode.php` | `NoPayment = 0`, `PartialDeposit = 1`, `FullPayment = 2` |
-| `BarberSelectionMode.php` | `AnyAvailable = 1`, `ClientPicks = 2` |
-| `RefundReason.php` | `ClientCancelEarly = 1`, `ShopCancel = 2`, `Other = 3` |
-| `RefundStatus.php` | `Pending = 0`, `Processed = 1`, `Failed = 2` |
-| `DiscountType.php` | `Percentage = 1`, `Fixed = 2` |
-| `WhatsAppQueueType.php` | `Instant = 1`, `Urgent = 2`, `Default = 3` |
-| `WhatsAppStatus.php` | `Queued = 1`, `Sent = 2`, `Failed = 3` |
+| File                      | Cases                                                                                            |
+| ------------------------- | ------------------------------------------------------------------------------------------------ |
+| `UserRole.php`            | `Client = 1`, `BarberOwner = 2`, `SuperAdmin = 3`                                                |
+| `ShopStatus.php`          | `Pending = 0`, `Active = 1`, `Suspended = 2`, `Rejected = 3`                                     |
+| `BookingStatus.php`       | `Pending = 0`, `Confirmed = 1`, `InProgress = 2`, `Completed = 3`, `Cancelled = 4`, `NoShow = 5` |
+| `CancelledBy.php`         | `Client = 1`, `Shop = 2`                                                                         |
+| `OtpType.php`             | `Registration = 1`, `PhoneVerification = 2`, `PasswordReset = 3`, `BookingConfirmation = 4`      |
+| `PaymentMode.php`         | `NoPayment = 0`, `PartialDeposit = 1`, `FullPayment = 2`                                         |
+| `BarberSelectionMode.php` | `AnyAvailable = 1`, `ClientPicks = 2`                                                            |
+| `RefundReason.php`        | `ClientCancelEarly = 1`, `ShopCancel = 2`, `Other = 3`                                           |
+| `RefundStatus.php`        | `Pending = 0`, `Processed = 1`, `Failed = 2`                                                     |
+| `DiscountType.php`        | `Percentage = 1`, `Fixed = 2`                                                                    |
+| `WhatsAppQueueType.php`   | `Instant = 1`, `Urgent = 2`, `Default = 3`                                                       |
+| `WhatsAppStatus.php`      | `Queued = 1`, `Sent = 2`, `Failed = 3`                                                           |
 
 ---
 
@@ -152,6 +161,7 @@ Create all backed PHP Enum classes in `app/Enums/`. Each enum must have a `getLa
 **File:** `app/Models/Concerns/HasPublicUuid.php`
 
 This trait must:
+
 - Auto-generate a UUID v4 on the `creating` model event
 - Override `getRouteKeyName()` to return `'uuid'`
 - Prevent duplicate UUID generation
@@ -163,6 +173,7 @@ This trait must:
 Run all migrations in this exact order. Use the exact schema defined in the constitution for every table. Do not invent columns or change types.
 
 Order:
+
 1. `users` — modify the existing Fortify migration to match the constitution schema exactly (add `uuid`, `phone`, `role`, `no_show_count`, `is_blocked`, `otp_request_count`, `last_otp_sent_at`, remove `email` as required, make it nullable)
 2. `password_reset_tokens` — modify to use `phone` as primary instead of `email`
 3. `phone_verifications`
@@ -189,6 +200,7 @@ Order:
 ### 0.7 — Models
 
 Create all Eloquent models. Each model must have:
+
 - `use HasPublicUuid;` trait (except pivot models)
 - `$fillable` array (all columns except `id`, `uuid`, `created_at`, `updated_at`, `deleted_at`)
 - `$casts` array (all enum columns cast to their Enum class, all datetime columns cast to `datetime`, booleans cast to `boolean`, JSON columns cast to `array`)
@@ -199,26 +211,32 @@ Create all Eloquent models. Each model must have:
 **Models and their key scopes:**
 
 `User`:
+
 - `scopeClients()`, `scopeOwners()`, `scopeBlocked()`
 - Relationships: `bookings()`, `shop()`, `reviews()`
 
 `Shop`:
+
 - `scopeActive()`, `scopePending()`, `scopeOnline()`
 - Relationships: `owner()`, `barbers()`, `services()`, `bookings()`, `reviews()`, `images()`
 
 `Barber`:
+
 - `scopeActive()`
 - Relationships: `shop()`, `user()`, `bookings()`, `unavailabilities()`, `images()`
 
 `Service`:
+
 - `scopeActive()`
 - Relationships: `shop()`, `bookings()`, `images()`
 
 `Booking`:
+
 - `scopePending()`, `scopeConfirmed()`, `scopeInProgress()`, `scopeCompleted()`, `scopeCancelled()`, `scopeNoShow()`
 - Relationships: `shop()`, `client()`, `barber()`, `service()`, `coupon()`, `refund()`
 
 `Coupon`:
+
 - `scopeActive()`, `scopeValid()` (checks date range and usage limit)
 - Relationships: `shop()`, `usages()`
 
@@ -241,6 +259,7 @@ Create all Eloquent models. Each model must have:
 **File:** `app/Services/SettingsService.php`
 
 A service class that wraps the `Setting` model with caching. Must provide:
+
 - `get(string $key, mixed $default = null): mixed`
 - `set(string $key, mixed $value): void`
 - Cache key prefix: `setting_`
@@ -248,6 +267,7 @@ A service class that wraps the `Setting` model with caching. Must provide:
 - Cache is invalidated on `set()`
 
 Bind in `AppServiceProvider`:
+
 ```php
 $this->app->singleton(SettingsService::class);
 ```
@@ -261,24 +281,24 @@ $this->app->singleton(SettingsService::class);
 Run in this order:
 
 1. **SettingsSeeder** — inserts into `settings` table:
-   - `terms_content` → placeholder HTML
-   - `privacy_content` → placeholder HTML
-   - `default_commission_rate` → `10.00`
-   - `platform_whatsapp_number` → placeholder
-   - `otp_expiry_minutes` → `5`
-   - `max_otp_attempts` → `3`
-   - `max_otp_requests_per_hour` → `5`
-   - `max_pending_bookings_per_client` → `3`
-   - `no_show_grace_period_minutes` → `15`
-   - `cancellation_window_hours` → `2`
+    - `terms_content` → placeholder HTML
+    - `privacy_content` → placeholder HTML
+    - `default_commission_rate` → `10.00`
+    - `platform_whatsapp_number` → placeholder
+    - `otp_expiry_minutes` → `5`
+    - `max_otp_attempts` → `3`
+    - `max_otp_requests_per_hour` → `5`
+    - `max_pending_bookings_per_client` → `3`
+    - `no_show_grace_period_minutes` → `15`
+    - `cancellation_window_hours` → `2`
 
 2. **AreaSeeder** — seed all major Egyptian governorates and cities as areas. Minimum 20 areas including: القاهرة، الجيزة، الإسكندرية، المنصورة، طنطا، أسيوط، الأقصر، أسوان، الزقازيق، دمياط، بورسعيد، السويس، الإسماعيلية، المنيا، سوهاج، قنا، شرم الشيخ، الغردقة، العريش، الفيوم. Each with a slug.
 
 3. **SuperAdminSeeder** — creates the super admin user:
-   - `name`: `مدير النظام`
-   - `phone`: read from `.env` key `SUPER_ADMIN_PHONE`
-   - `password`: read from `.env` key `SUPER_ADMIN_PASSWORD`
-   - `role`: `UserRole::SuperAdmin`
+    - `name`: `مدير النظام`
+    - `phone`: read from `.env` key `SUPER_ADMIN_PHONE`
+    - `password`: read from `.env` key `SUPER_ADMIN_PASSWORD`
+    - `role`: `UserRole::SuperAdmin`
 
 4. **ShopSeeder** (development only, wrapped in `if (app()->isLocal())`) — creates 5 fake shops with owners, barbers, and services using factories.
 
@@ -303,6 +323,7 @@ Create factories for every model using `fake()` with Arabic-friendly data where 
 **File:** `app/Services/BookingCodeGenerator.php`
 
 Implement exactly as defined in the constitution:
+
 - Charset: `ABCDEFGHJKLMNPQRSTUVWXYZ23456789` (excludes ambiguous characters)
 - Length: 6
 - Loop until unique against `bookings.booking_code`
@@ -316,11 +337,13 @@ Implement exactly as defined in the constitution:
 Command signature: `app:update-booking-statuses`
 
 Logic:
+
 1. Find all `confirmed` bookings where `scheduled_at <= now()` → set to `in_progress`
 2. Find all `in_progress` bookings where `scheduled_at <= now()->subHour()` → set to `completed`, dispatch WhatsApp review request event
 3. Find all `confirmed` bookings where `scheduled_at <= now()->subMinutes(grace_period)` and still not arrived → set to `no_show`, increment `users.no_show_count`, trigger strike logic
 
 Register in `routes/console.php`:
+
 ```php
 Schedule::command('app:update-booking-statuses')->everyFiveMinutes();
 ```
@@ -362,6 +385,7 @@ Write Pest tests in `tests/Unit/`:
 The LLM must output this message and wait:
 
 > "Phase 1 requires the following service classes before I can continue. Please provide the complete implementation for:
+>
 > 1. `app/Services/WhatsAppService.php` — with a `send(string $phone, string $template, array $data, WhatsAppQueueType $queueType): void` method
 > 2. `app/Services/OtpService.php` — with `send(string $phone, OtpType $type, ?int $userId = null): void` and `verify(string $phone, string $otp, OtpType $type): bool` methods
 > 3. `config/whatsapp.php` — with all message templates
@@ -373,6 +397,7 @@ The LLM must output this message and wait:
 ### 1.1 — Convert Fortify Auth to Livewire
 
 **Delete** the following Fortify controller files if they exist:
+
 - `app/Http/Controllers/Auth/RegisteredUserController.php`
 - `app/Http/Controllers/Auth/AuthenticatedSessionController.php`
 - `app/Http/Controllers/Auth/PasswordResetLinkController.php`
@@ -418,10 +443,12 @@ Create the following full-page Livewire components. Each must use the Liquid Gla
 Properties: `$phone`, `$password`, `$errorMessage`
 
 Methods:
+
 - `authenticate()` — validates input, calls Laravel's `Auth::attempt()` using phone + password, redirects to `home` on success, sets `$errorMessage` on failure
 - Uses the developer-provided backend — do not rewrite auth logic, only wire the form to existing `Auth::attempt()`
 
 View: `resources/views/livewire/auth/login.blade.php`
+
 - Glass card centered on screen
 - FadeBook logo at top
 - iOS input group with phone (dir="ltr") and password fields
@@ -434,21 +461,25 @@ View: `resources/views/livewire/auth/login.blade.php`
 **This is a 2-step form within one Livewire component.**
 
 Step 1 — Account info:
+
 - Properties: `$name`, `$phone`, `$password`, `$password_confirmation`
 - `nextStep()` — validates step 1 fields, advances to step 2
 
 Step 2 — Role selection:
+
 - Properties: `$role` (client or barber_owner)
 - If `client` → calls registration logic and redirects to `home`
 - If `barber_owner` → redirects to shop registration flow (Phase 3)
 
 `register()` method:
+
 - Creates `User` with validated data
 - Role set from selection
 - Calls `Auth::login()` after creation
 - **Does NOT call OtpService** — OTP is only for booking confirmation and password reset
 
 View: `resources/views/livewire/auth/register.blade.php`
+
 - Step indicator at top
 - Animated transition between steps using Alpine.js
 - No bottom nav
@@ -458,20 +489,24 @@ View: `resources/views/livewire/auth/register.blade.php`
 **3-step flow:**
 
 Step 1 — Enter phone:
+
 - `$phone`
 - `sendOtp()` → calls `OtpService::send($phone, OtpType::PasswordReset)`, advances to step 2
 
 Step 2 — Enter OTP:
+
 - `$otp`
 - `verifyOtp()` → calls `OtpService::verify($phone, $otp, OtpType::PasswordReset)`, advances to step 3 on success
 
 Step 3 — New password:
+
 - `$password`, `$password_confirmation`
 - `resetPassword()` → updates user password, redirects to login
 
 **STOP:** Before implementing `sendOtp()` and `verifyOtp()`, confirm that `OtpService` has been provided by the developer.
 
 View: `resources/views/livewire/auth/forgot-password.blade.php`
+
 - Same Liquid Glass style
 - Show/hide steps using Alpine.js `x-show`
 
@@ -488,21 +523,21 @@ Ensure the existing Laravel middleware `auth` and `guest` are applied correctly 
 **Feature tests in** `tests/Feature/Auth/`:
 
 - `LoginTest`:
-  - Can login with valid phone + password
-  - Cannot login with wrong password
-  - Cannot login if account is blocked (`is_blocked = true`)
-  - Redirected to home after successful login
+    - Can login with valid phone + password
+    - Cannot login with wrong password
+    - Cannot login if account is blocked (`is_blocked = true`)
+    - Redirected to home after successful login
 
 - `RegisterTest`:
-  - Can register as client with valid data
-  - Cannot register with duplicate phone
-  - Password confirmation must match
-  - Registered user is logged in automatically
+    - Can register as client with valid data
+    - Cannot register with duplicate phone
+    - Password confirmation must match
+    - Registered user is logged in automatically
 
 - `ForgotPasswordTest`:
-  - OTP is sent to valid phone
-  - Invalid OTP is rejected
-  - Password is updated after valid OTP
+    - OTP is sent to valid phone
+    - Invalid OTP is rejected
+    - Password is updated after valid OTP
 
 ---
 
@@ -533,21 +568,23 @@ Properties: `$shops` (paginated, 12 per page), `$selectedArea`, `$sortBy` (defau
 On mount: load active + online shops, eager-load `area`, `images` (logo collection), aggregate `average_rating`.
 
 Methods:
+
 - `filterByArea(int $areaId)` — filters shops by area
 - `sortShops(string $sortBy)` — sorts by `rating` or `newest`
 - `loadMore()` — pagination
 
 View: `resources/views/livewire/home.blade.php`
+
 - Sticky header with FadeBook logo and search icon (navigates to `/search`)
 - Horizontal scrollable area filter chips
 - Grid of shop cards (2 columns on mobile)
 - Each shop card (glass card style) shows:
-  - Logo (from `images` polymorphic, `logo` collection)
-  - Shop name
-  - Area name
-  - Star rating + review count
-  - "متاح النهارده" green badge or "مش متاح دلوقتي" gray badge
-  - Tapping navigates to `/{areaSlug}/{shopSlug}` via `wire:navigate`
+    - Logo (from `images` polymorphic, `logo` collection)
+    - Shop name
+    - Area name
+    - Star rating + review count
+    - "متاح النهارده" green badge or "مش متاح دلوقتي" gray badge
+    - Tapping navigates to `/{areaSlug}/{shopSlug}` via `wire:navigate`
 - Bottom nav visible
 
 #### `app/Livewire/Search.php`
@@ -555,10 +592,12 @@ View: `resources/views/livewire/home.blade.php`
 Properties: `$query`, `$results`, `$selectedArea`
 
 Methods:
+
 - `search()` — searches `shops.name` and `areas.name`, live search with 300ms debounce
 - `updatedQuery()` — triggers search automatically
 
 View: `resources/views/livewire/search.blade.php`
+
 - Search input at top (auto-focused on mount)
 - Results list with same shop card style
 - Empty state with Arabic message
@@ -570,6 +609,7 @@ Properties: `$shop` (with all eager-loaded relationships)
 On mount: resolve shop from route parameters (area slug + shop slug), increment view count (async, queued job), load barbers, services, reviews.
 
 View: `resources/views/livewire/shop/shop-page.blade.php`
+
 - Full-width banner image (from `images`, `banner` collection)
 - Overlaid shop logo + name + area
 - Star rating + review count
@@ -593,22 +633,22 @@ Dispatched on `ShopPage` mount. Inserts a record into the `views` table (polymor
 ### 2.4 — Phase 2 Tests
 
 - `HomePageTest`:
-  - Homepage loads and shows active shops
-  - Offline shops show badge but appear in list
-  - Area filter works correctly
-  - Unauthenticated users can browse
+    - Homepage loads and shows active shops
+    - Offline shops show badge but appear in list
+    - Area filter works correctly
+    - Unauthenticated users can browse
 
 - `ShopPageTest`:
-  - Shop page loads with correct data
-  - Inactive services show badge
-  - Offline shop shows unavailable banner
-  - View count increments on visit
-  - 404 if shop slug or area slug is invalid
+    - Shop page loads with correct data
+    - Inactive services show badge
+    - Offline shop shows unavailable banner
+    - View count increments on visit
+    - 404 if shop slug or area slug is invalid
 
 - `SearchTest`:
-  - Search returns shops matching query
-  - Search by area name works
-  - Empty query returns no results
+    - Search returns shops matching query
+    - Search by area name works
+    - Empty query returns no results
 
 ---
 
@@ -637,26 +677,31 @@ After registering as `barber_owner`, the user is redirected here automatically.
 **Multi-step form — 3 steps:**
 
 Step 1 — Basic Info:
+
 - `$shopName`, `$phone`, `$address`, `$areaId`, `$description`
 - Validation: all required
 
 Step 2 — Hours & Settings:
+
 - `$openingHours` (array keyed by day, each with `open` and `close` or `null` for closed)
 - Days: Saturday through Friday
 - Toggle per day: open/closed
 - Time pickers for open/close
 
 Step 3 — Initial Services:
+
 - Repeater: add at least 1 service (name, price, duration)
 - Uses Alpine.js for dynamic add/remove rows
 
 `submit()` method:
+
 - Creates `Shop` with `status = ShopStatus::Pending`, `owner_id = auth()->id()`
 - Creates initial services
 - Sends WhatsApp to super admin (template: `shop_registration_pending`)
 - Redirects to a "pending approval" holding page
 
 **View:** `resources/views/livewire/onboarding/shop-setup.blade.php`
+
 - Step indicator
 - Liquid Glass design
 - No bottom nav
@@ -674,10 +719,10 @@ Simple full-page Livewire component showing a waiting message. Polls every 30 se
 ### 3.4 — Phase 3 Tests
 
 - `ShopSetupTest`:
-  - Owner can complete shop setup with valid data
-  - Shop is created with `pending` status
-  - At least 1 service is required
-  - WhatsApp notification is queued for super admin
+    - Owner can complete shop setup with valid data
+    - Shop is created with `pending` status
+    - At least 1 service is required
+    - WhatsApp notification is queued for super admin
 
 ---
 
@@ -706,8 +751,9 @@ Route::middleware('auth')->group(function () {
 **Single full-page Livewire component with internal step management.** State is persisted in the session under `booking_draft_{shopUuid}`.
 
 Steps:
+
 1. **Pick service** — list of active services
-2. **Pick barber** *(conditional)* — only shown if `shop.barber_selection_mode = ClientPicks`. If `AnyAvailable`, skip this step automatically.
+2. **Pick barber** _(conditional)_ — only shown if `shop.barber_selection_mode = ClientPicks`. If `AnyAvailable`, skip this step automatically.
 3. **Pick date & time** — calendar limited to `now()` to `now()->addDays($shop->advance_booking_days)`. Available slots are calculated server-side based on barber schedule and existing bookings.
 4. **Confirm & pay** — summary of booking, policy acceptance checkbox, coupon code input (scaffold only — no validation logic, await developer), payment or direct confirm based on `shop.payment_mode`.
 5. **OTP verification** — OTP sent to client phone via `OtpService`. Client enters 6-digit code.
@@ -715,6 +761,7 @@ Steps:
 Properties: `$step`, `$shopUuid`, `$shop`, `$selectedServiceId`, `$selectedBarberId`, `$selectedDate`, `$selectedSlot`, `$couponCode`, `$policyAccepted`, `$otp`
 
 Methods:
+
 - `mount(string $shopUuid)` — load shop, restore draft from session
 - `selectService(int $serviceId)` — set service, advance step
 - `selectBarber(int $barberId)` — set barber, advance step
@@ -736,6 +783,7 @@ Methods:
 Methods:
 
 `initiate(User $client, Shop $shop, array $data): Booking`
+
 - Validates: client not blocked, client has < `max_pending_bookings` pending bookings, slot is still available (re-check), policy accepted
 - Creates booking with `status = Pending`
 - Generates booking code via `BookingCodeGenerator::generate()`
@@ -743,6 +791,7 @@ Methods:
 - Returns the `Booking`
 
 `confirm(Booking $booking): void`
+
 - Sets `status = Confirmed`, `confirmed_at = now()`
 - Sends WhatsApp confirmation to client (includes booking code)
 - Sends WhatsApp notification to shop owner
@@ -750,23 +799,27 @@ Methods:
 - Schedules smart reminder (see below)
 
 `cancel(Booking $booking, CancelledBy $by): void`
+
 - Determines refund eligibility:
-  - If `$by = Client` and `scheduled_at > now()->addHours(cancellation_window_hours)` → full refund
-  - If `$by = Client` and within window → no refund
-  - If `$by = Shop` → full refund always
+    - If `$by = Client` and `scheduled_at > now()->addHours(cancellation_window_hours)` → full refund
+    - If `$by = Client` and within window → no refund
+    - If `$by = Shop` → full refund always
 - Creates `Refund` record if applicable
 - Sets `status = Cancelled`, `cancelled_at`, `cancelled_by`
 - Sends WhatsApp notification to the other party
 
 `markArrived(Booking $booking): void`
+
 - Sets `status = InProgress`, `arrived_at = now()`
 - Sends WhatsApp to client: "وصلنا عندك"
 
 `markCompleted(Booking $booking): void`
+
 - Sets `status = Completed`, `completed_at = now()`
 - Sends WhatsApp review request to client
 
 `markNoShow(Booking $booking): void`
+
 - Sets `status = NoShow`
 - Increments `client.no_show_count`
 - If `no_show_count == 1` → sends WhatsApp warning
@@ -782,11 +835,13 @@ Methods:
 Command: `app:send-booking-reminders`
 
 Logic:
+
 - Find confirmed bookings where `scheduled_at` is between `now()->addHours(1)` and `now()->addHours(1)->addMinutes(5)` → send 1-hour reminder
 - Find confirmed bookings where `scheduled_at` is between `now()->addHours(24)` and `now()->addHours(24)->addMinutes(5)` → send 24-hour reminder
 - Do not send if booking was made less than 1 hour ago
 
 Register in `routes/console.php`:
+
 ```php
 Schedule::command('app:send-booking-reminders')->everyFiveMinutes();
 ```
@@ -800,6 +855,7 @@ Schedule::command('app:send-booking-reminders')->everyFiveMinutes();
 `getAvailableSlots(Shop $shop, ?Barber $barber, Service $service, string $date): array`
 
 Logic:
+
 1. Get shop opening hours for the day of week of `$date`. If closed → return `[]`
 2. Generate all possible slots from open to close time, with `$service->duration_minutes` intervals
 3. Remove slots that overlap with existing confirmed/in_progress bookings for the barber (or any barber if `AnyAvailable` mode)
@@ -831,25 +887,25 @@ Shows booking code prominently in a glass card.
 ### 4.8 — Phase 4 Tests
 
 - `BookingFlowTest`:
-  - Client can complete full booking flow (no payment mode)
-  - Client cannot book if blocked
-  - Client cannot book more than max pending bookings
-  - Slot is locked after booking
-  - OTP must be verified to confirm booking
-  - Booking code is generated and stored
+    - Client can complete full booking flow (no payment mode)
+    - Client cannot book if blocked
+    - Client cannot book more than max pending bookings
+    - Slot is locked after booking
+    - OTP must be verified to confirm booking
+    - Booking code is generated and stored
 
 - `BookingServiceTest`:
-  - Cancel > 2 hours before → refund created
-  - Cancel < 2 hours before → no refund
-  - Shop cancel → refund created
-  - No-show increments strike count
-  - 2nd no-show blocks user
+    - Cancel > 2 hours before → refund created
+    - Cancel < 2 hours before → no refund
+    - Shop cancel → refund created
+    - No-show increments strike count
+    - 2nd no-show blocks user
 
 - `SlotCalculatorTest`:
-  - Returns correct slots for open day
-  - Returns empty for closed day
-  - Excludes already booked slots
-  - Excludes past slots
+    - Returns correct slots for open day
+    - Returns empty for closed day
+    - Excludes already booked slots
+    - Excludes past slots
 
 ---
 
@@ -880,6 +936,7 @@ Create a `role` middleware: `app/Http/Middleware/EnsureUserRole.php`. Checks `au
 ### 5.2 — Dashboard Layout
 
 The shop owner dashboard uses the **exact same** `layouts/app.blade.php` but with a different bottom nav (owner tabs):
+
 - الرئيسية → `dashboard.home`
 - الحجوزات → `dashboard.reservations`
 - المحل → `dashboard.settings`
@@ -902,6 +959,7 @@ View: Glass cards for stats, list of today's upcoming bookings.
 ### 5.4 — ShopSettings Component
 
 Allows editing all shop settings in one page with sections:
+
 - Basic info (name, phone, description, address, area)
 - Opening hours (per day toggle + time pickers)
 - Advance booking window (number input, 1-90 days)
@@ -919,14 +977,15 @@ Allows editing all shop settings in one page with sections:
 List of barbers with: photo, name, specialty, rating, active toggle.
 
 Actions:
+
 - Add barber (bottom sheet form): name, phone, specialties, photo upload
 - Edit barber (bottom sheet form)
 - Toggle active/inactive
 - Mark barber as unavailable for a date (date picker in bottom sheet):
-  - Inserts into `barber_unavailability`
-  - Queries all confirmed bookings for that barber on that date
-  - Calls `BookingService::cancel()` with `CancelledBy::Shop` for each
-  - WhatsApp sent to each affected client
+    - Inserts into `barber_unavailability`
+    - Queries all confirmed bookings for that barber on that date
+    - Calls `BookingService::cancel()` with `CancelledBy::Shop` for each
+    - WhatsApp sent to each affected client
 
 ---
 
@@ -935,6 +994,7 @@ Actions:
 List of services with: name, price, duration, active badge.
 
 Actions:
+
 - Add service (bottom sheet)
 - Edit service (bottom sheet)
 - Toggle active/inactive (badge changes, service not deleted)
@@ -948,6 +1008,7 @@ Calendar view (week view by default, switchable to list view).
 Each booking card shows: client name, booking code, service, barber, time, status badge.
 
 Action buttons per booking (based on current status):
+
 - `confirmed` → "وصل؟" (Mark Arrived) + "إلغاء"
 - `in_progress` → "خلص؟" (Mark Completed) + "ما جاش" (Mark No-Show)
 - `completed`, `cancelled`, `no_show` → read-only
@@ -963,6 +1024,7 @@ Search by booking code: input at top, searches live.
 Date range filter (this month / last month / custom range).
 
 Shows:
+
 - Total gross revenue
 - Commission deducted (with rate shown)
 - Net payout
@@ -1006,6 +1068,7 @@ On mount: load booking by UUID, verify it belongs to the authenticated user, ver
 Properties: `$shopRating`, `$barberRating`, `$comment`, `$booking`
 
 `submit()`:
+
 - Creates `Review` for the shop (polymorphic: `reviewable_type = Shop`)
 - If `$barberRating > 0` → creates `Review` for the barber (polymorphic: `reviewable_type = Barber`)
 - Recalculates and updates `shops.average_rating` and `barbers.average_rating`
@@ -1020,10 +1083,12 @@ View: Star rating component (Alpine.js, 1-5 stars, tappable), optional comment t
 **File:** `app/Services/RatingService.php`
 
 > ⚠️ **STOP:** This service involves aggregation logic. Scaffold the class with method signatures only:
+>
 > ```php
 > public function recalculateShopRating(Shop $shop): void {}
 > public function recalculateBarberRating(Barber $barber): void {}
 > ```
+>
 > Then output:
 > "Please provide the implementation for `app/Services/RatingService.php`. The methods should recalculate `average_rating` and `total_reviews` on the `Shop` and `Barber` models from the `reviews` table."
 > Wait for developer input before calling these methods.
@@ -1033,10 +1098,10 @@ View: Star rating component (Alpine.js, 1-5 stars, tappable), optional comment t
 ### 6.4 — Phase 6 Tests
 
 - `ReviewTest`:
-  - Client can submit review after completed booking
-  - Cannot review twice for same booking
-  - Cannot review if booking is not completed
-  - Shop and barber ratings update after review
+    - Client can submit review after completed booking
+    - Cannot review twice for same booking
+    - Cannot review if booking is not completed
+    - Shop and barber ratings update after review
 
 ---
 
@@ -1061,13 +1126,13 @@ View: Star rating component (Alpine.js, 1-5 stars, tappable), optional comment t
 
 Add the following keys to `SettingsSeeder` (and seed them into the `settings` table via a new migration or an additional seeder call):
 
-| Key | Default value | Description |
-|---|---|---|
-| `referral_enabled` | `true` | Master switch — turns referral system on/off |
-| `referral_unlimited_mode` | `true` | `true` = earn per every invitee; `false` = one reward per referrer ever |
-| `referral_discount_type` | `1` | `1` = Percentage, `2` = Fixed (matches `DiscountType` enum) |
-| `referral_discount_value` | `15` | Value of the reward discount (15% by default) |
-| `referral_coupon_expiry_days` | `7` | Days until the issued coupon expires |
+| Key                           | Default value | Description                                                             |
+| ----------------------------- | ------------- | ----------------------------------------------------------------------- |
+| `referral_enabled`            | `true`        | Master switch — turns referral system on/off                            |
+| `referral_unlimited_mode`     | `true`        | `true` = earn per every invitee; `false` = one reward per referrer ever |
+| `referral_discount_type`      | `1`           | `1` = Percentage, `2` = Fixed (matches `DiscountType` enum)             |
+| `referral_discount_value`     | `15`          | Value of the reward discount (15% by default)                           |
+| `referral_coupon_expiry_days` | `7`           | Days until the issued coupon expires                                    |
 
 ---
 
@@ -1129,18 +1194,20 @@ Add a `status` column (`tinyint`, default `0`) to the `referrals` migration and 
 Create via `php artisan make:model Referral --no-interaction`.
 
 Model must have:
+
 - `use HasPublicUuid, SoftDeletes;`
 - `#[Fillable]` covering: `uuid`, `referrer_id`, `invitee_id`, `booking_id`, `coupon_id`, `status`, `rewarded_at`
 - `$casts`: `status => ReferralStatus::class`, `rewarded_at => 'datetime'`
 - Relationships:
-  - `referrer(): BelongsTo` → `User`
-  - `invitee(): BelongsTo` → `User`
-  - `booking(): BelongsTo` → `Booking`
-  - `coupon(): BelongsTo` → `Coupon`
+    - `referrer(): BelongsTo` → `User`
+    - `invitee(): BelongsTo` → `User`
+    - `booking(): BelongsTo` → `Booking`
+    - `coupon(): BelongsTo` → `Coupon`
 - Scopes:
-  - `scopePending()`, `scopeRewarded()`, `scopeSkipped()`
+    - `scopePending()`, `scopeRewarded()`, `scopeSkipped()`
 
 Update `User` model:
+
 - Add `referralCode` auto-generation in `booted()` model event (on `creating`): generate an 8-char uppercase alphanumeric code unique against `users.referral_code`.
 - Add relationship `referralsGiven(): HasMany` (where user is referrer) and `referralReceived(): HasOne` (where user is invitee).
 
@@ -1200,6 +1267,7 @@ public function canReferrerEarn(User $referrer): bool
 ```
 
 Bind as singleton in `AppServiceProvider`:
+
 ```php
 $this->app->singleton(ReferralService::class);
 ```
@@ -1211,10 +1279,12 @@ $this->app->singleton(ReferralService::class);
 #### 7.7.1 — Register Component Integration
 
 In `app/Livewire/Auth/Register.php`, mount method:
+
 - Read `referral_code` query parameter from the URL.
 - If present and valid (user with that code exists), store it in the session under `'referral_code'`.
 
 After user is created and `Auth::login()` is called:
+
 ```php
 if (session()->has('referral_code')) {
     app(ReferralService::class)->handleRegistration(
@@ -1227,6 +1297,7 @@ if (session()->has('referral_code')) {
 #### 7.7.2 — BookingService Integration
 
 In `app/Services/BookingService.php`, inside `markCompleted()`:
+
 ```php
 // After setting status = Completed:
 app(ReferralService::class)->handleBookingCompleted($booking);
@@ -1235,6 +1306,7 @@ app(ReferralService::class)->handleBookingCompleted($booking);
 #### 7.7.3 — CouponService Platform-Wide Coupon Support
 
 In `CouponService::validateAndCalculate()`, change the shop scope:
+
 ```php
 // Instead of ->where('shop_id', $shop->id)
 ->where(function ($q) use ($shop) {
@@ -1258,6 +1330,7 @@ Route::get('/offers', \App\Livewire\Offers::class)->name('offers');
 #### `app/Livewire/Offers.php`
 
 Properties:
+
 - `$referralEnabled` (loaded from SettingsService)
 - `$discountValue`, `$discountType`, `$expiryDays` (loaded from Settings)
 - `$userReferralLink` (generated only if authenticated client)
@@ -1265,41 +1338,43 @@ Properties:
 - `$copySuccess` (boolean, Alpine.js state for copy-to-clipboard feedback)
 
 `mount()` method:
+
 - Load all settings values.
 - If `auth()->check()` and user is a client:
-  - Ensure user has a `referral_code` (generate one via `ReferralCodeGenerator` if null).
-  - Build `$userReferralLink = route('register') . '?ref=' . $user->referral_code`.
-  - Load `$activeUserCoupons` from the user's referral-issued coupons that are still valid.
+    - Ensure user has a `referral_code` (generate one via `ReferralCodeGenerator` if null).
+    - Build `$userReferralLink = route('register') . '?ref=' . $user->referral_code`.
+    - Load `$activeUserCoupons` from the user's referral-issued coupons that are still valid.
 
 **View:** `resources/views/livewire/offers.blade.php`
 
 The Offers page is a **promotional, visually impactful page** using the Liquid Glass design. It must contain:
 
 1. **Hero Section** (glass card, full-width):
-   - Headline in Egyptian Arabic: e.g. "وفّر على حجزك الجاي"
-   - Subtext explaining the referral deal in simple Egyptian Arabic (e.g. "ادعو صاحبك، لمّا يحجز ويخلص أول حجز ليه، هتاخد كوبون خصم {value}")
-   - A badge/pill showing the discount value prominently
-   - Expiry note: "الكوبون بيفضل معاك {days} أيام"
+    - Headline in Egyptian Arabic: e.g. "وفّر على حجزك الجاي"
+    - Subtext explaining the referral deal in simple Egyptian Arabic (e.g. "ادعو صاحبك، لمّا يحجز ويخلص أول حجز ليه، هتاخد كوبون خصم {value}")
+    - A badge/pill showing the discount value prominently
+    - Expiry note: "الكوبون بيفضل معاك {days} أيام"
 
 2. **How It Works Section** — 3 step cards (numbered, horizontal scroll on mobile):
-   - Step 1: "شارك الكود" — copy your unique link
-   - Step 2: "صاحبك يسجل ويحجز" — invitee books via your link
-   - Step 3: "هيجيلك الكوبون" — you get the coupon after his booking completes
+    - Step 1: "شارك الكود" — copy your unique link
+    - Step 2: "صاحبك يسجل ويحجز" — invitee books via your link
+    - Step 3: "هيجيلك الكوبون" — you get the coupon after his booking completes
 
 3. **Your Invite Link / CTA Block** (shown only if authenticated & referral enabled):
-   - Full referral URL displayed in a styled read-only input
-   - "انسخ الرابط" button — uses `window.navigator.clipboard.writeText()` via Alpine.js `@click`
-   - Copy feedback ("اتنسخ!") fades in for 2 seconds using Alpine.js `x-show` with transition
+    - Full referral URL displayed in a styled read-only input
+    - "انسخ الرابط" button — uses `window.navigator.clipboard.writeText()` via Alpine.js `@click`
+    - Copy feedback ("اتنسخ!") fades in for 2 seconds using Alpine.js `x-show` with transition
 
 4. **Your Active Coupons** (shown only if authenticated and user has valid referral coupons):
-   - List of glass cards, one per coupon
-   - Shows: code (bold, copyable), discount label, expiry date
-   - Empty state: "لسه معندكش كوبونات. ابدا وادعو صاحبك!"
+    - List of glass cards, one per coupon
+    - Shows: code (bold, copyable), discount label, expiry date
+    - Empty state: "لسه معندكش كوبونات. ابدا وادعو صاحبك!"
 
 5. **Guest CTA** (shown only if NOT authenticated):
-   - "سجل دلوقتي وابدا تدعو" button → `wire:navigate` to `/register`
+    - "سجل دلوقتي وابدا تدعو" button → `wire:navigate` to `/register`
 
 Add `/offers` as a bottom-nav item for clients:
+
 - Icon: gift/tag icon
 - Label: العروض
 - Route: `offers`
@@ -1325,6 +1400,7 @@ Add to `config/whatsapp.php` a new template key `referral_reward_issued`:
 Create `app/Filament/Resources/ReferralResource.php` (read-only: no create/edit pages).
 
 List table columns:
+
 - Referrer name + phone
 - Invitee name + phone
 - Status badge (color from `ReferralStatus::getColor()`)
@@ -1337,6 +1413,7 @@ Filters: status.
 Add to Filament navigation group **"التسويق"** (new group).
 
 Also add a **Referral Settings section** to the existing `SettingsPage` custom Filament page:
+
 - Enable/disable referral system toggle
 - Unlimited mode toggle
 - Discount type select (Percentage / Fixed)
@@ -1348,6 +1425,7 @@ Also add a **Referral Settings section** to the existing `SettingsPage` custom F
 ### 7.11 — Factory & Seeder
 
 `ReferralFactory` — use `php artisan make:factory ReferralFactory --no-interaction`:
+
 - States: `pending()`, `rewarded()`, `skipped()`
 - `rewarded()` state creates a linked `Coupon` and sets `rewarded_at`
 
@@ -1360,11 +1438,13 @@ Update `DatabaseSeeder` (inside `if (app()->isLocal())`) to seed a few sample re
 Create via `php artisan make:test --pest`:
 
 **`tests/Feature/Referral/ReferralRegistrationTest.php`:**
+
 - Registering via a valid ref query parameter stores referral in `referrals` table with status `Pending`
 - Invalid ref code is silently ignored (no referral record created)
 - Registering without a ref code creates no referral record
 
 **`tests/Feature/Referral/ReferralRewardTest.php`:**
+
 - After invitee completes first booking, referrer receives a coupon (status → `Rewarded`, `coupon_id` populated)
 - Referrer does NOT receive a second coupon for the same invitee (idempotent)
 - In one-time mode, referrer does not earn again after already being rewarded
@@ -1372,11 +1452,13 @@ Create via `php artisan make:test --pest`:
 - Completing a booking that is NOT the invitee's first does not trigger reward
 
 **`tests/Feature/Offers/OffersPageTest.php`:**
+
 - Page loads for guests (referral CTA hidden)
 - Authenticated client sees their referral link
 - Platform-wide coupon is accepted at booking (null shop_id validation)
 
 **`tests/Unit/ReferralCodeGeneratorTest.php`:**
+
 - Generates 8-char code
 - Code uses only valid charset
 - Generates unique codes (loop test)
@@ -1391,12 +1473,12 @@ Create via `php artisan make:test --pest`:
 
 - **Profile Header:** Display user name, phone, and role badge.
 - **Referral Section (Relocated from Phase 7):**
-  - High-energy "Liquid Glass" card showing the unique referral code and total count of successful invites.
-  - Interactive "Referral How-to" (Step cards: Share -> Book -> Earn).
-  - Native share/copy-to-clipboard functionality.
+    - High-energy "Liquid Glass" card showing the unique referral code and total count of successful invites.
+    - Interactive "Referral How-to" (Step cards: Share -> Book -> Earn).
+    - Native share/copy-to-clipboard functionality.
 - **My Coupons Wallet:**
-  - List of all earned referral and promotional coupons.
-  - Interactive coupon cards with copyable codes and expiry tracking.
+    - List of all earned referral and promotional coupons.
+    - Interactive coupon cards with copyable codes and expiry tracking.
 - **Account Management:** Edit profile name, change phone number (OTP verified), update password.
 - **App Settings:** Dark mode toggle, notification preferences.
 - **Support:** Link to help center or WhatsApp support.
@@ -1409,7 +1491,7 @@ Create via `php artisan make:test --pest`:
 Route::middleware('auth')->group(function () {
     Route::get('/profile', \App\Livewire\Profile\Index::class)->name('profile.index');
     Route::get('/profile/edit', \App\Livewire\Profile\EditProfile::class)->name('profile.edit');
-    Route::get('/settings', \App\Livewire\Profile\AppSettings::class)->name('app.settings');
+    Route::get('/settings', \App\Livewire\Profile\AppSettings::class)->name('profile.settings');
 });
 ```
 
@@ -1418,6 +1500,7 @@ Route::middleware('auth')->group(function () {
 ### 8.2 — Profile Index Component
 
 Shows:
+
 - User name, phone, avatar (initials-based placeholder)
 - **Referral Section**: Shows the unique referral code and total count of successful invites (invites that completed their first booking).
 - Quick stats: total bookings, completed bookings
@@ -1450,6 +1533,7 @@ Password change section: current password, new password, confirm new password.
 Single Livewire component used for both `/terms` and `/privacy`. Reads content from `SettingsService::get('terms_content')` or `SettingsService::get('privacy_content')` based on route parameter.
 
 Routes:
+
 ```php
 Route::get('/terms', \App\Livewire\StaticPage::class)->name('terms')->defaults('page', 'terms');
 Route::get('/privacy', \App\Livewire\StaticPage::class)->name('privacy')->defaults('page', 'privacy');
@@ -1491,10 +1575,12 @@ Date range filter: this week / this month / last month / custom.
 Sections:
 
 **Bookings Overview:**
+
 - Total, completed, cancelled, no-show counts for the period
 - Rendered as a bar chart using Chart.js (loaded via CDN in this view only)
 
 **Revenue Overview:**
+
 - Gross revenue, commission deducted, net payout for the period
 - Line chart
 
@@ -1533,6 +1619,7 @@ List columns: name, owner name, area, status badge (color from `ShopStatus::getC
 Filters: status, area.
 
 Actions:
+
 - Approve (sets `status = Active`, sends WhatsApp to owner) — only visible on `pending` records
 - Reject (modal with reason input, sets `status = Rejected`, sends WhatsApp) — only visible on `pending` records
 - Suspend / Reactivate
@@ -1546,6 +1633,7 @@ List columns: name, phone, role badge, no-show count, is_blocked badge, created 
 Filters: role, is_blocked.
 
 Actions:
+
 - Ban / Unban
 - Unblock (resets `is_blocked = false` and `no_show_count = 0`)
 - Send WhatsApp (modal with free-text message input)
@@ -1577,12 +1665,14 @@ List columns: shop name, client name, rating, comment (truncated), is_flagged ba
 Filters: is_flagged.
 
 Actions:
+
 - Delete review
 - Mark as reviewed (sets `is_flagged = false`)
 
 #### `SettingsPage` (custom Filament page, not a resource)
 
 A single custom page at `/admin/settings`. Form with:
+
 - Terms of Use content (rich text editor — use Filament's built-in `RichEditor`)
 - Privacy Policy content (rich text editor)
 - Default commission rate (number input)
@@ -1603,6 +1693,7 @@ List, create, edit. Columns: name, slug, is_active. Toggle active.
 ### 10.2 — Filament Navigation
 
 Group resources into navigation groups:
+
 - **المحلات:** ShopResource, AreaResource
 - **المستخدمين:** UserResource
 - **الحجوزات:** BookingResource
@@ -1724,6 +1815,6 @@ tests/
 
 ---
 
-*Plan Version: 1.1 — FadeBook Implementation Plan for AI-assisted development*
-*Companion documents: blueprint-v2.md, constitution-v1.md*
-*v1.1: Added Phase 7 — Referral System & Offers Page; renumbered old phases 7–10*
+_Plan Version: 1.1 — FadeBook Implementation Plan for AI-assisted development_
+_Companion documents: blueprint-v2.md, constitution-v1.md_
+_v1.1: Added Phase 7 — Referral System & Offers Page; renumbered old phases 7–10_

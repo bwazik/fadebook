@@ -136,7 +136,9 @@ class ChangePhone extends Component
             'user_agent' => request()->userAgent(),
         ]);
 
-        return redirect()->route('profile.index')->with('success', __('messages.phone_changed_success'));
+        $this->flashToastSuccess(__('messages.phone_changed_success'));
+
+        return $this->redirectRoute('profile.edit', navigate: true);
     }
 
     public function resendOtp(OtpService $otpService)

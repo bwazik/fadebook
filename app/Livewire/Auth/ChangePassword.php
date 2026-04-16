@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Services\OtpService;
 use App\Traits\WithRateLimiting;
 use App\Traits\WithToast;
+use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -33,12 +34,12 @@ class ChangePassword extends Component
 
     public $password_confirmation;
 
-    public function mount()
+    public function mount(): void
     {
         $this->phone = Auth::user()->phone;
     }
 
-    public function sendOtp(OtpService $otpService)
+    public function sendOtp(OtpService $otpService): void
     {
         if ($this->isRateLimited('change-password-send', 3, 120)) {
             return;
@@ -103,7 +104,7 @@ class ChangePassword extends Component
         }
     }
 
-    public function resendOtp(OtpService $otpService)
+    public function resendOtp(OtpService $otpService): void
     {
         if ($this->isRateLimited('change-password-resend', 3, 120)) {
             return;
@@ -118,7 +119,7 @@ class ChangePassword extends Component
         }
     }
 
-    public function resetPassword(OtpService $otpService): mixed
+    public function resetPassword(OtpService $otpService)
     {
         if (! $this->otpVerified) {
             $this->toastError(__('messages.otp_invalid'));
@@ -152,7 +153,9 @@ class ChangePassword extends Component
                 'phone_verified_at' => now(),
             ]);
 
-            return redirect()->route('profile.index')->with('success', __('messages.password_changed_success'));
+            $this->flashToastSuccess(__('messages.password_changed_success'));
+
+            return $this->redirectRoute('profile.edit', navigate: true);
         } catch (OtpException $e) {
             $this->toastError($e->getMessage());
 
@@ -160,7 +163,7 @@ class ChangePassword extends Component
         }
     }
 
-    public function goBack()
+    public function goBack(): void
     {
         if ($this->step > 1) {
             $this->step--;
@@ -168,7 +171,7 @@ class ChangePassword extends Component
         }
     }
 
-    public function render()
+    public function render(): View
     {
         return view('livewire.auth.change-password', [
             'maskedPhone' => $this->maskPhone($this->phone ?? ''),

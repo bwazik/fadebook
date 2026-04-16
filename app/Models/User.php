@@ -155,6 +155,14 @@ class User extends Authenticatable
     }
 
     /**
+     * Get the coupons assigned to this user.
+     */
+    public function coupons(): HasMany
+    {
+        return $this->hasMany(Coupon::class);
+    }
+
+    /**
      * Get the referrals given by this user (where user is referrer).
      */
     public function referralsGiven(): HasMany

@@ -16,12 +16,23 @@ use App\Livewire\Home;
 use App\Livewire\Offers;
 use App\Livewire\Onboarding\PendingApproval;
 use App\Livewire\Onboarding\ShopSetup;
+use App\Livewire\Profile\AppSettings;
+use App\Livewire\Profile\EditProfile;
+use App\Livewire\Profile\Index;
+use App\Livewire\Profile\Referral;
 use App\Livewire\Review\SubmitReview;
 use App\Livewire\Shop\ShopPage;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/offline', fn() => view('offline'))->name('offline');
+Route::get('/offline', fn () => view('offline'))->name('offline');
 
+// Phase 2 Home
+Route::get('/', Home::class)->name('home');
+
+// Auth Routes (Login, Register, etc.)
+require __DIR__.'/auth.php';
+
+// Onboarding
 Route::middleware('auth')->group(function () {
     Route::get('/onboarding/shop', ShopSetup::class)->name('onboarding.shop');
     Route::get('/onboarding/pending', PendingApproval::class)->name('onboarding.pending');
@@ -47,11 +58,13 @@ Route::middleware(['auth', 'phone.verified'])->group(function () {
     Route::get('/bookings', BookingList::class)->name('bookings.index');
     Route::get('/bookings/{bookingUuid}', BookingDetails::class)->name('booking.show');
     Route::get('/review/{bookingUuid}', SubmitReview::class)->name('review.create');
+
+    // Phase 8 Profile & Settings
+    Route::get('/profile', Index::class)->name('profile.index');
+    Route::get('/profile/edit', EditProfile::class)->name('profile.edit');
+    Route::get('/settings', AppSettings::class)->name('profile.settings');
+    Route::get('/referral', Referral::class)->name('profile.referral');
 });
 
-// Phase 2 Public Routes
-Route::get('/', Home::class)->name('home');
+// Catch-all Dynamic Shop Routes (MUST BE LAST)
 Route::get('/{areaSlug}/{shopSlug}', ShopPage::class)->name('shop.show');
-Route::view('profile', 'profile')->name('profile.index');
-
-require __DIR__ . '/auth.php';
