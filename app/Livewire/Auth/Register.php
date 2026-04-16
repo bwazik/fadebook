@@ -8,6 +8,7 @@ use App\Enums\UserRole;
 use App\Models\Area;
 use App\Models\Shop;
 use App\Rules\EgyptianPhone;
+use App\Services\ReferralService;
 use App\Traits\WithRateLimiting;
 use App\Traits\WithToast;
 use Illuminate\Support\Facades\DB;
@@ -22,6 +23,8 @@ class Register extends Component
     use WithRateLimiting, WithToast;
 
     public $step = 1;
+
+    public $ref;
 
     public $name;
 
@@ -53,6 +56,11 @@ class Register extends Component
         'thursday' => ['is_open' => true, 'open' => '09:00', 'close' => '21:00'],
         'friday' => ['is_open' => true, 'open' => '14:00', 'close' => '23:00'],
     ];
+
+    public function mount()
+    {
+        $this->ref = request()->query('ref');
+    }
 
     public function nextStep()
     {
@@ -141,6 +149,10 @@ class Register extends Component
                 $this->password,
                 UserRole::Client
             );
+
+            if ($this->ref) {
+                app(ReferralService::class)->handleRegistration($user, $this->ref);
+            }
 
             if ($this->role === 'barber_owner') {
                 Shop::create([

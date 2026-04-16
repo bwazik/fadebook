@@ -17,6 +17,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 #[ObservedBy(ShopObserver::class)]
@@ -44,6 +45,7 @@ use Illuminate\Support\Str;
     'rejection_reason',
     'approved_at',
     'rejected_at',
+    'referral_enabled',
 ])]
 class Shop extends Model
 {
@@ -91,6 +93,7 @@ class Shop extends Model
             'deposit_percentage' => 'decimal:2',
             'approved_at' => 'datetime',
             'rejected_at' => 'datetime',
+            'referral_enabled' => 'boolean',
         ];
     }
 
@@ -156,6 +159,14 @@ class Shop extends Model
     }
 
     /**
+     * Get the offers for the shop.
+     */
+    public function offers(): HasMany
+    {
+        return $this->hasMany(Offer::class);
+    }
+
+    /**
      * Get the WhatsApp messages associated with this shop.
      */
     public function whatsappMessages(): HasMany
@@ -177,6 +188,26 @@ class Shop extends Model
     public function views(): MorphMany
     {
         return $this->morphMany(View::class, 'viewable');
+    }
+
+    /**
+     * Get the logo URL accessor.
+     */
+    public function getLogoUrlAttribute(): string
+    {
+        $image = $this->getImage('logo')->first();
+
+        return $image ? Storage::url($image->path) : 'https://ui-avatars.com/api/?name='.urlencode($this->name);
+    }
+
+    /**
+     * Get the banner URL accessor.
+     */
+    public function getBannerUrlAttribute(): ?string
+    {
+        $image = $this->getImage('banner')->first();
+
+        return $image ? Storage::url($image->path) : null;
     }
 
     /**

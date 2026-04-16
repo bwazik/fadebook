@@ -7,6 +7,7 @@ namespace App\Observers;
 use App\Enums\ShopStatus;
 use App\Enums\UserRole;
 use App\Models\Shop;
+use App\Services\OfferService;
 
 class ShopObserver
 {
@@ -31,6 +32,11 @@ class ShopObserver
                     'approved_at' => now(),
                 ]);
             }
+        }
+
+        // Sync offers if referral status or name changed
+        if ($shop->wasChanged(['referral_enabled', 'name'])) {
+            app(OfferService::class)->syncOffersForShop($shop);
         }
     }
 }

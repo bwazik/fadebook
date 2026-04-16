@@ -11,8 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('barbers', function (Blueprint $table) {
-            $table->dropColumn('bio');
+        Schema::table('users', function (Blueprint $table) {
+            $table->string('referral_code', 8)->nullable()->unique()->after('phone');
+            $table->index('referral_code');
         });
     }
 
@@ -21,8 +22,9 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('barbers', function (Blueprint $table) {
-            $table->text('bio')->nullable()->after('phone');
+        Schema::table('users', function (Blueprint $table) {
+            $table->dropIndex(['referral_code']);
+            $table->dropColumn('referral_code');
         });
     }
 };

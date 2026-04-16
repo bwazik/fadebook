@@ -4,7 +4,9 @@ namespace App\Models;
 
 use App\Enums\DiscountType;
 use App\Models\Concerns\HasPublicUuid;
+use App\Observers\CouponObserver;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -12,9 +14,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+#[ObservedBy(CouponObserver::class)]
 #[Fillable([
     'uuid',
     'shop_id',
+    'user_id',
     'code',
     'discount_type',
     'discount_value',
@@ -109,6 +113,14 @@ class Coupon extends Model
     public function shop(): BelongsTo
     {
         return $this->belongsTo(Shop::class);
+    }
+
+    /**
+     * Get the user this coupon is locked to (referral coupons only).
+     */
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
     }
 
     /**

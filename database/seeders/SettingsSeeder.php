@@ -27,6 +27,13 @@ class SettingsSeeder extends Seeder
             'cancellation_window_hours' => '2',
             'max_cancellation_limit' => '5',
 
+            // Referral Settings
+            'referral_enabled' => 'true',
+            'referral_unlimited_mode' => 'true',
+            'referral_discount_type' => '1',
+            'referral_discount_value' => '15',
+            'referral_coupon_expiry_days' => '7',
+
             // Rate Limiting Settings
             'rate_limit_login-attempt_attempts' => '5',
             'rate_limit_login-attempt_seconds' => '60',

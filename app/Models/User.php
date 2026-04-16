@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enums\UserRole;
 use App\Models\Concerns\HasPublicUuid;
+use App\Services\ReferralCodeGenerator;
 use App\Traits\HasImages;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
@@ -21,6 +22,7 @@ use Illuminate\Notifications\Notifiable;
     'name',
     'email',
     'phone',
+    'referral_code',
     'birthday',
     'otp_request_count',
     'last_otp_sent_at',
@@ -40,6 +42,18 @@ class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
     use HasFactory, HasImages, HasPublicUuid, Notifiable, SoftDeletes;
+
+    /**
+     * The "booted" method of the model.
+     */
+    protected static function booted(): void
+    {
+        static::creating(function (User $user) {
+            if (! $user->referral_code) {
+                $user->referral_code = app(ReferralCodeGenerator::class)->generate();
+            }
+        });
+    }
 
     /**
      * Scope a query to only include active (non-blocked) users.
@@ -138,6 +152,22 @@ class User extends Authenticatable
     public function reviews(): HasMany
     {
         return $this->hasMany(Review::class);
+    }
+
+    /**
+     * Get the referrals given by this user (where user is referrer).
+     */
+    public function referralsGiven(): HasMany
+    {
+        return $this->hasMany(Referral::class, 'referrer_id');
+    }
+
+    /**
+     * Get the referral received by this user (where user is invitee).
+     */
+    public function referralReceived(): HasOne
+    {
+        return $this->hasOne(Referral::class, 'invitee_id');
     }
 
     /**

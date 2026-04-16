@@ -1040,13 +1040,370 @@ View: Star rating component (Alpine.js, 1-5 stars, tappable), optional comment t
 
 ---
 
-## Phase 7 — Profile & Settings
+## Phase 7 — Referral System & Offers Page
 
-**Goal:** Client profile page with booking history, personal info editing, and app settings (theme, dark mode).
+**Goal:** An infinity-loop referral system where any user can invite a new user, and once that invitee completes their first booking the referrer receives a personal coupon (linked to the existing `coupons` system) that expires in one week. The referral flow is surfaced via a dedicated **Offers** promotional page. The super-admin controls all referral settings (discount type/value, expiry days, whether referrals are unlimited or one-time-per-user).
 
 ---
 
-### 7.1 — Routes
+### 7.0 — Design Decisions & Rules
+
+1. **Referral codes** are short, unique, uppercase alphanumeric strings (8 characters) stored per user — one code per user, generated once and reused indefinitely.
+2. **Reward trigger:** the referrer earns a coupon only when the invitee's **first** booking reaches `BookingStatus::Completed`. Pending/confirmed bookings do not trigger the reward.
+3. **Unlimited vs. one-time mode** is a global setting stored in the `settings` table (`referral_unlimited_mode = true/false`). When `false`, each user can earn a referral reward **once only** (they can still share their link, they just won't earn again). When `true`, every new invitee who completes a booking gives the referrer a fresh coupon.
+4. **Coupon scope:** referral coupons are **platform-wide** (not tied to a single shop — `shop_id = null`). Any shop will accept them. This requires a small addition to `CouponService::validateAndCalculate()` to allow null `shop_id` coupons.
+5. **Offers page** (`/offers`) is publicly visible but the referral CTA and personal invite link are only shown to authenticated clients.
+6. **WhatsApp notification** is sent to the referrer when their reward coupon is issued.
+
+---
+
+### 7.1 — New Settings Keys (SettingsSeeder addition)
+
+Add the following keys to `SettingsSeeder` (and seed them into the `settings` table via a new migration or an additional seeder call):
+
+| Key | Default value | Description |
+|---|---|---|
+| `referral_enabled` | `true` | Master switch — turns referral system on/off |
+| `referral_unlimited_mode` | `true` | `true` = earn per every invitee; `false` = one reward per referrer ever |
+| `referral_discount_type` | `1` | `1` = Percentage, `2` = Fixed (matches `DiscountType` enum) |
+| `referral_discount_value` | `15` | Value of the reward discount (15% by default) |
+| `referral_coupon_expiry_days` | `7` | Days until the issued coupon expires |
+
+---
+
+### 7.2 — New Migration: `referrals` Table
+
+Create migration via `php artisan make:migration create_referrals_table --no-interaction`.
+
+Schema:
+
+```php
+$table->id();
+$table->char('uuid', 36)->unique();
+$table->foreignId('referrer_id')->constrained('users')->onDelete('cascade');  // user who shared
+$table->foreignId('invitee_id')->constrained('users')->onDelete('cascade');   // user who registered via referral
+$table->foreignId('booking_id')->nullable()->constrained('bookings')->onDelete('set null'); // the triggering booking
+$table->foreignId('coupon_id')->nullable()->constrained('coupons')->onDelete('set null');   // issued reward coupon
+$table->timestamp('rewarded_at')->nullable();  // when the coupon was issued
+$table->timestamps();
+$table->softDeletes();
+
+// Indexes
+$table->index('referrer_id');
+$table->index('invitee_id');
+$table->unique(['referrer_id', 'invitee_id']); // one record per referrer-invitee pair
+```
+
+Also add `referral_code` column to the `users` table via a separate migration:
+
+```php
+// php artisan make:migration add_referral_code_to_users_table --no-interaction
+$table->string('referral_code', 8)->nullable()->unique()->after('phone');
+$table->index('referral_code');
+```
+
+---
+
+### 7.3 — New Enum: `ReferralStatus.php`
+
+**File:** `app/Enums/ReferralStatus.php`
+
+```php
+enum ReferralStatus: int
+{
+    case Pending  = 0;  // invitee registered but hasn't completed a booking yet
+    case Rewarded = 1;  // coupon issued to referrer
+    case Skipped  = 2;  // system is in one-time mode and referrer already earned once
+
+    public function getLabel(): string { ... } // Egyptian Arabic
+    public function getColor(): string { ... } // for Filament badges
+}
+```
+
+Add a `status` column (`tinyint`, default `0`) to the `referrals` migration and cast it on the `Referral` model.
+
+---
+
+### 7.4 — New Model: `Referral.php`
+
+Create via `php artisan make:model Referral --no-interaction`.
+
+Model must have:
+- `use HasPublicUuid, SoftDeletes;`
+- `#[Fillable]` covering: `uuid`, `referrer_id`, `invitee_id`, `booking_id`, `coupon_id`, `status`, `rewarded_at`
+- `$casts`: `status => ReferralStatus::class`, `rewarded_at => 'datetime'`
+- Relationships:
+  - `referrer(): BelongsTo` → `User`
+  - `invitee(): BelongsTo` → `User`
+  - `booking(): BelongsTo` → `Booking`
+  - `coupon(): BelongsTo` → `Coupon`
+- Scopes:
+  - `scopePending()`, `scopeRewarded()`, `scopeSkipped()`
+
+Update `User` model:
+- Add `referralCode` auto-generation in `booted()` model event (on `creating`): generate an 8-char uppercase alphanumeric code unique against `users.referral_code`.
+- Add relationship `referralsGiven(): HasMany` (where user is referrer) and `referralReceived(): HasOne` (where user is invitee).
+
+---
+
+### 7.5 — ReferralCodeGenerator Service
+
+**File:** `app/Services/ReferralCodeGenerator.php`
+
+Create via `php artisan make:class App/Services/ReferralCodeGenerator --no-interaction`.
+
+```php
+/**
+ * Charset excludes ambiguous characters (0, O, I, 1, L).
+ * Length: 8 characters.
+ * Loops until unique against users.referral_code.
+ */
+public function generate(): string { ... }
+```
+
+---
+
+### 7.6 — ReferralService
+
+**File:** `app/Services/ReferralService.php`
+
+Create via `php artisan make:class App/Services/ReferralService --no-interaction`.
+
+Methods:
+
+```php
+/**
+ * Called from the Register Livewire component after the new user is persisted.
+ * If a valid referral code is in the session (key: 'referral_code'), create a
+ * pending Referral record linking the referrer to the new invitee.
+ */
+public function handleRegistration(User $invitee, string $referralCode): void
+
+/**
+ * Called from BookingService::markCompleted().
+ * 1. Find the pending Referral for this booking's client (invitee).
+ * 2. Check if it's the invitee's FIRST completed booking.
+ * 3. Check referral_unlimited_mode and whether referrer already earned once.
+ * 4. If reward should be issued:
+ *    a. Create a Coupon (shop_id = null, platform-wide) using settings values.
+ *    b. Update the Referral: status = Rewarded, coupon_id, rewarded_at = now().
+ * 5. If referrer already earned and mode = one-time: status = Skipped.
+ * 6. Send WhatsApp to referrer with coupon code (template: referral_reward_issued).
+ */
+public function handleBookingCompleted(Booking $booking): void
+
+/**
+ * Check if the referrer can still earn a reward.
+ * Returns false if mode = one-time and referrer already has a Rewarded referral.
+ */
+public function canReferrerEarn(User $referrer): bool
+```
+
+Bind as singleton in `AppServiceProvider`:
+```php
+$this->app->singleton(ReferralService::class);
+```
+
+---
+
+### 7.7 — Integrations with Existing Code
+
+#### 7.7.1 — Register Component Integration
+
+In `app/Livewire/Auth/Register.php`, mount method:
+- Read `referral_code` query parameter from the URL.
+- If present and valid (user with that code exists), store it in the session under `'referral_code'`.
+
+After user is created and `Auth::login()` is called:
+```php
+if (session()->has('referral_code')) {
+    app(ReferralService::class)->handleRegistration(
+        $user,
+        session()->pull('referral_code')
+    );
+}
+```
+
+#### 7.7.2 — BookingService Integration
+
+In `app/Services/BookingService.php`, inside `markCompleted()`:
+```php
+// After setting status = Completed:
+app(ReferralService::class)->handleBookingCompleted($booking);
+```
+
+#### 7.7.3 — CouponService Platform-Wide Coupon Support
+
+In `CouponService::validateAndCalculate()`, change the shop scope:
+```php
+// Instead of ->where('shop_id', $shop->id)
+->where(function ($q) use ($shop) {
+    $q->where('shop_id', $shop->id)
+      ->orWhereNull('shop_id'); // platform-wide referral coupons
+})
+```
+
+---
+
+### 7.8 — Offers Page
+
+#### Route
+
+```php
+Route::get('/offers', \App\Livewire\Offers::class)->name('offers');
+```
+
+(Publicly accessible — no auth middleware. Auth state controls what is shown.)
+
+#### `app/Livewire/Offers.php`
+
+Properties:
+- `$referralEnabled` (loaded from SettingsService)
+- `$discountValue`, `$discountType`, `$expiryDays` (loaded from Settings)
+- `$userReferralLink` (generated only if authenticated client)
+- `$activeUserCoupons` (if authenticated: active platform-wide referral coupons belonging to the user)
+- `$copySuccess` (boolean, Alpine.js state for copy-to-clipboard feedback)
+
+`mount()` method:
+- Load all settings values.
+- If `auth()->check()` and user is a client:
+  - Ensure user has a `referral_code` (generate one via `ReferralCodeGenerator` if null).
+  - Build `$userReferralLink = route('register') . '?ref=' . $user->referral_code`.
+  - Load `$activeUserCoupons` from the user's referral-issued coupons that are still valid.
+
+**View:** `resources/views/livewire/offers.blade.php`
+
+The Offers page is a **promotional, visually impactful page** using the Liquid Glass design. It must contain:
+
+1. **Hero Section** (glass card, full-width):
+   - Headline in Egyptian Arabic: e.g. "وفّر على حجزك الجاي"
+   - Subtext explaining the referral deal in simple Egyptian Arabic (e.g. "ادعو صاحبك، لمّا يحجز ويخلص أول حجز ليه، هتاخد كوبون خصم {value}")
+   - A badge/pill showing the discount value prominently
+   - Expiry note: "الكوبون بيفضل معاك {days} أيام"
+
+2. **How It Works Section** — 3 step cards (numbered, horizontal scroll on mobile):
+   - Step 1: "شارك الكود" — copy your unique link
+   - Step 2: "صاحبك يسجل ويحجز" — invitee books via your link
+   - Step 3: "هيجيلك الكوبون" — you get the coupon after his booking completes
+
+3. **Your Invite Link / CTA Block** (shown only if authenticated & referral enabled):
+   - Full referral URL displayed in a styled read-only input
+   - "انسخ الرابط" button — uses `window.navigator.clipboard.writeText()` via Alpine.js `@click`
+   - Copy feedback ("اتنسخ!") fades in for 2 seconds using Alpine.js `x-show` with transition
+
+4. **Your Active Coupons** (shown only if authenticated and user has valid referral coupons):
+   - List of glass cards, one per coupon
+   - Shows: code (bold, copyable), discount label, expiry date
+   - Empty state: "لسه معندكش كوبونات. ابدا وادعو صاحبك!"
+
+5. **Guest CTA** (shown only if NOT authenticated):
+   - "سجل دلوقتي وابدا تدعو" button → `wire:navigate` to `/register`
+
+Add `/offers` as a bottom-nav item for clients:
+- Icon: gift/tag icon
+- Label: العروض
+- Route: `offers`
+- **Badge**: Must show a notification badge with the number of NEW offers (coupons) or pending rewards if applicable.
+
+---
+
+### 7.9 — WhatsApp Notification Template
+
+Add to `config/whatsapp.php` a new template key `referral_reward_issued`:
+
+```
+مبروك! {referrer_name}، صاحبك سجّل وخلّص أول حجز بيه.
+اتبعتلك كوبون خصم {discount_value} صالح لمدة {expiry_days} أيام.
+الكود بتاعك: {coupon_code}
+استخدمه في أي حجز جاي على FadeBook 🎉
+```
+
+---
+
+### 7.10 — Filament: Referral Resource
+
+Create `app/Filament/Resources/ReferralResource.php` (read-only: no create/edit pages).
+
+List table columns:
+- Referrer name + phone
+- Invitee name + phone
+- Status badge (color from `ReferralStatus::getColor()`)
+- Coupon code (if rewarded)
+- Rewarded at date
+- Created at
+
+Filters: status.
+
+Add to Filament navigation group **"التسويق"** (new group).
+
+Also add a **Referral Settings section** to the existing `SettingsPage` custom Filament page:
+- Enable/disable referral system toggle
+- Unlimited mode toggle
+- Discount type select (Percentage / Fixed)
+- Discount value number input
+- Coupon expiry days number input
+
+---
+
+### 7.11 — Factory & Seeder
+
+`ReferralFactory` — use `php artisan make:factory ReferralFactory --no-interaction`:
+- States: `pending()`, `rewarded()`, `skipped()`
+- `rewarded()` state creates a linked `Coupon` and sets `rewarded_at`
+
+Update `DatabaseSeeder` (inside `if (app()->isLocal())`) to seed a few sample referrals via the factory.
+
+---
+
+### 7.12 — Phase 7 Tests
+
+Create via `php artisan make:test --pest`:
+
+**`tests/Feature/Referral/ReferralRegistrationTest.php`:**
+- Registering via a valid ref query parameter stores referral in `referrals` table with status `Pending`
+- Invalid ref code is silently ignored (no referral record created)
+- Registering without a ref code creates no referral record
+
+**`tests/Feature/Referral/ReferralRewardTest.php`:**
+- After invitee completes first booking, referrer receives a coupon (status → `Rewarded`, `coupon_id` populated)
+- Referrer does NOT receive a second coupon for the same invitee (idempotent)
+- In one-time mode, referrer does not earn again after already being rewarded
+- In unlimited mode, referrer earns a new coupon for each distinct invitee
+- Completing a booking that is NOT the invitee's first does not trigger reward
+
+**`tests/Feature/Offers/OffersPageTest.php`:**
+- Page loads for guests (referral CTA hidden)
+- Authenticated client sees their referral link
+- Platform-wide coupon is accepted at booking (null shop_id validation)
+
+**`tests/Unit/ReferralCodeGeneratorTest.php`:**
+- Generates 8-char code
+- Code uses only valid charset
+- Generates unique codes (loop test)
+
+---
+
+## Phase 8 — Profile & Settings
+
+**Goal:** Comprehensive Client profile page with referral/invite management, active coupons wallet, booking history, personal info editing, and app settings.
+
+### 8.1 — Feature Requirements
+
+- **Profile Header:** Display user name, phone, and role badge.
+- **Referral Section (Relocated from Phase 7):**
+  - High-energy "Liquid Glass" card showing the unique referral code and total count of successful invites.
+  - Interactive "Referral How-to" (Step cards: Share -> Book -> Earn).
+  - Native share/copy-to-clipboard functionality.
+- **My Coupons Wallet:**
+  - List of all earned referral and promotional coupons.
+  - Interactive coupon cards with copyable codes and expiry tracking.
+- **Account Management:** Edit profile name, change phone number (OTP verified), update password.
+- **App Settings:** Dark mode toggle, notification preferences.
+- **Support:** Link to help center or WhatsApp support.
+
+---
+
+### 8.2 — Routes
 
 ```php
 Route::middleware('auth')->group(function () {
@@ -1058,10 +1415,11 @@ Route::middleware('auth')->group(function () {
 
 ---
 
-### 7.2 — Profile Index Component
+### 8.2 — Profile Index Component
 
 Shows:
 - User name, phone, avatar (initials-based placeholder)
+- **Referral Section**: Shows the unique referral code and total count of successful invites (invites that completed their first booking).
 - Quick stats: total bookings, completed bookings
 - Recent bookings (last 3, links to full list)
 - Links to edit profile, app settings, terms, privacy
@@ -1069,7 +1427,7 @@ Shows:
 
 ---
 
-### 7.3 — EditProfile Component
+### 8.3 — EditProfile Component
 
 Editable fields: name, email (optional), birthday.
 Phone number is displayed but **not editable** in this phase (phone change is deferred).
@@ -1077,7 +1435,7 @@ Password change section: current password, new password, confirm new password.
 
 ---
 
-### 7.4 — AppSettings Component
+### 8.4 — AppSettings Component
 
 - Theme switcher: 5 colored circles (classic, ocean, mint, sunset, lavender). Tapping one calls JS `changeTheme()` and saves to localStorage.
 - Dark mode toggle: calls JS `toggleDarkMode()`.
@@ -1085,7 +1443,7 @@ Password change section: current password, new password, confirm new password.
 
 ---
 
-### 7.5 — Static Pages
+### 8.5 — Static Pages
 
 **File:** `app/Livewire/StaticPage.php`
 
@@ -1101,20 +1459,20 @@ View renders the HTML content safely using `{!! $content !!}`.
 
 ---
 
-### 7.6 — Phase 7 Tests
+### 8.6 — Phase 8 Tests
 
 - `ProfileTest` — profile page loads, edit saves correctly
 - `AppSettingsTest` — settings page loads without error
 
 ---
 
-## Phase 8 — Shop Analytics Dashboard
+## Phase 9 — Shop Analytics Dashboard
 
 **Goal:** Analytics screens inside the shop owner dashboard.
 
 ---
 
-### 8.1 — Routes
+### 9.1 — Routes
 
 ```php
 Route::middleware(['auth', 'role:barber_owner'])->prefix('dashboard')->name('dashboard.')->group(function () {
@@ -1124,7 +1482,7 @@ Route::middleware(['auth', 'role:barber_owner'])->prefix('dashboard')->name('das
 
 ---
 
-### 8.2 — Analytics Component
+### 9.2 — Analytics Component
 
 **File:** `app/Livewire/Dashboard/Analytics.php`
 
@@ -1152,19 +1510,19 @@ All chart labels in Egyptian Arabic. All currency in EGP.
 
 ---
 
-### 8.3 — Phase 8 Tests
+### 9.3 — Phase 9 Tests
 
 - `AnalyticsTest` — analytics page loads, date filter changes data, no SQL errors
 
 ---
 
-## Phase 9 — Filament Super Admin Panel
+## Phase 10 — Filament Super Admin Panel
 
 **Goal:** Full Filament 5 admin panel. Built after all client-facing phases are complete.
 
 ---
 
-### 9.1 — Filament Resources
+### 10.1 — Filament Resources
 
 Create the following Filament resources. Each resource must have full list, view, create, and edit pages unless noted.
 
@@ -1242,7 +1600,7 @@ List, create, edit. Columns: name, slug, is_active. Toggle active.
 
 ---
 
-### 9.2 — Filament Navigation
+### 10.2 — Filament Navigation
 
 Group resources into navigation groups:
 - **المحلات:** ShopResource, AreaResource
@@ -1250,11 +1608,12 @@ Group resources into navigation groups:
 - **الحجوزات:** BookingResource
 - **المالية:** TransactionResource, RefundResource
 - **المحتوى:** ReviewResource
+- **التسويق:** ReferralResource
 - **الإعدادات:** SettingsPage
 
 ---
 
-### 9.3 — Phase 9 Tests
+### 10.3 — Phase 10 Tests
 
 - `FilamentShopApprovalTest` — approve action sends WhatsApp, changes status
 - `FilamentUserBlockTest` — ban/unblock works correctly
@@ -1269,7 +1628,7 @@ app/
 ├── Console/Commands/
 │   ├── UpdateBookingStatuses.php
 │   └── SendBookingReminders.php
-├── Enums/               (all 12 enum files)
+├── Enums/               (13 enum files — includes ReferralStatus)
 ├── Filament/
 │   ├── Pages/SettingsPage.php
 │   └── Resources/
@@ -1279,6 +1638,7 @@ app/
 │       ├── TransactionResource.php
 │       ├── RefundResource.php
 │       ├── ReviewResource.php
+│       ├── ReferralResource.php
 │       └── AreaResource.php
 ├── Http/Middleware/EnsureUserRole.php
 ├── Jobs/IncrementShopView.php
@@ -1312,14 +1672,18 @@ app/
 │   ├── Shop/
 │   │   └── ShopPage.php
 │   ├── Home.php
+│   ├── Offers.php
 │   ├── Search.php
 │   └── StaticPage.php
 ├── Models/Concerns/HasPublicUuid.php
-├── Models/             (all model files)
+├── Models/             (all model files — includes Referral)
 └── Services/
     ├── BookingCodeGenerator.php
     ├── BookingService.php
+    ├── CouponService.php
     ├── RatingService.php        ← developer provides implementation
+    ├── ReferralCodeGenerator.php
+    ├── ReferralService.php
     ├── SettingsService.php
     ├── SlotCalculatorService.php
     ├── OtpService.php           ← developer provides implementation
@@ -1332,8 +1696,8 @@ resources/views/
 └── offline.blade.php
 
 database/
-├── factories/           (factory per model)
-├── migrations/          (all 18 tables)
+├── factories/           (factory per model — includes ReferralFactory)
+├── migrations/          (20 tables — includes referrals, add_referral_code_to_users)
 └── seeders/
     ├── DatabaseSeeder.php
     ├── AreaSeeder.php
@@ -1344,15 +1708,22 @@ tests/
 ├── Feature/
 │   ├── Auth/
 │   ├── Booking/
+│   ├── Offers/
+│   │   └── OffersPageTest.php
+│   ├── Referral/
+│   │   ├── ReferralRegistrationTest.php
+│   │   └── ReferralRewardTest.php
 │   ├── Shop/
 │   └── Filament/
 └── Unit/
     ├── BookingCodeGeneratorTest.php
     ├── EnumsTest.php
+    ├── ReferralCodeGeneratorTest.php
     └── SettingsServiceTest.php
 ```
 
 ---
 
-*Plan Version: 1.0 — FadeBook Implementation Plan for AI-assisted development*
+*Plan Version: 1.1 — FadeBook Implementation Plan for AI-assisted development*
 *Companion documents: blueprint-v2.md, constitution-v1.md*
+*v1.1: Added Phase 7 — Referral System & Offers Page; renumbered old phases 7–10*

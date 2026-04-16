@@ -23,7 +23,8 @@ class BookingService
         protected SlotCalculatorService $slotCalculator,
         protected WhatsappService $whatsappService,
         protected CouponService $couponService,
-        protected SettingsService $settingsService
+        protected SettingsService $settingsService,
+        protected ReferralService $referralService
     ) {}
 
     public function initiate(User $client, Shop $shop, array $data): Booking
@@ -283,6 +284,9 @@ class BookingService
             'completed_at' => now(),
             'paid_amount' => $booking->final_amount,
         ]);
+
+        // 3. Trigger Referral verification
+        $this->referralService->handleBookingCompleted($booking);
 
         // Send review request
         // TODO: Send WhatsApp notification (booking_review_request)

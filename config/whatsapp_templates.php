@@ -19,5 +19,9 @@ return [
         'ar' => "تنبيه: تم تغيير رقم موبايلك.\nالرقم القديم: {old_phone}\nالرقم الجديد: {new_phone}\nالوقت: {date}\nلو مش انت، تواصل مع الدعم فورًا.",
     ],
 
+    'referral_reward_issued' => [
+        'ar' => "مبروك! صاحبك عمل حجز باستخدام الكود بتاعك، وتقديراً ليك ضفنالك كود خصم ({discount_amount}) تقدر تستخدمه في حلاقتك الجاية.\n\nكود الخصم: {coupon_code}\n\nشكراً لثقتك في FadeBook!",
+    ],
+
     // future FadeBook templates go here (booking_confirmed, booking_cancelled, etc.)
 ];

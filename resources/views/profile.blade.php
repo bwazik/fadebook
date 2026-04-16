@@ -1,5 +1,5 @@
 <x-layout.app>
-    <x-page-header title="الملف الشخصي" />
+    <x-page-header :title="__('messages.profile_title')" />
 
     <div class="mt-6 space-y-6">
         {{-- Profile Info Section --}}
@@ -11,12 +11,12 @@
 
         {{-- Appearance Settings --}}
         <div>
-            <x-section-header title="المظهر" />
+            <x-section-header :title="__('messages.profile_appearance_section')" />
             <x-ios-input-group>
                 <div class="flex items-center justify-between p-4 border-b border-black/5 dark:border-white/10 last:border-0">
                     <div class="flex flex-col">
-                        <span class="text-sm font-medium">الوضع الليلي</span>
-                        <span class="text-xs text-gray-400">تغيير مظهر التطبيق</span>
+                        <span class="text-sm font-medium">{{ __('messages.profile_dark_mode') }}</span>
+                        <span class="text-xs text-gray-400">{{ __('messages.profile_dark_mode_desc') }}</span>
                     </div>
                     <div x-data="{ 
                         isDark: document.documentElement.classList.contains('dark'),
@@ -32,7 +32,7 @@
                 
                 <div class="p-4 border-b border-black/5 dark:border-white/10 last:border-0">
                     <div class="flex flex-col gap-2">
-                        <span class="text-sm font-medium">لون التطبيق</span>
+                        <span class="text-sm font-medium">{{ __('messages.profile_accent_color') }}</span>
                         <x-accent-picker />
                     </div>
                 </div>
@@ -41,12 +41,12 @@
 
         {{-- Notifications --}}
         <div>
-            <x-section-header title="الإشعارات" />
+            <x-section-header :title="__('messages.profile_notifications_section')" />
             <x-ios-input-group>
                 <a href="#" class="flex items-center justify-between p-4 hover:bg-black/5 dark:hover:bg-white/5 transition-colors">
                     <div class="flex flex-col">
-                        <span class="text-sm font-medium">إعدادات الإشعارات</span>
-                        <span class="text-xs text-gray-400">تحكم فيما يصلك من تنبيهات</span>
+                        <span class="text-sm font-medium">{{ __('messages.profile_notifications_settings') }}</span>
+                        <span class="text-xs text-gray-400">{{ __('messages.profile_notifications_desc') }}</span>
                     </div>
                     <svg class="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
@@ -57,16 +57,16 @@
 
         {{-- Account Settings --}}
         <div>
-            <x-section-header title="الإعدادات بك" />
+            <x-section-header :title="__('messages.profile_account_section')" />
             <x-ios-input-group>
                 <a href="#" class="flex items-center justify-between p-4 border-b border-black/5 dark:border-white/10 last:border-0 hover:bg-black/5 dark:hover:bg-white/5 transition-colors">
-                    <span class="text-sm font-medium">تعديل البيانات</span>
+                    <span class="text-sm font-medium">{{ __('messages.profile_edit_info') }}</span>
                     <svg class="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
                     </svg>
                 </a>
                 <a href="#" class="flex items-center justify-between p-4 border-b border-black/5 dark:border-white/10 last:border-0 hover:bg-black/5 dark:hover:bg-white/5 transition-colors">
-                    <span class="text-sm font-medium">تغيير كلمة السر</span>
+                    <span class="text-sm font-medium">{{ __('messages.profile_change_password') }}</span>
                     <svg class="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
                     </svg>
@@ -79,7 +79,7 @@
             <form method="POST" action="{{ route('logout') }}">
                 @csrf
                 <x-ios-button variant="danger" onclick="event.preventDefault(); this.closest('form').submit();">
-                    تسجيل الخروج
+                    {{ __('messages.profile_logout_btn') }}
                 </x-ios-button>
             </form>
         </div>

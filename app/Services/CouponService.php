@@ -25,7 +25,10 @@ class CouponService
         $code = strtoupper(trim($code));
 
         $coupon = Coupon::where('code', $code)
-            ->where('shop_id', $shop->id)
+            ->where(function ($query) use ($shop) {
+                $query->where('shop_id', $shop->id)
+                    ->orWhereNull('shop_id');
+            })
             ->where('is_active', true)
             ->first();
 
@@ -86,6 +89,11 @@ class CouponService
 
         if ($coupon->usage_limit_per_user && $userUsage >= $coupon->usage_limit_per_user) {
             throw new Exception(__('messages.coupon_user_limit_reached'));
+        }
+
+        // If this coupon is locked to a specific user (e.g. referral coupons), reject all others
+        if ($coupon->user_id && $coupon->user_id !== $user->id) {
+            throw new Exception(__('messages.coupon_invalid'));
         }
     }
 
