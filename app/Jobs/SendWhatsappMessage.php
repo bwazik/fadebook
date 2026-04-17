@@ -64,14 +64,9 @@ class SendWhatsAppMessage implements ShouldQueue
                 ->withHeaders(['apikey' => $apiKey])
                 ->post("{$url}/message/sendText/{$instanceName}", [
                     'number' => $this->message->phone,
-                    'options' => [
-                        'delay' => 1200,
-                        'presence' => 'composing',
-                        'linkPreview' => false,
-                    ],
-                    'textMessage' => [
-                        'text' => $content,
-                    ],
+                    'text' => $content,
+                    'delay' => 1200,
+                    'linkPreview' => false,
                 ]);
 
             if ($response->successful()) {
