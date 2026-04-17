@@ -120,15 +120,24 @@ class SendWhatsAppMessage implements ShouldQueue
 
     public function failed(?\Throwable $exception = null): void
     {
-        $this->message->update([
+        $errorMessage = $exception ? $exception->getMessage() : 'Unknown error';
+
+        $updates = [
             'status' => WhatsAppStatus::Failed,
-            'error_message' => 'Max retries exceeded: ' . ($exception ? $exception->getMessage() : 'Unknown error'),
-        ]);
+        ];
+
+        // Do not overwrite the detailed error saved by handle() if it exists
+        if (empty($this->message->error_message)) {
+            $updates['error_message'] = 'Max retries exceeded: ' . $errorMessage;
+        }
+
+        $this->message->update($updates);
 
         Log::channel('whatsapp')->critical('WhatsApp message permanently failed', [
             'message_id' => $this->message->id,
             'phone' => $this->message->phone,
             'queue' => $this->queue,
+            'final_error' => $errorMessage,
         ]);
     }
 }
