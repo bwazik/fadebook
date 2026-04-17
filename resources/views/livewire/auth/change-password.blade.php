@@ -69,7 +69,7 @@
                     <span wire:loading.remove wire:target="resendOtp">
                         <span x-show="cooldown <= 0">{{ __('messages.resend_code') }}</span>
                         <span x-show="cooldown > 0"
-                            x-text="'{{ __('messages.otp_resend_countdown', ['seconds' => '']) }}'.replace(':seconds', cooldown)"
+                            x-text="'{{ __('messages.otp_resend_countdown') }}'.replace(':seconds', cooldown)"
                             dir="rtl"></span>
                     </span>
                     <span wire:loading wire:target="resendOtp">{{ __('messages.sending_code') }}</span>
