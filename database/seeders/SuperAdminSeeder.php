@@ -16,7 +16,7 @@ class SuperAdminSeeder extends Seeder
      */
     public function run(): void
     {
-        $phone = env('SUPER_ADMIN_PHONE', '01000000001');
+        $phone = env('SUPER_ADMIN_PHONE', '01098617164');
         $password = env('SUPER_ADMIN_PASSWORD', 'password');
 
         User::updateOrCreate(
