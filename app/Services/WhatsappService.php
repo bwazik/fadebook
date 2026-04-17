@@ -4,9 +4,9 @@ namespace App\Services;
 
 use App\Enums\WhatsAppQueueType;
 use App\Enums\WhatsAppStatus;
-use App\Jobs\SendWhatsappMessage;
+use App\Jobs\SendWhatsAppMessage;
 use App\Models\User;
-use App\Models\WhatsappMessage;
+use App\Models\WhatsAppMessage;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 
@@ -29,7 +29,7 @@ class WhatsappService
         // EXCEPTION: Always allow 'otp_verification' so users aren't locked out of their accounts
         if ($template !== 'otp_verification') {
             $user = $userId ? User::find($userId) : User::where('phone', $phone)->first();
-            if ($user && ! $user->whatsapp_notifications) {
+            if ($user && !$user->whatsapp_notifications) {
                 Log::channel('whatsapp')->info('WhatsApp message skipped: User disabled notifications', [
                     'phone' => $phone,
                     'template' => $template,
@@ -58,8 +58,8 @@ class WhatsappService
 
         if ($lockAcquired) {
             // Check for duplicates within 5 hours for non-allowed templates
-            if (! $allowMultiple) {
-                $recentMessage = WhatsappMessage::where('phone', $phone)
+            if (!$allowMultiple) {
+                $recentMessage = WhatsAppMessage::where('phone', $phone)
                     ->where('template', $template)
                     ->whereIn('status', [WhatsAppStatus::Queued, WhatsAppStatus::Sent])
                     ->where('created_at', '>=', now()->subHours(5))
@@ -80,7 +80,7 @@ class WhatsappService
             $queueType = $isUrgent ? WhatsAppQueueType::Urgent : WhatsAppQueueType::Default;
 
             // Create message record
-            $message = WhatsappMessage::create([
+            $message = WhatsAppMessage::create([
                 'user_id' => $userId,
                 'shop_id' => $shopId,
                 'phone' => $phone,
@@ -105,7 +105,7 @@ class WhatsappService
                 ? 'whatsapp_last_urgent_time'
                 : 'whatsapp_last_normal_time';
 
-            $lockSchedule = Cache::lock('whatsapp_schedule_lock_'.$isUrgent, 10);
+            $lockSchedule = Cache::lock('whatsapp_schedule_lock_' . $isUrgent, 10);
 
             if ($lockSchedule->get()) {
                 $lastScheduledTime = Cache::get($lastScheduledKey, now()->timestamp);
@@ -130,7 +130,7 @@ class WhatsappService
 
             // Dispatch job with calculated delay
             $delay = now()->addSeconds($delaySeconds);
-            SendWhatsappMessage::dispatch($message)->onQueue($queue)->delay($delay);
+            SendWhatsAppMessage::dispatch($message)->onQueue($queue)->delay($delay);
 
             Log::channel('whatsapp')->info('WhatsApp message queued', [
                 'message_id' => $message->id,
@@ -142,7 +142,7 @@ class WhatsappService
                 'delay_seconds' => $delaySeconds,
             ]);
 
-            if (! $allowMultiple) {
+            if (!$allowMultiple) {
                 Cache::lock($lockKey)->release();
             }
 
@@ -160,7 +160,7 @@ class WhatsappService
     protected function sendInstantMessage(string $phone, string $template, array $data, ?int $userId = null, ?int $shopId = null): bool
     {
         // Create message record
-        $message = WhatsappMessage::create([
+        $message = WhatsAppMessage::create([
             'user_id' => $userId,
             'shop_id' => $shopId,
             'phone' => $phone,
@@ -172,7 +172,7 @@ class WhatsappService
         ]);
 
         // Dispatch to INSTANT queue with NO delay
-        SendWhatsappMessage::dispatch($message)
+        SendWhatsAppMessage::dispatch($message)
             ->onQueue('instant');
 
         Log::channel('whatsapp')->info('Instant WhatsApp message queued', [
@@ -203,7 +203,7 @@ class WhatsappService
                 $lockKey = "whatsapp_lock_{$phone}_{$template}";
                 if (Cache::lock($lockKey, 300)->get()) {
                     // Check for duplicates within 24 hours
-                    $recentMessage = WhatsappMessage::where('phone', $phone)
+                    $recentMessage = WhatsAppMessage::where('phone', $phone)
                         ->where('template', $template)
                         ->whereIn('status', [WhatsAppStatus::Queued, WhatsAppStatus::Sent])
                         ->where('created_at', '>=', now()->subHours(24))
@@ -222,7 +222,7 @@ class WhatsappService
                     // Add is_urgent to data
                     $data['is_urgent'] = false;
 
-                    $message = WhatsappMessage::create([
+                    $message = WhatsAppMessage::create([
                         'phone' => $phone,
                         'template' => $template,
                         'data' => $data,
@@ -235,7 +235,7 @@ class WhatsappService
                     $delay = now()->addSeconds($baseDelay + $delayedSeconds);
 
                     // Dispatch with staggered delay
-                    SendWhatsappMessage::dispatch($message)
+                    SendWhatsAppMessage::dispatch($message)
                         ->onQueue('default')
                         ->delay($delay);
 
@@ -285,6 +285,6 @@ class WhatsappService
             return $phone;
         }
 
-        return '+20'.$phone;
+        return '+20' . $phone;
     }
 }

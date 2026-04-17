@@ -3,7 +3,7 @@
 namespace App\Jobs;
 
 use App\Enums\WhatsAppStatus;
-use App\Models\WhatsappMessage;
+use App\Models\WhatsAppMessage;
 use App\Services\WhatsAppTemplateRenderer;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -13,7 +13,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
-class SendWhatsappMessage implements ShouldQueue
+class SendWhatsAppMessage implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
@@ -23,7 +23,7 @@ class SendWhatsappMessage implements ShouldQueue
 
     public $backoff = [30, 60, 120]; // Delay retries by 30s, 60s, 120s
 
-    public function __construct(WhatsappMessage $message)
+    public function __construct(WhatsAppMessage $message)
     {
         $this->message = $message;
     }
@@ -34,7 +34,7 @@ class SendWhatsappMessage implements ShouldQueue
         $apiKey = config('services.evolution.key');
         $instanceName = config('services.evolution.instance');
 
-        if (! $url || ! $apiKey || ! $instanceName) {
+        if (!$url || !$apiKey || !$instanceName) {
             $this->message->update([
                 'status' => WhatsAppStatus::Failed,
                 'error_message' => 'WhatsApp Evolution API configuration missing',
@@ -122,7 +122,7 @@ class SendWhatsappMessage implements ShouldQueue
     {
         $this->message->update([
             'status' => WhatsAppStatus::Failed,
-            'error_message' => 'Max retries exceeded: '.($exception ? $exception->getMessage() : 'Unknown error'),
+            'error_message' => 'Max retries exceeded: ' . ($exception ? $exception->getMessage() : 'Unknown error'),
         ]);
 
         Log::channel('whatsapp')->critical('WhatsApp message permanently failed', [

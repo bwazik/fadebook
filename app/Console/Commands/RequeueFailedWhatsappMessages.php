@@ -18,7 +18,7 @@ use Illuminate\Support\Facades\Log;
                             {--priority= : Filter by priority (instant|urgent|default)}
                             {--force : Skip confirmation prompt (for CI/automation)}')]
 #[Description('Requeue failed WhatsApp messages with correct priority routing')]
-class RequeueFailedWhatsappMessages extends Command
+class RequeueFailedWhatsAppMessages extends Command
 {
     public function __construct(protected WhatsappService $whatsappService)
     {
@@ -33,7 +33,7 @@ class RequeueFailedWhatsappMessages extends Command
         $priorityFilter = $this->option('priority');
 
         // Validate priority filter
-        if ($priorityFilter && ! in_array($priorityFilter, ['instant', 'urgent', 'default'])) {
+        if ($priorityFilter && !in_array($priorityFilter, ['instant', 'urgent', 'default'])) {
             $this->error('Invalid priority. Use: instant, urgent, or default');
 
             return self::FAILURE;
@@ -66,7 +66,7 @@ class RequeueFailedWhatsappMessages extends Command
         // Preview table (first 10)
         $this->table(
             ['ID', 'Phone', 'Template', 'Queue', 'Error'],
-            $failedMessages->take(10)->map(fn ($m) => [
+            $failedMessages->take(10)->map(fn($m) => [
                 $m->id,
                 $m->phone,
                 $m->template,
@@ -76,7 +76,7 @@ class RequeueFailedWhatsappMessages extends Command
         );
 
         if ($failedMessages->count() > 10) {
-            $this->line('... and '.($failedMessages->count() - 10).' more.');
+            $this->line('... and ' . ($failedMessages->count() - 10) . ' more.');
         }
 
         // Priority breakdown
@@ -90,8 +90,8 @@ class RequeueFailedWhatsappMessages extends Command
         $this->newLine();
 
         // Confirm unless --force or running non-interactively
-        if (! $this->option('force') && $this->input->isInteractive()) {
-            if (! $this->confirm('Requeue these messages?', true)) {
+        if (!$this->option('force') && $this->input->isInteractive()) {
+            if (!$this->confirm('Requeue these messages?', true)) {
                 $this->info('Cancelled.');
 
                 return self::SUCCESS;
