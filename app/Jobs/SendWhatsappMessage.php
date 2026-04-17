@@ -30,16 +30,17 @@ class SendWhatsappMessage implements ShouldQueue
 
     public function handle(WhatsAppTemplateRenderer $renderer)
     {
-        $apiUrl = config('whatsapp.api_url');
-        $deviceId = config('whatsapp.device_id');
+        $url = config('services.evolution.url');
+        $apiKey = config('services.evolution.key');
+        $instanceName = config('services.evolution.instance');
 
-        if (! $apiUrl || ! $deviceId) {
+        if (! $url || ! $apiKey || ! $instanceName) {
             $this->message->update([
                 'status' => WhatsAppStatus::Failed,
-                'error_message' => 'WhatsApp API configuration missing',
+                'error_message' => 'WhatsApp Evolution API configuration missing',
                 'attempts' => $this->message->attempts + 1,
             ]);
-            Log::channel('whatsapp')->error('WhatsApp API configuration missing', [
+            Log::channel('whatsapp')->error('WhatsApp Evolution API configuration missing', [
                 'message_id' => $this->message->id,
                 'queue' => $this->queue,
             ]);
@@ -56,14 +57,21 @@ class SendWhatsappMessage implements ShouldQueue
         );
 
         try {
-            // Send message via Noti Fire API with resilient timeout and retry
+            // Send message via Evolution API with resilient timeout and retry
             $response = Http::timeout(25)
                 ->connectTimeout(10)
                 ->retry(2, 1000)
-                ->post($apiUrl, [
-                    'device_id' => $deviceId,
-                    'to' => $this->message->phone,
-                    'message' => $content,
+                ->withHeaders(['apikey' => $apiKey])
+                ->post("{$url}/message/sendText/{$instanceName}", [
+                    'number' => $this->message->phone,
+                    'options' => [
+                        'delay' => 1200,
+                        'presence' => 'composing',
+                        'linkPreview' => false,
+                    ],
+                    'textMessage' => [
+                        'text' => $content,
+                    ],
                 ]);
 
             if ($response->successful()) {

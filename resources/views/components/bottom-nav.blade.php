@@ -114,6 +114,12 @@
                     const currentRoute = Alpine.store('nav').currentRoute;
                     if (!currentRoute) return false;
 
+                    if(route === 'home') {
+                        return [
+                            'whatsapp.connect'
+                        ].includes(currentRoute)
+                    }
+
                     // Internal Workshop Check: Dashboard Home should include management sub-pages
                     if (route === 'dashboard.home') {
                         return [

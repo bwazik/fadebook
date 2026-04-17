@@ -35,4 +35,10 @@ return [
         ],
     ],
 
+    'evolution' => [
+        'url' => env('EVOLUTION_API_URL', 'https://whatsapp.shattor.com'),
+        'key' => env('EVOLUTION_API_KEY'),
+        'instance' => env('EVOLUTION_INSTANCE_NAME', 'BanhaFade'),
+    ],
+
 ];

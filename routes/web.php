@@ -22,6 +22,7 @@ use App\Livewire\Profile\Index;
 use App\Livewire\Profile\Referral;
 use App\Livewire\Review\SubmitReview;
 use App\Livewire\Shop\ShopPage;
+use App\Livewire\WhatsappConnect;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/offline', fn () => view('offline'))->name('offline');
@@ -64,6 +65,11 @@ Route::middleware(['auth', 'phone.verified'])->group(function () {
     Route::get('/profile/edit', EditProfile::class)->name('profile.edit');
     Route::get('/settings', AppSettings::class)->name('profile.settings');
     Route::get('/referral', Referral::class)->name('profile.referral');
+});
+
+// WhatsApp API Routes
+Route::middleware(['auth', 'role:super_admin'])->group(function () {
+    Route::get('/whatsapp/connect', WhatsappConnect::class)->name('whatsapp.connect');
 });
 
 // Catch-all Dynamic Shop Routes (MUST BE LAST)
