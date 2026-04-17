@@ -10,7 +10,7 @@ use App\Models\WhatsAppMessage;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 
-class WhatsappService
+class WhatsAppService
 {
     protected $allowMultipleTemplates = [
         'otp_verification',

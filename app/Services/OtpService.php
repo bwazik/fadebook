@@ -15,14 +15,15 @@ use Illuminate\Support\Facades\Log;
 class OtpService
 {
     public function __construct(
-        protected WhatsappService $whatsappService,
+        protected WhatsAppService $whatsappService,
         protected SettingsService $settingsService
-    ) {}
+    ) {
+    }
 
     public function generateAndSend(string $phone, OtpType $type, ?int $userId = null): bool
     {
         // Check rate limiting
-        if (! $this->checkRateLimit($phone)) {
+        if (!$this->checkRateLimit($phone)) {
             throw new OtpException(__('messages.otp_rate_limit_exceeded'));
         }
 
@@ -61,7 +62,7 @@ class OtpService
             userId: $userId
         );
 
-        if (! $sent) {
+        if (!$sent) {
             Log::channel('otp')->error('Failed to send OTP via WhatsApp', [
                 'phone' => $phone,
                 'type' => $type,
@@ -90,7 +91,7 @@ class OtpService
             ->latest()
             ->first();
 
-        if (! $verification) {
+        if (!$verification) {
             throw new OtpException(__('messages.otp_invalid'));
         }
 
@@ -107,7 +108,7 @@ class OtpService
             $verification->lockForUpdate();
             $verification->refresh();
 
-            if (! Hash::check($otpCode, $verification->otp_code)) {
+            if (!Hash::check($otpCode, $verification->otp_code)) {
                 $remaining = (int) $this->settingsService->get('max_otp_attempts', 3) - $verification->attempts;
 
                 throw new OtpException(__('messages.otp_code_invalid_with_attempts', ['attempts' => $remaining]));
@@ -144,7 +145,7 @@ class OtpService
     public function resend(string $phone, OtpType $type, ?int $userId = null): bool
     {
         // Check if can resend (cooldown period)
-        if (! $this->canResend($phone)) {
+        if (!$this->canResend($phone)) {
             $retryAfter = $this->getResendRetryAfter($phone);
 
             throw new OtpException(__('messages.otp_resend_wait_with_seconds', ['seconds' => $retryAfter]));
@@ -234,7 +235,7 @@ class OtpService
     {
         $key = $this->getResendKey($phone);
 
-        return ! Cache::has($key);
+        return !Cache::has($key);
     }
 
     /**
@@ -249,7 +250,7 @@ class OtpService
         $expiresAt = time() + $cooldown;
 
         Cache::put($key, true, $cooldown);
-        Cache::put($key.'_expires', $expiresAt, $cooldown);
+        Cache::put($key . '_expires', $expiresAt, $cooldown);
     }
 
     /**
@@ -261,9 +262,9 @@ class OtpService
     protected function getResendRetryAfter(string $phone): int
     {
         $key = $this->getResendKey($phone);
-        $expiresAt = Cache::get($key.'_expires');
+        $expiresAt = Cache::get($key . '_expires');
 
-        if (! $expiresAt) {
+        if (!$expiresAt) {
             return 0;
         }
 
@@ -279,7 +280,7 @@ class OtpService
     {
         Cache::forget($this->getRateLimitKey($phone));
         Cache::forget($this->getResendKey($phone));
-        Cache::forget($this->getResendKey($phone).'_expires');
+        Cache::forget($this->getResendKey($phone) . '_expires');
     }
 
     /**
@@ -302,7 +303,7 @@ class OtpService
      */
     protected function getRateLimitKey(string $phone): string
     {
-        return 'otp_rate_limit:'.$phone;
+        return 'otp_rate_limit:' . $phone;
     }
 
     /**
@@ -313,6 +314,6 @@ class OtpService
      */
     protected function getResendKey(string $phone): string
     {
-        return 'otp_resend_cooldown:'.$phone;
+        return 'otp_resend_cooldown:' . $phone;
     }
 }

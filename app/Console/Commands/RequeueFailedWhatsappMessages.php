@@ -5,7 +5,7 @@ namespace App\Console\Commands;
 use App\Enums\WhatsAppQueueType;
 use App\Enums\WhatsAppStatus;
 use App\Models\WhatsAppMessage;
-use App\Services\WhatsappService;
+use App\Services\WhatsAppService;
 use Illuminate\Console\Attributes\Description;
 use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
@@ -20,7 +20,7 @@ use Illuminate\Support\Facades\Log;
 #[Description('Requeue failed WhatsApp messages with correct priority routing')]
 class RequeueFailedWhatsAppMessages extends Command
 {
-    public function __construct(protected WhatsappService $whatsappService)
+    public function __construct(protected WhatsAppService $whatsappService)
     {
         parent::__construct();
     }

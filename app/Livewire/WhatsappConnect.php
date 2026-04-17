@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Log;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 
-class WhatsappConnect extends Component
+class WhatsAppConnect extends Component
 {
     use WithToast;
 
@@ -33,9 +33,9 @@ class WhatsappConnect extends Component
                 ->get("{$url}/instance/connectionState/{$instanceName}");
 
             $isNotFound = $stateResponse->status() === 404 ||
-                          (isset($stateResponse->json()['error']) && str_contains(strtolower($stateResponse->json()['error']), 'not found'));
+                (isset($stateResponse->json()['error']) && str_contains(strtolower($stateResponse->json()['error']), 'not found'));
 
-            if (! $isNotFound && $stateResponse->successful()) {
+            if (!$isNotFound && $stateResponse->successful()) {
                 $stateData = $stateResponse->json();
                 $state = $stateData['instance']['state'] ?? $stateData['state'] ?? 'unknown';
 
@@ -79,7 +79,7 @@ class WhatsappConnect extends Component
             $this->toastError('فشل إنشاء الإتصال');
 
         } catch (\Exception $e) {
-            Log::error('WhatsApp connection error: '.$e->getMessage());
+            Log::error('WhatsApp connection error: ' . $e->getMessage());
             $this->toastError('حدث خطأ أثناء محاولة الاتصال بالخادم');
         }
     }

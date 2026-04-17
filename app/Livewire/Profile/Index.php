@@ -83,7 +83,7 @@ class Index extends Component
         };
 
         $badges[] = [
-            'label' => __('messages.'.$roleKey),
+            'label' => __('messages.' . $roleKey),
             'type' => 'accent',
         ];
 
@@ -141,7 +141,7 @@ class Index extends Component
     }
 
     #[Computed]
-    public function developerWhatsapp(): string
+    public function developerWhatsApp(): string
     {
         return Setting::get('developer_whatsapp', '201211111111');
     }

@@ -21,11 +21,12 @@ class BookingService
     public function __construct(
         protected BookingCodeGenerator $codeGenerator,
         protected SlotCalculatorService $slotCalculator,
-        protected WhatsappService $whatsappService,
+        protected WhatsAppService $whatsappService,
         protected CouponService $couponService,
         protected SettingsService $settingsService,
         protected ReferralService $referralService
-    ) {}
+    ) {
+    }
 
     public function initiate(User $client, Shop $shop, array $data): Booking
     {
@@ -58,7 +59,7 @@ class BookingService
                 $data['date']
             );
 
-            if (! in_array($data['time'], $availableSlots)) {
+            if (!in_array($data['time'], $availableSlots)) {
                 throw new Exception(__('messages.booking_slot_unavailable'));
             }
 
@@ -67,7 +68,7 @@ class BookingService
             $finalAmount = (float) $service->price;
             $couponId = null;
 
-            if (! empty($data['coupon_code'])) {
+            if (!empty($data['coupon_code'])) {
                 try {
                     $result = $this->couponService->validateAndCalculate(
                         $data['coupon_code'],
@@ -98,7 +99,7 @@ class BookingService
 
             $commissionAmount = ($finalAmount * (float) $shop->commission_rate) / 100;
 
-            $scheduledAt = Carbon::parse($data['date'].' '.$data['time']);
+            $scheduledAt = Carbon::parse($data['date'] . ' ' . $data['time']);
 
             $booking = Booking::create([
                 'client_id' => $client->id,
@@ -146,10 +147,10 @@ class BookingService
 
             // In updatePendig, if they are keeping the SAME time/date/barber, we skip availability check
             $sameTimeDateBarber = $booking->scheduled_at->format('Y-m-d') === $data['date'] &&
-                                 $booking->scheduled_at->format('H:i') === $data['time'] &&
-                                 $booking->barber_id === $data['barber_id'];
+                $booking->scheduled_at->format('H:i') === $data['time'] &&
+                $booking->barber_id === $data['barber_id'];
 
-            if (! $sameTimeDateBarber && ! in_array($data['time'], $availableSlots)) {
+            if (!$sameTimeDateBarber && !in_array($data['time'], $availableSlots)) {
                 throw new Exception(__('messages.booking_slot_unavailable'));
             }
 
@@ -158,7 +159,7 @@ class BookingService
             $finalAmount = (float) $service->price;
             $couponId = null;
 
-            if (! empty($data['coupon_code'])) {
+            if (!empty($data['coupon_code'])) {
                 try {
                     $result = $this->couponService->validateAndCalculate(
                         $data['coupon_code'],
@@ -188,7 +189,7 @@ class BookingService
             }
 
             $commissionAmount = ($finalAmount * (float) $shop->commission_rate) / 100;
-            $scheduledAt = Carbon::parse($data['date'].' '.$data['time']);
+            $scheduledAt = Carbon::parse($data['date'] . ' ' . $data['time']);
 
             $booking->update([
                 'barber_id' => $data['barber_id'],

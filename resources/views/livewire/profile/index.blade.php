@@ -223,7 +223,7 @@
         </div>
 
         <div class="flex flex-col gap-3">
-            <x-ios-button href="https://wa.me/{{ $this->developerWhatsapp }}" target="_blank">
+            <x-ios-button href="https://wa.me/{{ $this->developerWhatsApp }}" target="_blank">
                 {{ __('messages.profile_contact_dev_whatsapp') }}
             </x-ios-button>
 
