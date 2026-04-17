@@ -44,7 +44,7 @@ class SendWhatsAppMessage implements ShouldQueue
                 'message_id' => $this->message->id,
                 'queue' => $this->queue,
             ]);
-            $this->fail();
+            $this->fail(new \Exception('WhatsApp Evolution API configuration missing'));
 
             return;
         }
@@ -100,7 +100,8 @@ class SendWhatsAppMessage implements ShouldQueue
                     'response' => $error,
                     'queue' => $this->queue,
                 ]);
-                $this->fail();
+                $errorString = is_string($error) ? $error : json_encode($error);
+                $this->fail(new \Exception("Evolution API Error: {$errorString}"));
             }
         } catch (\Exception $e) {
             $this->message->update([
@@ -114,7 +115,7 @@ class SendWhatsAppMessage implements ShouldQueue
                 'error' => $e->getMessage(),
                 'queue' => $this->queue,
             ]);
-            $this->fail();
+            $this->fail($e);
         }
     }
 
