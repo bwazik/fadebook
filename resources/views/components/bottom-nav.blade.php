@@ -137,7 +137,7 @@
                     if (!currentRoute) return false;
 
                     if(route === 'home') {
-                        return [
+                        return currentRoute === 'home' || [
                             'whatsapp.connect'
                         ].includes(currentRoute)
                     }
