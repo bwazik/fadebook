@@ -50,7 +50,7 @@ class UserSecurityChangedAdminNotification extends Notification
             'user_name' => $this->user->name,
             'action' => $action,
             'details' => $details,
-            'date' => now()->format('Y-m-d H:i'),
+            'date' => now()->translatedFormat('Y-m-d H:i'),
         ];
     }
 

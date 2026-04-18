@@ -43,7 +43,7 @@ class NewBookingAdminNotification extends Notification
             'barber_info' => $this->booking->barber ? "الحلاق: {$this->booking->barber->name}\n" : '',
             'client_name' => $this->booking->client->name,
             'service' => $this->booking->service->name,
-            'time' => $this->booking->scheduled_at->format('Y-m-d H:i'),
+            'time' => $this->booking->scheduled_at->translatedFormat('Y-m-d H:i'),
             'total' => $this->booking->final_amount,
         ];
     }

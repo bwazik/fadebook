@@ -46,14 +46,14 @@ class BookingCancelledOwnerNotification extends Notification
 
     protected function getShortMessage(): string
     {
-        return "قام العميل {$this->booking->client->name} بإلغاء موعده الساعة {$this->booking->scheduled_at->format('H:i')}.";
+        return "قام العميل {$this->booking->client->name} بإلغاء موعده الساعة {$this->booking->scheduled_at->translatedFormat('H:i')}.";
     }
 
     protected function getMessage(): string
     {
         $barberInfo = $this->booking->barber ? " مع الحلاق {$this->booking->barber->name}" : '';
 
-        return "إشعار: تم إلغاء الحجز من قِبل العميل {$this->booking->client->name} الخاص بموعد {$this->booking->scheduled_at->format('Y-m-d H:i')}{$barberInfo}. والموعد متاح الآن للحجز مرة أخرى.";
+        return "إشعار: تم إلغاء الحجز من قِبل العميل {$this->booking->client->name} الخاص بموعد {$this->booking->scheduled_at->translatedFormat('Y-m-d H:i')}{$barberInfo}. والموعد متاح الآن للحجز مرة أخرى.";
     }
 
     protected function getIcon(): string
@@ -95,7 +95,7 @@ class BookingCancelledOwnerNotification extends Notification
             'client_name' => $this->booking->client->name,
             'barber_name' => $this->booking->barber?->name ?? 'غير محدد',
             'service' => $this->booking->service->name,
-            'time' => $this->booking->scheduled_at->format('Y-m-d H:i'),
+            'time' => $this->booking->scheduled_at->translatedFormat('Y-m-d H:i'),
         ];
     }
 

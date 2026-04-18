@@ -51,7 +51,7 @@ class BookingCancelledClientNotification extends Notification
 
     protected function getMessage(): string
     {
-        return "نعتذر لك، تم إلغاء حجزك في صالون {$this->booking->shop->name} بتاريخ {$this->booking->scheduled_at->format('Y-m-d H:i')}. يمكنك حجز موعد آخر أو التواصل مع الدعم.";
+        return "نعتذر لك، تم إلغاء حجزك في صالون {$this->booking->shop->name} بتاريخ {$this->booking->scheduled_at->translatedFormat('Y-m-d H:i')}. يمكنك حجز موعد آخر أو التواصل مع الدعم.";
     }
 
     protected function getIcon(): string
@@ -87,7 +87,7 @@ class BookingCancelledClientNotification extends Notification
         return [
             'shop_name' => $this->booking->shop->name,
             'booking_code' => $this->booking->booking_code,
-            'time' => $this->booking->scheduled_at->format('Y-m-d H:i'),
+            'time' => $this->booking->scheduled_at->translatedFormat('Y-m-d H:i'),
             'settings_url' => route('profile.settings'),
         ];
     }

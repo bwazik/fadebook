@@ -39,7 +39,7 @@ class UserRegisteredNotification extends Notification
         return [
             'user_name' => $this->user->name,
             'phone' => $this->user->phone,
-            'date' => now()->format('Y-m-d H:i'),
+            'date' => now()->translatedFormat('Y-m-d H:i'),
         ];
     }
 

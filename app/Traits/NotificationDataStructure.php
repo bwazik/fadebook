@@ -11,11 +11,15 @@ trait NotificationDataStructure
             'type' => $this->getNotificationType(),
             'entity_type' => $this->getEntityType(),
             'title' => $this->getTitle(),
-            'message' => $this->getShortMessage(),
+            'message' => $this->getShortMessage(), // For User UI
+            'body' => $this->getShortMessage(),    // For Filament UI
             'icon' => $this->getIcon(),
-            'icon_bg' => $this->getIconBg(),
+            'iconColor' => str_replace('bg-', '', $this->getIconBg()), // Map Filament colors if possible
+            'icon_bg' => $this->getIconBg(),       // For User UI
             'action_url' => $this->getActionUrl(),
             'action_text' => $this->getActionText(),
+            'actions' => [],                       // Required by Filament
+            'format' => 'filament',                // Hint for Filament
             'data' => $this->getCustomData(),
             'timestamp' => now()->toIso8601String(),
         ];

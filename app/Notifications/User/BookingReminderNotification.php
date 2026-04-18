@@ -94,7 +94,7 @@ class BookingReminderNotification extends Notification
         return [
             'shop_name' => $this->booking->shop->name,
             'with_barber' => $this->booking->barber ? " مع الحلاق {$this->booking->barber->name}" : '',
-            'time' => $this->booking->scheduled_at->format('H:i'),
+            'time' => $this->booking->scheduled_at->translatedFormat('H:i'),
             'booking_code' => $this->booking->booking_code,
             'settings_url' => route('profile.settings'),
         ];

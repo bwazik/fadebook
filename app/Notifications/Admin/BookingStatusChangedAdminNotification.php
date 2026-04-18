@@ -47,7 +47,7 @@ class BookingStatusChangedAdminNotification extends Notification
             'client_name' => $this->booking->client->name,
             'status_label' => $this->statusLabel,
             'booking_code' => $this->booking->booking_code,
-            'time' => $this->booking->scheduled_at->format('Y-m-d H:i'),
+            'time' => $this->booking->scheduled_at->translatedFormat('Y-m-d H:i'),
         ];
     }
 

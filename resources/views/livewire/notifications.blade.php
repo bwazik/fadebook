@@ -71,7 +71,7 @@
                         'font-bold text-gray-700 dark:text-gray-300' => !$notification->read_at,
                         'font-medium text-gray-400 dark:text-gray-500' => $notification->read_at,
                     ])>
-                        {{ $notification->data['message'] ?? __('لديك إشعار جديد من تطبيق BanhaFade.') }}
+                        {{ $notification->data['message'] ?? $notification->data['body'] ?? __('لديك إشعار جديد من تطبيق BanhaFade.') }}
                     </p>
 
                     <div class="mt-2.5">

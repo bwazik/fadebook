@@ -61,7 +61,7 @@ class BookingCreatedNotification extends Notification
                "العميل: {$this->booking->client->name} \n".
                "رقم الموبايل: {$this->booking->client->phone} \n".
                "الخدمة: {$service} \n".
-               "الميعاد: {$this->booking->scheduled_at->format('Y-m-d H:i')} \n\n".
+               "الميعاد: {$this->booking->scheduled_at->translatedFormat('Y-m-d H:i')} \n\n".
                "{$paymentInfo}{$refInfo}".
                'أدخل على لوحة التحكم للحصول على التفاصيل وتأكيد الموعد.';
     }
@@ -105,7 +105,7 @@ class BookingCreatedNotification extends Notification
             'client_name' => $this->booking->client->name,
             'barber_info' => $this->booking->barber ? "الحلاق: {$this->booking->barber->name}\n" : '',
             'service' => $this->booking->service->name,
-            'time' => $this->booking->scheduled_at->format('Y-m-d H:i'),
+            'time' => $this->booking->scheduled_at->translatedFormat('Y-m-d H:i'),
             'payment_info' => $this->booking->paymentMethod ? "طريقة الدفع: {$this->booking->paymentMethod->name}\n" : '',
             'payment_ref_info' => $this->booking->payment_reference ? "الرقم المرجعي للتحويل: {$this->booking->payment_reference}\n" : '',
         ];
