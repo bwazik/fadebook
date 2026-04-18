@@ -87,7 +87,7 @@ class BookingCancelledOwnerNotification extends Notification
     {
         return [
             'client_name' => $this->booking->client->name,
-            'booking_code' => $this->booking->booking_code,
+            'service' => $this->booking->service->name,
             'time' => $this->booking->scheduled_at->format('Y-m-d H:i'),
         ];
     }

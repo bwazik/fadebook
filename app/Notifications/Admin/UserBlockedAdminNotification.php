@@ -31,7 +31,7 @@ class UserBlockedAdminNotification extends Notification
 
     protected function getNotificationType(): string
     {
-        return 'admin_user_blocked';
+        return 'user_blocked_admin';
     }
 
     protected function getEntityType(): string
@@ -89,7 +89,7 @@ class UserBlockedAdminNotification extends Notification
         return [
             'user_name' => $this->user->name,
             'reason' => $this->reason,
-            'user_phone' => $this->user->phone,
+            'phone' => $this->user->phone,
         ];
     }
 }

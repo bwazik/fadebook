@@ -31,7 +31,7 @@ class ShopAppliedNotification extends Notification
 
     protected function getNotificationType(): string
     {
-        return 'admin_shop_applied';
+        return 'shop_applied';
     }
 
     protected function getEntityType(): string
@@ -89,8 +89,9 @@ class ShopAppliedNotification extends Notification
     {
         return [
             'shop_name' => $this->shop->name,
-            'shop_phone' => $this->shop->phone,
-            'shop_address' => $this->shop->address,
+            'owner_name' => $this->shop->owner->name ?? 'صاحب محل',
+            'phone' => $this->shop->phone,
+            'area' => $this->shop->address,
         ];
     }
 }

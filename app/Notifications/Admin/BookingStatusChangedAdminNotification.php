@@ -34,7 +34,7 @@ class BookingStatusChangedAdminNotification extends Notification
 
     protected function getNotificationType(): string
     {
-        return 'admin_booking_status_changed';
+        return 'booking_status_changed_admin';
     }
 
     protected function getEntityType(): string
@@ -94,7 +94,7 @@ class BookingStatusChangedAdminNotification extends Notification
         return [
             'shop_name' => $this->booking->shop->name,
             'client_name' => $this->booking->client->name,
-            'status' => $this->statusLabel,
+            'status_label' => $this->statusLabel,
             'booking_code' => $this->booking->booking_code,
             'time' => $this->booking->scheduled_at->format('Y-m-d H:i'),
         ];

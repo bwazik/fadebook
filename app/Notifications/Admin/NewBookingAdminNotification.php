@@ -31,7 +31,7 @@ class NewBookingAdminNotification extends Notification
 
     protected function getNotificationType(): string
     {
-        return 'admin_new_booking';
+        return 'new_booking_admin';
     }
 
     protected function getEntityType(): string
@@ -91,8 +91,9 @@ class NewBookingAdminNotification extends Notification
         return [
             'shop_name' => $this->booking->shop->name,
             'client_name' => $this->booking->client->name,
+            'service' => $this->booking->service->name,
             'time' => $this->booking->scheduled_at->format('Y-m-d H:i'),
-            'amount' => $this->booking->final_amount,
+            'total' => $this->booking->final_amount,
         ];
     }
 }

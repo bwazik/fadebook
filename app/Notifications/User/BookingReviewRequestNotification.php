@@ -89,7 +89,7 @@ class BookingReviewRequestNotification extends Notification
     {
         return [
             'shop_name' => $this->booking->shop->name,
-            'review_link' => route('review.create', $this->booking->uuid),
+            'review_url' => route('review.create', $this->booking->uuid),
             'settings_url' => route('profile.settings'),
         ];
     }

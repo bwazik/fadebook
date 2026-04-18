@@ -89,9 +89,10 @@ class BookingConfirmedNotification extends Notification
     {
         return [
             'shop_name' => $this->booking->shop->name,
-            'barber_name' => $this->booking->barber->user->name ?? 'متاح',
-            'booking_code' => $this->booking->booking_code,
+            'service' => $this->booking->service->name,
             'time' => $this->booking->scheduled_at->format('Y-m-d H:i'),
+            'booking_code' => $this->booking->booking_code,
+            'payment_ref' => $this->booking->payment_reference ?? 'بدون',
             'settings_url' => route('profile.settings'),
         ];
     }

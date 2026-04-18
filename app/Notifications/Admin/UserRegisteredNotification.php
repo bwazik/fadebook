@@ -31,7 +31,7 @@ class UserRegisteredNotification extends Notification
 
     protected function getNotificationType(): string
     {
-        return 'admin_user_registered';
+        return 'user_registered';
     }
 
     protected function getEntityType(): string
@@ -89,8 +89,8 @@ class UserRegisteredNotification extends Notification
     {
         return [
             'user_name' => $this->user->name,
-            'user_phone' => $this->user->phone,
-            'time' => now()->format('Y-m-d H:i'),
+            'phone' => $this->user->phone,
+            'date' => now()->format('Y-m-d H:i'),
         ];
     }
 }

@@ -32,7 +32,7 @@ class BookingCreatedNotification extends Notification
 
     protected function getNotificationType(): string
     {
-        return 'booking_created_owner';
+        return 'booking_created_barber';
     }
 
     protected function getEntityType(): string
@@ -99,14 +99,10 @@ class BookingCreatedNotification extends Notification
     {
         return [
             'client_name' => $this->booking->client->name,
-            'client_phone' => $this->booking->client->phone,
-            'service_name' => $this->booking->service->name,
-            'price' => $this->booking->final_amount,
+            'service' => $this->booking->service->name,
+            'time' => $this->booking->scheduled_at->format('Y-m-d H:i'),
             'payment_method' => $this->booking->paymentMethod->name ?? 'غير محدد',
             'payment_ref' => $this->booking->payment_reference ?? 'بدون',
-            'barber_name' => $this->booking->barber->user->name ?? 'غير محدد',
-            'booking_code' => $this->booking->booking_code,
-            'time' => $this->booking->scheduled_at->format('Y-m-d H:i'),
         ];
     }
 
