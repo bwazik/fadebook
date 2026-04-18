@@ -45,6 +45,6 @@ class UserBlockedAdminNotification extends Notification
 
     public function getWhatsAppPriority(): string
     {
-        return 'urgent';
+        return 'instant';
     }
 }

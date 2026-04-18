@@ -24,9 +24,11 @@ class NewBookingAdminNotification extends Notification
 
     public function toDatabase($notifiable): array
     {
+        $timeStr = $this->booking->scheduled_at->translatedFormat('l, d F Y').' الساعة '.$this->booking->scheduled_at->format('g:i A');
+
         return FilamentNotification::make()
             ->title('تسجيل حجز جديد')
-            ->body($this->formatBookingDetails())
+            ->body("صالون {$this->booking->shop->name} | كود الحجز: {$this->booking->booking_code} | الميعاد: {$timeStr}")
             ->icon('heroicon-o-calendar-days')
             ->iconColor('info')
             ->getDatabaseMessage();
@@ -46,7 +48,7 @@ class NewBookingAdminNotification extends Notification
 
     public function getWhatsAppPriority(): string
     {
-        return 'urgent';
+        return 'instant';
     }
 
     protected function formatBookingDetails(): string

@@ -56,7 +56,7 @@ class BookingConfirmedNotification extends Notification
     {
         $barberInfo = $this->booking->barber ? " مع الحلاق {$this->booking->barber->name}" : '';
 
-        return "تم تأكيد حجزك برقم {$this->booking->booking_code} في صالون {$this->booking->shop->name}{$barberInfo} يوم {$this->booking->scheduled_at->translatedFormat('Y-m-d H:i')}. يرجى الحضور قبل الميعاد بـ 15 دقيقة.";
+        return "تم تأكيد حجزك برقم {$this->booking->booking_code} في صالون {$this->booking->shop->name}{$barberInfo} يوم {$this->booking->scheduled_at->translatedFormat('l, d F Y')} الساعة {$this->booking->scheduled_at->format('g:i A')}. يرجى الحضور قبل الميعاد بـ 15 دقيقة.";
     }
 
     protected function getIcon(): string
@@ -92,7 +92,7 @@ class BookingConfirmedNotification extends Notification
         return [
             'shop_name' => $this->booking->shop->name,
             'with_barber' => $this->booking->barber ? " مع الحلاق {$this->booking->barber->name}" : '',
-            'time' => $this->booking->scheduled_at->translatedFormat('Y-m-d H:i'),
+            'time' => $this->booking->scheduled_at->translatedFormat('l, d F Y').' الساعة '.$this->booking->scheduled_at->format('g:i A'),
             'booking_code' => $this->booking->booking_code,
             'settings_url' => route('profile.settings'),
         ];

@@ -69,19 +69,22 @@
                     :class="$store.nav.currentRoute === 'notifications' ?
                         'text-banhafade-accent drop-shadow-[0_0_8px_rgba(1,101,225,0.4)]' :
                         'text-gray-500 dark:text-gray-400'">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                        :stroke-width="$store.nav.currentRoute === 'notifications' ? '2' : '1.5'" stroke="currentColor"
-                        class="w-[22px] h-[22px] liquid-transition"
-                        :class="$store.nav.currentRoute === 'notifications' ? 'scale-110' : 'scale-100'">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0" />
-                    </svg>
-                    @if ($unreadNotificationsCount > 0)
-                        <span
-                            class="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[9px] font-bold text-white shadow-sm ring-2 ring-white/20 dark:ring-white/10 animate-in zoom-in duration-300">
-                            {{ $unreadNotificationsCount > 9 ? '9+' : $unreadNotificationsCount }}
-                        </span>
-                    @endif
+                    <div class="relative">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                            :stroke-width="$store.nav.currentRoute === 'notifications' ? '2' : '1.5'" stroke="currentColor"
+                            class="w-[22px] h-[22px] liquid-transition"
+                            :class="$store.nav.currentRoute === 'notifications' ? 'scale-110' : 'scale-100'">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0" />
+                        </svg>
+
+                        @if ($unreadNotificationsCount > 0)
+                            <span
+                                class="absolute -top-1.5 -right-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-banhafade-accent text-[10px] font-bold text-white shadow-sm ring-2 ring-white/20 dark:ring-white/10 translate-x-1 animate-in zoom-in duration-300">
+                                {{ $unreadNotificationsCount > 9 ? '9+' : $unreadNotificationsCount }}
+                            </span>
+                        @endif
+                    </div>
                 </a>
 
                 <!-- Vertical Divider (Only for auth) -->

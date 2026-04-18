@@ -15,14 +15,22 @@ use Livewire\Component;
 class NotificationsPage extends Component
 {
     /**
-     * Mark all notifications as read.
+     * Get the base query for client notifications.
      */
-    public function markAllAsRead(): void
+    private function clientNotificationsQuery()
     {
         /** @var User $user */
         $user = Auth::user();
 
-        $user->unreadNotifications->markAsRead();
+        return $user->notifications()->clientOnly();
+    }
+
+    /**
+     * Mark all notifications as read.
+     */
+    public function markAllAsRead(): void
+    {
+        $this->clientNotificationsQuery()->whereNull('read_at')->update(['read_at' => now()]);
     }
 
     /**
@@ -30,10 +38,7 @@ class NotificationsPage extends Component
      */
     public function handleNotificationClick(string $id): mixed
     {
-        /** @var User $user */
-        $user = Auth::user();
-
-        $notification = $user->notifications()->findOrFail($id);
+        $notification = $this->clientNotificationsQuery()->findOrFail($id);
 
         if (! $notification->read_at) {
             $notification->markAsRead();
@@ -57,10 +62,7 @@ class NotificationsPage extends Component
      */
     public function markAsRead(string $id): void
     {
-        /** @var User $user */
-        $user = Auth::user();
-
-        $notification = $user->notifications()->findOrFail($id);
+        $notification = $this->clientNotificationsQuery()->findOrFail($id);
         $notification->markAsRead();
     }
 
@@ -80,19 +82,13 @@ class NotificationsPage extends Component
     #[Computed]
     public function hasMore(): bool
     {
-        /** @var User $user */
-        $user = Auth::user();
-
-        return $user->notifications()->count() > $this->perPage;
+        return $this->clientNotificationsQuery()->count() > $this->perPage;
     }
 
     public function render(): View
     {
-        /** @var User $user */
-        $user = Auth::user();
-
         return view('livewire.notifications', [
-            'notifications' => $user->notifications()->latest()->limit($this->perPage)->get(),
+            'notifications' => $this->clientNotificationsQuery()->latest()->limit($this->perPage)->get(),
         ]);
     }
 }

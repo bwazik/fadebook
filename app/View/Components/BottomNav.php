@@ -115,11 +115,8 @@ class BottomNav extends Component
             $this->offerCount = app(OfferService::class)->getActiveOfferCount();
         }
 
-        return view('components.bottom-nav', [
-            'navItems' => $this->navItems,
-            'offerCount' => $this->offerCount,
-            'unreadNotificationsCount' => $user ? $user->unreadNotifications()->count() : 0,
-            'isDashboard' => $this->isDashboard,
-        ]);
+        $this->unreadNotificationsCount = $user ? $user->unreadNotifications()->clientOnly()->count() : 0;
+
+        return view('components.bottom-nav');
     }
 }

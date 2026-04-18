@@ -50,12 +50,12 @@ class UserSecurityChangedAdminNotification extends Notification
             'user_name' => $this->user->name,
             'action' => $action,
             'details' => $details,
-            'date' => now()->translatedFormat('Y-m-d H:i'),
+            'date' => now()->translatedFormat('l, d F Y').' الساعة '.now()->format('g:i A'),
         ];
     }
 
     public function getWhatsAppPriority(): string
     {
-        return 'urgent';
+        return 'instant';
     }
 }

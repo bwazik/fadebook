@@ -51,7 +51,7 @@ class BookingStatusChangedAdminNotification extends Notification
 
     public function getWhatsAppPriority(): string
     {
-        return 'urgent';
+        return 'instant';
     }
 
     protected function getStatusTime(): string
@@ -65,7 +65,9 @@ class BookingStatusChangedAdminNotification extends Notification
             BookingStatus::NoShow => $this->booking->updated_at,
         };
 
-        return ($statusTime ?? $this->booking->updated_at ?? now())->translatedFormat('Y-m-d H:i');
+        $time = $statusTime ?? $this->booking->updated_at ?? now();
+
+        return $time->translatedFormat('l, d F Y').' الساعة '.$time->format('g:i A');
     }
 
     protected function getStatusTimeLabel(): string

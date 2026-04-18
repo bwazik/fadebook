@@ -39,12 +39,12 @@ class UserRegisteredNotification extends Notification
         return [
             'user_name' => $this->user->name,
             'phone' => $this->user->phone,
-            'date' => now()->translatedFormat('Y-m-d H:i'),
+            'date' => now()->translatedFormat('l, d F Y').' الساعة '.now()->format('g:i A'),
         ];
     }
 
     public function getWhatsAppPriority(): string
     {
-        return 'urgent';
+        return 'instant';
     }
 }
