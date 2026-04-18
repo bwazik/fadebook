@@ -40,12 +40,12 @@
         x-transition:leave-end="opacity-0 -translate-y-4 scale-95" class="relative" style="display: none;">
 
         {{-- Progress Border Ring --}}
-        <div class="absolute -inset-[2px] rounded-full pointer-events-none transition-none"
+        <div class="absolute -inset-[2px] rounded-[1.9rem] pointer-events-none transition-none"
             :style="`background: conic-gradient(from -90deg, ${type === 'error' ? 'rgb(239 68 68)' : 'rgb(34 197 94)'} 0% ${progress}%, transparent ${progress}% 100%);`">
         </div>
 
         {{-- Toast Content --}}
-        <div class="relative flex items-center gap-2.5 liquid-panel rounded-full px-5 py-3">
+        <div class="relative flex items-center gap-3 liquid-panel rounded-[1.8rem] px-5 py-3 transition-all duration-300 shadow-xl border border-white/20 dark:border-white/10 max-w-[calc(100vw-3rem)] sm:max-w-md mx-auto">
             {{-- Success Icon --}}
             <template x-if="type === 'success'">
                 <div class="w-6 h-6 rounded-full bg-green-500/15 flex items-center justify-center shrink-0">
@@ -66,7 +66,7 @@
                 </div>
             </template>
 
-            <span class="text-sm font-bold whitespace-nowrap"
+            <span class="text-xs font-black leading-tight tracking-tight break-words flex-1"
                 :class="type === 'error' ? 'text-red-500 dark:text-red-400' : 'text-gray-900 dark:text-white'"
                 x-text="message">
             </span>
