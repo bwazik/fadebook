@@ -4,6 +4,7 @@ namespace App\Notifications\Admin;
 
 use App\Models\Booking;
 use App\Notifications\Channels\WhatsAppChannel;
+use Filament\Actions\Action;
 use Filament\Notifications\Notification as FilamentNotification;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
@@ -31,7 +32,11 @@ class BookingStatusChangedAdminNotification extends Notification
             ->body("تم تحديث حالة الحجز رقم {$this->booking->booking_code} (الصالون: {$this->booking->shop->name}{$barberInfo}) إلى {$this->statusLabel}.")
             ->icon('heroicon-o-arrow-path')
             ->iconColor('gray')
-            ->url('/admin/bookings')
+            ->actions([
+                Action::make('view')
+                    ->label('عرض الحجز')
+                    ->url('/admin/bookings'),
+            ])
             ->getDatabaseMessage();
     }
 

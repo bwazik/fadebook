@@ -7,6 +7,7 @@ namespace App\Livewire;
 use App\Models\User;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Auth;
+use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 
@@ -38,9 +39,10 @@ class NotificationsPage extends Component
             $notification->markAsRead();
         }
 
-        // Support both our standard and Filament/Laravel standard keys
+        // Support our standard, Laravel standard, and Filament actions
         $url = $notification->data['action_url']
             ?? $notification->data['url']
+            ?? ($notification->data['actions'][0]['url'] ?? null)
             ?? null;
 
         if ($url) {
@@ -62,13 +64,35 @@ class NotificationsPage extends Component
         $notification->markAsRead();
     }
 
+    public int $perPage = 10;
+
+    /**
+     * Load more notifications.
+     */
+    public function loadMore(): void
+    {
+        $this->perPage += 10;
+    }
+
+    /**
+     * Check if there are more notifications to load.
+     */
+    #[Computed]
+    public function hasMore(): bool
+    {
+        /** @var User $user */
+        $user = Auth::user();
+
+        return $user->notifications()->count() > $this->perPage;
+    }
+
     public function render(): View
     {
         /** @var User $user */
         $user = Auth::user();
 
         return view('livewire.notifications', [
-            'notifications' => $user->notifications()->latest()->limit(50)->get(),
+            'notifications' => $user->notifications()->latest()->limit($this->perPage)->get(),
         ]);
     }
 }

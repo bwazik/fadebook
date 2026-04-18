@@ -4,6 +4,7 @@ namespace App\Notifications\Admin;
 
 use App\Models\User;
 use App\Notifications\Channels\WhatsAppChannel;
+use Filament\Actions\Action;
 use Filament\Notifications\Notification as FilamentNotification;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
@@ -26,7 +27,11 @@ class UserBlockedAdminNotification extends Notification
             ->body("تم تعليق حساب العميل {$this->user->name} تلقائياً. السبب: {$this->reason}.")
             ->icon('heroicon-o-lock-closed')
             ->iconColor('danger')
-            ->url('/admin/users')
+            ->actions([
+                Action::make('view')
+                    ->label('عرض المستخدمين')
+                    ->url('/admin/users'),
+            ])
             ->getDatabaseMessage();
     }
 

@@ -4,6 +4,7 @@ namespace App\Notifications\Admin;
 
 use App\Models\Booking;
 use App\Notifications\Channels\WhatsAppChannel;
+use Filament\Actions\Action;
 use Filament\Notifications\Notification as FilamentNotification;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
@@ -28,7 +29,11 @@ class NewBookingAdminNotification extends Notification
             ->body("تم تسجيل حجز جديد في صالون {$this->booking->shop->name}{$barberInfo} للعميل {$this->booking->client->name}.")
             ->icon('heroicon-o-calendar-days')
             ->iconColor('info')
-            ->url('/admin/bookings')
+            ->actions([
+                Action::make('view')
+                    ->label('عرض الحجز')
+                    ->url('/admin/bookings'),
+            ])
             ->getDatabaseMessage();
     }
 
