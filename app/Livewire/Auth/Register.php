@@ -8,7 +8,7 @@ use App\Enums\UserRole;
 use App\Models\Area;
 use App\Models\Shop;
 use App\Models\User;
-use App\Notifications\Admin\NewShopApplicationNotification;
+use App\Notifications\Admin\ShopAppliedNotification;
 use App\Rules\EgyptianPhone;
 use App\Services\ReferralService;
 use App\Traits\WithRateLimiting;
@@ -176,7 +176,7 @@ class Register extends Component
                 // Notify super admin about new shop application
                 $superAdmin = User::where('role', UserRole::SuperAdmin)->first();
                 if ($superAdmin) {
-                    $superAdmin->notify(new NewShopApplicationNotification($shop));
+                    $superAdmin->notify(new ShopAppliedNotification($shop));
                 }
 
                 DB::commit();

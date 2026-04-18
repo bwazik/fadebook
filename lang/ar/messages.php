@@ -3,7 +3,7 @@
 return [
     'app_name' => 'BanhaFade',
     'app_slogan' => 'الحلاقة بطريقة جديدة',
-    'app_description' => 'منصة حجز صالونات الحلاقة في مصر',
+    'app_description' => 'أول منصة لحجز صالونات الحلاقة في مصر',
 
     // Authorization
     'unauthorized' => 'غير مصرح لك بالوصول إلى هذه الصفحة',
@@ -168,8 +168,8 @@ return [
     'sort_lowest' => 'الأقل',
     'minutes_of_care' => 'دقيقة من التدليل',
     'no_services_yet' => 'المحل لسه مضافش خدماته',
-    'true_word' => 'كلمة حق',
-    'real_experiences' => 'تجارب حقيقية من زبايننا',
+    'true_word' => 'التقييمات',
+    'real_experiences' => 'تقييمات حقيقية من عملائنا',
     'anonymous_user' => 'مستخدم خفي',
     'images' => 'صور',
     'available' => 'متاح',
@@ -180,7 +180,7 @@ return [
     'address' => 'العنوان',
     'contact' => 'للتواصل',
     'working_hours' => 'مواعيد العمل',
-    'banhafade_artists' => 'فنانين الفايدي بوك',
+    'banhafade_artists' => 'طاقم العمل',
     'services' => 'الخدمات',
     'services_ar' => 'خدمات',
     'no_services' => 'لسه مفيش خدمات',
@@ -475,7 +475,7 @@ return [
     'review_experience_action' => 'تقييم التجربة',
     'first_to_rate' => 'كن أول من يقيم',
     'barbers_performance' => 'أداء الحلاقين',
-    'latest_feedback' => 'آخر كلمة حق',
+    'latest_feedback' => 'آخر تقييم',
     'nav_reviews' => 'التقييمات',
     'manage_reviews_title' => 'إدارة التقييمات',
     'manage_reviews_desc' => 'شاهد كل ما كتبه العملاء عن صالونك وطاقم العمل',
