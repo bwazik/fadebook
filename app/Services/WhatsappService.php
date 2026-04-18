@@ -15,9 +15,6 @@ class WhatsAppService
     protected $allowMultipleTemplates = [
         'otp_verification',
         'phone_changed_notification',
-        'order_placed',
-        'new_order_restaurant',
-        'order_status_changed',
     ];
 
     public function sendMessage(string $phone, string $template, array $data, string $priority = 'default', ?int $userId = null, ?int $shopId = null)

@@ -12,7 +12,7 @@ use Illuminate\Console\Attributes\Description;
 use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
 
-#[Signature('app:send-booking-notifications')]
+#[Signature('app:send-reminders-notifications')]
 #[Description('Sends smart WhatsApp reminders (before) and follow-ups (after) for bookings')]
 class SendBookingReminders extends Command
 {

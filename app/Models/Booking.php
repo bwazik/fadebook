@@ -33,6 +33,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
     'confirmed_at',
     'arrived_at',
     'completed_at',
+    'review_request_sent_at',
     'cancelled_at',
     'cancelled_by',
     'payment_method_id',
