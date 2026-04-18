@@ -41,19 +41,19 @@ class BookingReviewRequestNotification extends Notification
 
     protected function getTitle(): string
     {
-        return 'نعيماً! إيه رأيك؟';
+        return 'نعيماً! شاركنا تقييمك';
     }
 
     protected function getShortMessage(): string
     {
-        return "نعيماً! إيه رأيك في حلاقتك في {$this->booking->shop->name}؟";
+        return "نعيماً! شاركنا تقييمك لتجربتك في صالون {$this->booking->shop->name}.";
     }
 
     protected function getMessage(): string
     {
-        $settingsLink = route('profile.settings');
+        $barberInfo = $this->booking->barber ? " مع الحلاق {$this->booking->barber->name}" : '';
 
-        return "نعيماً! أتمنى تكون مبسوط من حلاقتك في {$this->booking->shop->name}. ياريت تقيم تجربتك عشان تفيد غيرك. \n\n لو عايز تقفل التنبيهات تقدر تدخل من هنا: {$settingsLink}";
+        return "نعيماً! نتمنى أن تكون التجربة ممتازة في صالون {$this->booking->shop->name}{$barberInfo}. يرجى إعطاء تقييم لمساعدتنا في تحسين الخدمة.";
     }
 
     protected function getIcon(): string
@@ -63,17 +63,17 @@ class BookingReviewRequestNotification extends Notification
 
     protected function getIconBg(): string
     {
-        return 'bg-amber-400';
+        return 'bg-blue-500';
     }
 
     protected function getActionUrl(): string
     {
-        return route('booking.show', $this->booking->uuid);
+        return route('review.create', $this->booking->uuid);
     }
 
     protected function getActionText(): string
     {
-        return 'قيم دلوقتي';
+        return 'إضافة تقييم';
     }
 
     protected function getCustomData(): array
@@ -84,10 +84,16 @@ class BookingReviewRequestNotification extends Notification
         ];
     }
 
+    public function getWhatsAppTemplate(): string
+    {
+        return 'booking_review_request';
+    }
+
     public function getWhatsAppData(): array
     {
         return [
             'shop_name' => $this->booking->shop->name,
+            'barber_info' => $this->booking->barber ? " مع الحلاق {$this->booking->barber->name}" : '',
             'review_url' => route('review.create', $this->booking->uuid),
             'settings_url' => route('profile.settings'),
         ];

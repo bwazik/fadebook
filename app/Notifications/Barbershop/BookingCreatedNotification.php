@@ -41,34 +41,34 @@ class BookingCreatedNotification extends Notification
 
     protected function getTitle(): string
     {
-        return 'حجز جديد';
+        return 'طلب حجز جديد';
     }
 
     protected function getShortMessage(): string
     {
-        return "حجز جديد ومحتاج تأكيد من {$this->booking->client->name}";
+        return "طلب حجز جديد بانتظار التأكيد من العميل {$this->booking->client->name}.";
     }
 
     protected function getMessage(): string
     {
         $service = $this->booking->service->name;
-        $price = $this->booking->final_amount;
-        $method = $this->booking->paymentMethod->name ?? 'غير محدد';
-        $ref = $this->booking->payment_reference ?? 'بدون';
+        $barberInfo = $this->booking->barber ? "الحلاق: {$this->booking->barber->name} \n" : '';
+        $paymentInfo = $this->booking->paymentMethod ? "طريقة الدفع: {$this->booking->paymentMethod->name} \n" : '';
+        $refInfo = $this->booking->payment_reference ? "الرقم المرجعي: {$this->booking->payment_reference} \n" : '';
 
-        return "حجز جديد ومحتاج تأكيد! \n".
+        return "يوجد طلب حجز جديد بانتظار تأكيدك! \n".
+               "{$barberInfo}".
                "العميل: {$this->booking->client->name} \n".
-               "التليفون: {$this->booking->client->phone} \n".
+               "رقم الموبايل: {$this->booking->client->phone} \n".
                "الخدمة: {$service} \n".
-               "الميعاد: {$this->booking->scheduled_at->format('Y-m-d H:i')} \n".
-               "المبلغ: {$price} ج.م \n".
-               "طريقة الدفع: {$method} \n".
-               "رقم العملية: {$ref}";
+               "الميعاد: {$this->booking->scheduled_at->format('Y-m-d H:i')} \n\n".
+               "{$paymentInfo}{$refInfo}".
+               'أدخل على لوحة التحكم للحصول على التفاصيل وتأكيد الموعد.';
     }
 
     protected function getIcon(): string
     {
-        return 'heroicon-o-calendar';
+        return 'heroicon-o-calendar-days';
     }
 
     protected function getIconBg(): string
@@ -94,14 +94,20 @@ class BookingCreatedNotification extends Notification
         ];
     }
 
+    public function getWhatsAppTemplate(): string
+    {
+        return 'booking_created_barber';
+    }
+
     public function getWhatsAppData(): array
     {
         return [
             'client_name' => $this->booking->client->name,
+            'barber_info' => $this->booking->barber ? "الحلاق: {$this->booking->barber->name}\n" : '',
             'service' => $this->booking->service->name,
             'time' => $this->booking->scheduled_at->format('Y-m-d H:i'),
-            'payment_method' => $this->booking->paymentMethod->name ?? 'غير محدد',
-            'payment_ref' => $this->booking->payment_reference ?? 'بدون',
+            'payment_info' => $this->booking->paymentMethod ? "طريقة الدفع: {$this->booking->paymentMethod->name}\n" : '',
+            'payment_ref_info' => $this->booking->payment_reference ? "الرقم المرجعي للتحويل: {$this->booking->payment_reference}\n" : '',
         ];
     }
 

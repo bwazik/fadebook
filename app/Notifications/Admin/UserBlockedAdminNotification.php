@@ -4,13 +4,13 @@ namespace App\Notifications\Admin;
 
 use App\Models\User;
 use App\Notifications\Channels\WhatsAppChannel;
-use App\Traits\NotificationDataStructure;
+use Filament\Notifications\Notification as FilamentNotification;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 
 class UserBlockedAdminNotification extends Notification
 {
-    use NotificationDataStructure, Queueable;
+    use Queueable;
 
     public function __construct(public User $user, public string $reason) {}
 
@@ -21,67 +21,18 @@ class UserBlockedAdminNotification extends Notification
 
     public function toDatabase($notifiable): array
     {
-        return $this->getStandardData();
+        return FilamentNotification::make()
+            ->title('تعليق حساب عميل')
+            ->body("تم تعليق حساب العميل {$this->user->name} تلقائياً. السبب: {$this->reason}.")
+            ->icon('heroicon-o-lock-closed')
+            ->iconColor('danger')
+            ->url('/admin/users')
+            ->getDatabaseMessage();
     }
 
-    protected function getEntityId()
-    {
-        return $this->user->id;
-    }
-
-    protected function getNotificationType(): string
+    public function getWhatsAppTemplate(): string
     {
         return 'user_blocked_admin';
-    }
-
-    protected function getEntityType(): string
-    {
-        return 'user';
-    }
-
-    protected function getTitle(): string
-    {
-        return 'مستخدم تم حظره';
-    }
-
-    protected function getShortMessage(): string
-    {
-        return "تم حظر {$this->user->name}";
-    }
-
-    protected function getMessage(): string
-    {
-        return "تم حظر المستخدم: {$this->user->name} \n".
-               "السبب: {$this->reason} \n".
-               "الهاتف: {$this->user->phone}";
-    }
-
-    protected function getIcon(): string
-    {
-        return 'heroicon-o-lock-closed';
-    }
-
-    protected function getIconBg(): string
-    {
-        return 'bg-red-700';
-    }
-
-    protected function getActionUrl(): string
-    {
-        return '/admin/users';
-    }
-
-    protected function getActionText(): string
-    {
-        return 'عرض المستخدمين';
-    }
-
-    protected function getCustomData(): array
-    {
-        return [
-            'user_id' => $this->user->id,
-            'reason' => $this->reason,
-        ];
     }
 
     public function getWhatsAppData(): array

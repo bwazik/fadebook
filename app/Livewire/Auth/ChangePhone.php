@@ -3,15 +3,18 @@
 namespace App\Livewire\Auth;
 
 use App\Enums\OtpType;
+use App\Enums\UserRole;
 use App\Exceptions\OtpException;
 use App\Models\PhoneChangeHistory;
 use App\Models\User;
+use App\Notifications\Admin\UserSecurityChangedAdminNotification;
 use App\Rules\EgyptianPhone;
 use App\Services\OtpService;
 use App\Traits\WithRateLimiting;
 use App\Traits\WithToast;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Validator;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
@@ -135,6 +138,10 @@ class ChangePhone extends Component
             'ip_address' => request()->ip(),
             'user_agent' => request()->userAgent(),
         ]);
+
+        // Notify Admins
+        $admins = User::query()->where('role', UserRole::SuperAdmin)->get();
+        Notification::send($admins, new UserSecurityChangedAdminNotification($user, 'phone'));
 
         $this->flashToastSuccess(__('messages.phone_changed_success'));
 

@@ -3,14 +3,17 @@
 namespace App\Livewire\Auth;
 
 use App\Enums\OtpType;
+use App\Enums\UserRole;
 use App\Exceptions\OtpException;
 use App\Models\User;
+use App\Notifications\Admin\UserSecurityChangedAdminNotification;
 use App\Services\OtpService;
 use App\Traits\WithRateLimiting;
 use App\Traits\WithToast;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Validator;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
@@ -152,6 +155,10 @@ class ChangePassword extends Component
                 'password' => Hash::make($this->password),
                 'phone_verified_at' => now(),
             ]);
+
+            // Notify Admins
+            $admins = User::query()->where('role', UserRole::SuperAdmin)->get();
+            Notification::send($admins, new UserSecurityChangedAdminNotification($user, 'password'));
 
             $this->flashToastSuccess(__('messages.password_changed_success'));
 

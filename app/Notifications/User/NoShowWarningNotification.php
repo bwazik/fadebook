@@ -41,19 +41,17 @@ class NoShowWarningNotification extends Notification
 
     protected function getTitle(): string
     {
-        return 'مرحتش الحجز!';
+        return 'تنبيه: عدم حضور للموعد';
     }
 
     protected function getShortMessage(): string
     {
-        return "تحذير: تم تسجيلك كغياب عن ميعادك في {$this->booking->shop->name}";
+        return "تم تسجيل غيابك عن موعد الحجز في صالون {$this->booking->shop->name}.";
     }
 
     protected function getMessage(): string
     {
-        $settingsLink = route('profile.settings');
-
-        return "تم تسجيلك كغياب (No-Show) في حجزك مع {$this->booking->shop->name}. ده التحذير رقم {$this->strikeCount}. لو اتكرر الموضوع حسابك هيتوقف. \n\n لو عايز تقفل التنبيهات تقدر تدخل من هنا: {$settingsLink}";
+        return "تم تسجيلك كغياب (No-Show) في حجزك مع {$this->booking->shop->name}. هذا التحذير رقم ({$this->strikeCount}). تكرار الغياب قد يؤدي لتعليق حسابك التلقائي.";
     }
 
     protected function getIcon(): string

@@ -46,14 +46,14 @@ class BookingConfirmedNotification extends Notification
 
     protected function getShortMessage(): string
     {
-        return "تم تأكيد حجزك في {$this->booking->shop->name}";
+        return "تم تأكيد حجزك بنجاح في صالون {$this->booking->shop->name}.";
     }
 
     protected function getMessage(): string
     {
-        $settingsLink = route('profile.settings');
+        $barberInfo = $this->booking->barber ? " مع الحلاق {$this->booking->barber->name}" : '';
 
-        return "حجزك في {$this->booking->shop->name} ميعاده {$this->booking->scheduled_at->format('Y-m-d H:i')}. من فضلك تكون موجود قبل الميعاد بـ 15 دقيقة. \n\n لو عايز تقفل التنبيهات تقدر تدخل من هنا: {$settingsLink}";
+        return "تم تأكيد حجزك في صالون {$this->booking->shop->name}{$barberInfo} لميعاد {$this->booking->scheduled_at->format('Y-m-d H:i')}. يرجى الحضور قبل الميعاد بـ 15 دقيقة.";
     }
 
     protected function getIcon(): string
@@ -88,10 +88,11 @@ class BookingConfirmedNotification extends Notification
     {
         return [
             'shop_name' => $this->booking->shop->name,
+            'barber_info' => $this->booking->barber ? "الحلاق: {$this->booking->barber->name}\n" : '',
             'service' => $this->booking->service->name,
             'time' => $this->booking->scheduled_at->format('Y-m-d H:i'),
             'booking_code' => $this->booking->booking_code,
-            'payment_ref' => $this->booking->payment_reference ?? 'بدون',
+            'payment_ref_info' => $this->booking->payment_reference ? "رقم عملية الدفع: {$this->booking->payment_reference}\n" : '',
             'settings_url' => route('profile.settings'),
         ];
     }

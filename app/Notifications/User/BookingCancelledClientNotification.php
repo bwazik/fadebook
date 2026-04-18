@@ -41,19 +41,17 @@ class BookingCancelledClientNotification extends Notification
 
     protected function getTitle(): string
     {
-        return 'حجزك اتلغى';
+        return 'تنبيه: تم إلغاء حجزك';
     }
 
     protected function getShortMessage(): string
     {
-        return "للأسف حجزك اتلغى في {$this->booking->shop->name}";
+        return "للأسف، تم إلغاء حجزك في صالون {$this->booking->shop->name}.";
     }
 
     protected function getMessage(): string
     {
-        $settingsLink = route('profile.settings');
-
-        return "للأسف تم إلغاء حجزك في {$this->booking->shop->name} ميعاد {$this->booking->scheduled_at->format('Y-m-d H:i')}. \n\n لو عايز تقفل التنبيهات تقدر تدخل من هنا: {$settingsLink}";
+        return "نعتذر لك، تم إلغاء حجزك في صالون {$this->booking->shop->name} بتاريخ {$this->booking->scheduled_at->format('Y-m-d H:i')}. يمكنك حجز موعد آخر أو التواصل مع الدعم.";
     }
 
     protected function getIcon(): string

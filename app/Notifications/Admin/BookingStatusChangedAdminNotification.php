@@ -4,13 +4,13 @@ namespace App\Notifications\Admin;
 
 use App\Models\Booking;
 use App\Notifications\Channels\WhatsAppChannel;
-use App\Traits\NotificationDataStructure;
+use Filament\Notifications\Notification as FilamentNotification;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 
 class BookingStatusChangedAdminNotification extends Notification
 {
-    use NotificationDataStructure, Queueable;
+    use Queueable;
 
     public function __construct(public Booking $booking, public ?string $statusLabel = null)
     {
@@ -24,75 +24,27 @@ class BookingStatusChangedAdminNotification extends Notification
 
     public function toDatabase($notifiable): array
     {
-        return $this->getStandardData();
+        $barberInfo = $this->booking->barber ? "، الحلاق: {$this->booking->barber->name}" : '';
+
+        return FilamentNotification::make()
+            ->title("تحديث حالة الحجز: {$this->statusLabel}")
+            ->body("تم تحديث حالة الحجز رقم {$this->booking->booking_code} (الصالون: {$this->booking->shop->name}{$barberInfo}) إلى {$this->statusLabel}.")
+            ->icon('heroicon-o-arrow-path')
+            ->iconColor('gray')
+            ->url('/admin/bookings')
+            ->getDatabaseMessage();
     }
 
-    protected function getEntityId()
-    {
-        return $this->booking->id;
-    }
-
-    protected function getNotificationType(): string
+    public function getWhatsAppTemplate(): string
     {
         return 'booking_status_changed_admin';
-    }
-
-    protected function getEntityType(): string
-    {
-        return 'booking';
-    }
-
-    protected function getTitle(): string
-    {
-        return "تغيير حالة حجز: {$this->statusLabel}";
-    }
-
-    protected function getShortMessage(): string
-    {
-        return "تغيير حالة حجز {$this->booking->booking_code} لـ {$this->statusLabel}";
-    }
-
-    protected function getMessage(): string
-    {
-        return "حالة الحجز اتغيرت لـ ({$this->statusLabel}): \n".
-               "الصالون: {$this->booking->shop->name} \n".
-               "العميل: {$this->booking->client->name} \n".
-               "الكود: {$this->booking->booking_code} \n".
-               "الميعاد: {$this->booking->scheduled_at->format('Y-m-d H:i')}";
-    }
-
-    protected function getIcon(): string
-    {
-        return 'heroicon-o-arrow-path';
-    }
-
-    protected function getIconBg(): string
-    {
-        return 'bg-slate-600';
-    }
-
-    protected function getActionUrl(): string
-    {
-        return '/admin/bookings';
-    }
-
-    protected function getActionText(): string
-    {
-        return 'عرض الحجوزات';
-    }
-
-    protected function getCustomData(): array
-    {
-        return [
-            'booking_id' => $this->booking->id,
-            'new_status' => $this->statusLabel,
-        ];
     }
 
     public function getWhatsAppData(): array
     {
         return [
             'shop_name' => $this->booking->shop->name,
+            'barber_info' => $this->booking->barber ? "الحلاق: {$this->booking->barber->name}\n" : '',
             'client_name' => $this->booking->client->name,
             'status_label' => $this->statusLabel,
             'booking_code' => $this->booking->booking_code,

@@ -4,13 +4,13 @@ namespace App\Notifications\Admin;
 
 use App\Models\User;
 use App\Notifications\Channels\WhatsAppChannel;
-use App\Traits\NotificationDataStructure;
+use Filament\Notifications\Notification as FilamentNotification;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 
 class UserRegisteredNotification extends Notification
 {
-    use NotificationDataStructure, Queueable;
+    use Queueable;
 
     public function __construct(public User $user) {}
 
@@ -21,68 +21,18 @@ class UserRegisteredNotification extends Notification
 
     public function toDatabase($notifiable): array
     {
-        return $this->getStandardData();
+        return FilamentNotification::make()
+            ->title('تسجيل عميل جديد')
+            ->body("تم تسجيل عميل جديد في المنصة: {$this->user->name} ({$this->user->phone}).")
+            ->icon('heroicon-o-user-plus')
+            ->iconColor('info')
+            ->url('/admin/users')
+            ->getDatabaseMessage();
     }
 
-    protected function getEntityId()
-    {
-        return $this->user->id;
-    }
-
-    protected function getNotificationType(): string
+    public function getWhatsAppTemplate(): string
     {
         return 'user_registered';
-    }
-
-    protected function getEntityType(): string
-    {
-        return 'user';
-    }
-
-    protected function getTitle(): string
-    {
-        return 'عميل جديد سجل';
-    }
-
-    protected function getShortMessage(): string
-    {
-        return "عميل جديد سجل: {$this->user->name}";
-    }
-
-    protected function getMessage(): string
-    {
-        return "في عميل جديد سجل في السيستم: \n".
-               "الاسم: {$this->user->name} \n".
-               "التليفون: {$this->user->phone} \n".
-               'التاريخ: '.now()->format('Y-m-d H:i');
-    }
-
-    protected function getIcon(): string
-    {
-        return 'heroicon-o-user-plus';
-    }
-
-    protected function getIconBg(): string
-    {
-        return 'bg-blue-600';
-    }
-
-    protected function getActionUrl(): string
-    {
-        return '/admin/users';
-    }
-
-    protected function getActionText(): string
-    {
-        return 'عرض المستخدمين';
-    }
-
-    protected function getCustomData(): array
-    {
-        return [
-            'user_id' => $this->user->id,
-            'user_name' => $this->user->name,
-        ];
     }
 
     public function getWhatsAppData(): array

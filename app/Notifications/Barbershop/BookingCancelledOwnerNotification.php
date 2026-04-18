@@ -41,22 +41,24 @@ class BookingCancelledOwnerNotification extends Notification
 
     protected function getTitle(): string
     {
-        return 'حجز اتلغى';
+        return 'تم إلغاء حجز';
     }
 
     protected function getShortMessage(): string
     {
-        return "العميل {$this->booking->client->name} لغى حجز ميعاد {$this->booking->scheduled_at->format('H:i')}";
+        return "قام العميل {$this->booking->client->name} بإلغاء موعده الساعة {$this->booking->scheduled_at->format('H:i')}.";
     }
 
     protected function getMessage(): string
     {
-        return "تم إلغاء الحجز من قِبل العميل {$this->booking->client->name} لميعاد {$this->booking->scheduled_at->format('Y-m-d H:i')}.";
+        $barberInfo = $this->booking->barber ? " مع الحلاق {$this->booking->barber->name}" : '';
+
+        return "إشعار: تم إلغاء الحجز من قِبل العميل {$this->booking->client->name} الخاص بموعد {$this->booking->scheduled_at->format('Y-m-d H:i')}{$barberInfo}. والموعد متاح الآن للحجز مرة أخرى.";
     }
 
     protected function getIcon(): string
     {
-        return 'heroicon-o-x-circle';
+        return 'heroicon-o-calendar-days';
     }
 
     protected function getIconBg(): string
@@ -82,10 +84,16 @@ class BookingCancelledOwnerNotification extends Notification
         ];
     }
 
+    public function getWhatsAppTemplate(): string
+    {
+        return 'booking_cancelled_owner';
+    }
+
     public function getWhatsAppData(): array
     {
         return [
             'client_name' => $this->booking->client->name,
+            'barber_name' => $this->booking->barber?->name ?? 'غير محدد',
             'service' => $this->booking->service->name,
             'time' => $this->booking->scheduled_at->format('Y-m-d H:i'),
         ];

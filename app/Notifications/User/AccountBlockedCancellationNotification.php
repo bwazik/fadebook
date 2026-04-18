@@ -40,19 +40,17 @@ class AccountBlockedCancellationNotification extends Notification
 
     protected function getTitle(): string
     {
-        return 'حسابك اتوقف';
+        return 'تنبيه أمان: تم تعليق حسابك';
     }
 
     protected function getShortMessage(): string
     {
-        return 'حسابك اتوقف لتكرار الإلغاء';
+        return 'تم تعليق حسابك مؤقتاً لتكرار الإلغاء، يرجى التواصل مع الدعم.';
     }
 
     protected function getMessage(): string
     {
-        $settingsLink = route('profile.settings');
-
-        return "تم إيقاف حسابك لتكرار إلغاء الحجوزات. يرجى التواصل مع الدعم. \n\n لو عايز تقفل التنبيهات تقدر تدخل من هنا: {$settingsLink}";
+        return 'للأسف تم تعليق حسابك مؤقتاً بسبب تكرار إلغاء الحجوزات في وقت متأخر. يرجى التواصل مع الدعم الفني لحل المشكلة.';
     }
 
     protected function getIcon(): string

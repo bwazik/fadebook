@@ -25,6 +25,32 @@ class NotificationsPage extends Component
     }
 
     /**
+     * Handle notification click: mark as read and redirect if URL exists.
+     */
+    public function handleNotificationClick(string $id): mixed
+    {
+        /** @var User $user */
+        $user = Auth::user();
+
+        $notification = $user->notifications()->findOrFail($id);
+
+        if (! $notification->read_at) {
+            $notification->markAsRead();
+        }
+
+        // Support both our standard and Filament/Laravel standard keys
+        $url = $notification->data['action_url']
+            ?? $notification->data['url']
+            ?? null;
+
+        if ($url) {
+            return $this->redirect($url, navigate: true);
+        }
+
+        return null;
+    }
+
+    /**
      * Mark a single notification as read.
      */
     public function markAsRead(string $id): void

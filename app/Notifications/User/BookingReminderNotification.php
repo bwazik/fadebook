@@ -46,14 +46,14 @@ class BookingReminderNotification extends Notification
 
     protected function getShortMessage(): string
     {
-        return "تذكير: حجزك في {$this->booking->shop->name} كمان ساعة";
+        return "تذكير: باقي ساعة على موعد حجزك في صالون {$this->booking->shop->name}.";
     }
 
     protected function getMessage(): string
     {
-        $settingsLink = route('profile.settings');
+        $barberInfo = $this->booking->barber ? " مع الحلاق {$this->booking->barber->name}" : '';
 
-        return "باقي ساعة على ميعادك في {$this->booking->shop->name}. من فضلك حاول تكون موجود في الميعاد عشان ما يضعش عليك. \n\n لو عايز تقفل التنبيهات تقدر تدخل من هنا: {$settingsLink}";
+        return "ميعادك في صالون {$this->booking->shop->name}{$barberInfo} اقترب! يرجى التوجه للصالون في الموعد المحدد.";
     }
 
     protected function getIcon(): string
@@ -73,7 +73,7 @@ class BookingReminderNotification extends Notification
 
     protected function getActionText(): string
     {
-        return 'تفاصيل الحجز';
+        return 'عرض الحجز';
     }
 
     protected function getCustomData(): array
@@ -84,11 +84,18 @@ class BookingReminderNotification extends Notification
         ];
     }
 
+    public function getWhatsAppTemplate(): string
+    {
+        return 'booking_reminder_client';
+    }
+
     public function getWhatsAppData(): array
     {
         return [
             'shop_name' => $this->booking->shop->name,
+            'with_barber' => $this->booking->barber ? " مع الحلاق {$this->booking->barber->name}" : '',
             'time' => $this->booking->scheduled_at->format('H:i'),
+            'booking_code' => $this->booking->booking_code,
             'settings_url' => route('profile.settings'),
         ];
     }

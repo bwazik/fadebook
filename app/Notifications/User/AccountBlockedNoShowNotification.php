@@ -40,19 +40,17 @@ class AccountBlockedNoShowNotification extends Notification
 
     protected function getTitle(): string
     {
-        return 'حسابك اتوقف';
+        return 'تنبيه أمان: تم تعليق حسابك';
     }
 
     protected function getShortMessage(): string
     {
-        return 'حسابك اتوقف لتكرار الغياب';
+        return 'تم تعليق حسابك مؤقتاً لتكرار الغياب، يرجى التواصل مع الدعم.';
     }
 
     protected function getMessage(): string
     {
-        $settingsLink = route('profile.settings');
-
-        return "تم إيقاف حسابك لتكرار الغياب عن الحجوزات (No-Show). يرجى التواصل مع الدعم. \n\n لو عايز تقفل التنبيهات تقدر تدخل من هنا: {$settingsLink}";
+        return 'للأسف تم تعليق حسابك مؤقتاً بسبب تكرار عدم الحضور (No-Show) في المواعيد المؤكدة. يرجى التواصل مع الدعم الفني لحل المشكلة.';
     }
 
     protected function getIcon(): string
