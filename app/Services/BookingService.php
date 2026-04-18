@@ -7,14 +7,26 @@ namespace App\Services;
 use App\Enums\BookingStatus;
 use App\Enums\CancelledBy;
 use App\Enums\PaymentMode;
+use App\Enums\UserRole;
 use App\Models\Barber;
 use App\Models\Booking;
 use App\Models\Service;
 use App\Models\Shop;
 use App\Models\User;
+use App\Notifications\Admin\BookingStatusChangedAdminNotification;
+use App\Notifications\Admin\NewBookingAdminNotification;
+use App\Notifications\Admin\UserBlockedAdminNotification;
+use App\Notifications\Barbershop\BookingCancelledOwnerNotification;
+use App\Notifications\Barbershop\BookingCreatedNotification;
+use App\Notifications\User\AccountBlockedCancellationNotification;
+use App\Notifications\User\AccountBlockedNoShowNotification;
+use App\Notifications\User\BookingCancelledClientNotification;
+use App\Notifications\User\BookingConfirmedNotification;
+use App\Notifications\User\NoShowWarningNotification;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Notification;
 
 class BookingService
 {
@@ -25,8 +37,7 @@ class BookingService
         protected CouponService $couponService,
         protected SettingsService $settingsService,
         protected ReferralService $referralService
-    ) {
-    }
+    ) {}
 
     public function initiate(User $client, Shop $shop, array $data): Booking
     {
@@ -59,7 +70,7 @@ class BookingService
                 $data['date']
             );
 
-            if (!in_array($data['time'], $availableSlots)) {
+            if (! in_array($data['time'], $availableSlots)) {
                 throw new Exception(__('messages.booking_slot_unavailable'));
             }
 
@@ -68,7 +79,7 @@ class BookingService
             $finalAmount = (float) $service->price;
             $couponId = null;
 
-            if (!empty($data['coupon_code'])) {
+            if (! empty($data['coupon_code'])) {
                 try {
                     $result = $this->couponService->validateAndCalculate(
                         $data['coupon_code'],
@@ -99,7 +110,7 @@ class BookingService
 
             $commissionAmount = ($finalAmount * (float) $shop->commission_rate) / 100;
 
-            $scheduledAt = Carbon::parse($data['date'] . ' ' . $data['time']);
+            $scheduledAt = Carbon::parse($data['date'].' '.$data['time']);
 
             $booking = Booking::create([
                 'client_id' => $client->id,
@@ -121,8 +132,16 @@ class BookingService
                 'coupon_id' => $couponId,
             ]);
 
+            $this->notifyAdmins(new NewBookingAdminNotification($booking));
+
             return $booking;
         });
+    }
+
+    protected function notifyAdmins($notification): void
+    {
+        $admins = User::query()->where('role', UserRole::SuperAdmin)->get();
+        Notification::send($admins, $notification);
     }
 
     public function updatePending(Booking $booking, array $data): Booking
@@ -150,7 +169,7 @@ class BookingService
                 $booking->scheduled_at->format('H:i') === $data['time'] &&
                 $booking->barber_id === $data['barber_id'];
 
-            if (!$sameTimeDateBarber && !in_array($data['time'], $availableSlots)) {
+            if (! $sameTimeDateBarber && ! in_array($data['time'], $availableSlots)) {
                 throw new Exception(__('messages.booking_slot_unavailable'));
             }
 
@@ -159,7 +178,7 @@ class BookingService
             $finalAmount = (float) $service->price;
             $couponId = null;
 
-            if (!empty($data['coupon_code'])) {
+            if (! empty($data['coupon_code'])) {
                 try {
                     $result = $this->couponService->validateAndCalculate(
                         $data['coupon_code'],
@@ -189,7 +208,7 @@ class BookingService
             }
 
             $commissionAmount = ($finalAmount * (float) $shop->commission_rate) / 100;
-            $scheduledAt = Carbon::parse($data['date'] . ' ' . $data['time']);
+            $scheduledAt = Carbon::parse($data['date'].' '.$data['time']);
 
             $booking->update([
                 'barber_id' => $data['barber_id'],
@@ -221,9 +240,14 @@ class BookingService
             $this->couponService->recordUsage($booking->coupon, $booking->client);
         }
 
-        // TODO: Send WhatsApp notification to Client (booking_confirmed_client)
+        // Send WhatsApp notification to Client
+        $booking->client->notify(new BookingConfirmedNotification($booking));
 
-        // TODO: Send WhatsApp notification to Shop Owner (booking_created_owner)
+        // Send WhatsApp notification to Shop Owner
+        $booking->shop->owner->notify(new BookingCreatedNotification($booking));
+
+        // Notify Admins
+        $this->notifyAdmins(new BookingStatusChangedAdminNotification($booking));
     }
 
     public function verifyPayment(Booking $booking): void
@@ -240,7 +264,11 @@ class BookingService
             $this->couponService->recordUsage($booking->coupon, $booking->client);
         }
 
-        // TODO: Send WhatsApp notification to Client (booking_confirmed_client)
+        // Send WhatsApp notification to Client
+        $booking->client->notify(new BookingConfirmedNotification($booking));
+
+        // Notify Admins
+        $this->notifyAdmins(new BookingStatusChangedAdminNotification($booking));
     }
 
     public function cancel(Booking $booking, CancelledBy $by): void
@@ -259,13 +287,21 @@ class BookingService
 
             if ($client->cancellation_count >= $limit) {
                 $client->update(['is_blocked' => true]);
-                // TODO: Send WhatsApp notification (account_blocked_cancellation)
+                // Send WhatsApp notification
+                $client->notify(new AccountBlockedCancellationNotification);
+                // Notify Admins
+                $this->notifyAdmins(new UserBlockedAdminNotification($client, 'إلغاء متكرر'));
             }
 
-            // TODO: Send WhatsApp notification to Owner (booking_cancelled_owner)
+            // Send WhatsApp notification to Owner
+            $booking->shop->owner->notify(new BookingCancelledOwnerNotification($booking));
         } else {
-            // TODO: Send WhatsApp notification to Client (booking_cancelled_client)
+            // Send WhatsApp notification to Client
+            $booking->client->notify(new BookingCancelledClientNotification($booking));
         }
+
+        // Notify Admins
+        $this->notifyAdmins(new BookingStatusChangedAdminNotification($booking));
     }
 
     public function markArrived(Booking $booking): void
@@ -275,7 +311,8 @@ class BookingService
             'arrived_at' => now(),
         ]);
 
-        // TODO: Send WhatsApp notification (booking_arrived)
+        // Notify Admins
+        $this->notifyAdmins(new BookingStatusChangedAdminNotification($booking));
     }
 
     public function markCompleted(Booking $booking): void
@@ -289,8 +326,8 @@ class BookingService
         // 3. Trigger Referral verification
         $this->referralService->handleBookingCompleted($booking);
 
-        // Send review request
-        // TODO: Send WhatsApp notification (booking_review_request)
+        // Notify Admins
+        $this->notifyAdmins(new BookingStatusChangedAdminNotification($booking));
     }
 
     public function markNoShow(Booking $booking): void
@@ -303,10 +340,17 @@ class BookingService
         $client->increment('no_show_count');
 
         if ($client->no_show_count === 1) {
-            // TODO: Send WhatsApp notification (no_show_warning)
+            // Send WhatsApp notification
+            $client->notify(new NoShowWarningNotification($booking, $client->no_show_count));
         } elseif ($client->no_show_count >= 2) {
             $client->update(['is_blocked' => true]);
-            // TODO: Send WhatsApp notification (account_blocked_no_show)
+            // Send WhatsApp notification
+            $client->notify(new AccountBlockedNoShowNotification);
+            // Notify Admins
+            $this->notifyAdmins(new UserBlockedAdminNotification($client, 'غياب متكرر'));
         }
+
+        // Notify Admins
+        $this->notifyAdmins(new BookingStatusChangedAdminNotification($booking));
     }
 }

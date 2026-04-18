@@ -2,7 +2,9 @@
 
 namespace App\Actions\Fortify;
 
+use App\Enums\UserRole;
 use App\Models\User;
+use App\Notifications\Admin\UserRegisteredNotification;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
@@ -34,10 +36,17 @@ class CreateNewUser implements CreatesNewUsers
             'password' => $this->passwordRules(),
         ])->validate();
 
-        return User::create([
+        $user = User::create([
             'name' => $input['name'],
             'email' => $input['email'],
             'password' => Hash::make($input['password']),
         ]);
+
+        $admins = User::query()->where('role', UserRole::SuperAdmin)->get();
+        foreach ($admins as $admin) {
+            $admin->notify(new UserRegisteredNotification($user));
+        }
+
+        return $user;
     }
 }

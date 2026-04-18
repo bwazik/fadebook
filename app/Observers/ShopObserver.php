@@ -7,10 +7,22 @@ namespace App\Observers;
 use App\Enums\ShopStatus;
 use App\Enums\UserRole;
 use App\Models\Shop;
+use App\Models\User;
+use App\Notifications\Admin\ShopAppliedNotification;
 use App\Services\OfferService;
+use Illuminate\Support\Facades\Notification;
 
 class ShopObserver
 {
+    /**
+     * Handle the Shop "created" event.
+     */
+    public function created(Shop $shop): void
+    {
+        $admins = User::query()->where('role', UserRole::SuperAdmin)->get();
+        Notification::send($admins, new ShopAppliedNotification($shop));
+    }
+
     /**
      * Handle the Shop "updated" event.
      */

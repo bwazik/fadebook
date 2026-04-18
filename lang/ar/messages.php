@@ -642,6 +642,8 @@ return [
     'profile_whatsapp_alerts' => 'تنبيهات واتساب',
     'profile_whatsapp_alerts_desc' => 'تنبيهات المواعيد والعروض',
     'profile_whatsapp_alerts_disclaimer' => 'بنبعتلك تنبيهات بالمواعيد والعروض الجديدة عشان ميفوتكش حاجة.',
+    'profile_whatsapp_alerts_enabled' => 'تم تفعيل تنبيهات الواتساب',
+    'profile_whatsapp_alerts_disabled' => 'تم إيقاف تنبيهات الواتساب',
     'profile_language_section' => 'اللغات',
     'profile_app_language' => 'لغة التطبيق',
     'profile_language_arabic' => 'العربية (مصر)',

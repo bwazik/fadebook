@@ -13,19 +13,17 @@
         <x-glass-card class="text-center">
             <div
                 class="w-20 h-20 mx-auto mb-5 rounded-full bg-gray-100 dark:bg-white/10 flex items-center justify-center">
-                <svg class="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" stroke-width="1.5"
-                    viewBox="0 0 24 24">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                    stroke="currentColor" class="w-10 h-10 text-gray-400">
                     <path stroke-linecap="round" stroke-linejoin="round"
-                        d="M3 3l18 18M10.584 10.587a2 2 0 002.828 2.83M6.343 6.343A7.954 7.954 0 004 12c0 4.418 3.582 8 8 8a7.954 7.954 0 005.657-2.343M9.88 9.88A4.978 4.978 0 007 12c0 2.761 2.239 5 5 5a4.978 4.978 0 002.12-.88M15 12a3 3 0 00-3-3" />
+                        d="M8.288 15.038a5.25 5.25 0 0 1 7.424 0M5.106 11.856c3.807-3.808 9.98-3.808 13.788 0M1.924 8.674c5.565-5.565 14.587-5.565 20.152 0M12.53 18.22l-.53.53-.53-.53a.75.75 0 0 1 1.06 0Z" />
                 </svg>
             </div>
             <h1 class="text-xl font-black text-gray-900 dark:text-white mb-2">{{ __('messages.offline_title') }}</h1>
             <p class="text-sm text-gray-500 dark:text-white/50 mb-6">{{ __('messages.offline_message') }}</p>
-            <button onclick="window.location.reload()"
-                class="w-full py-3 rounded-2xl text-white font-bold text-sm transition-all active:scale-95"
-                style="background-color: var(--color-banhafade-accent);">
+            <x-ios-button type="button" onclick="window.location.reload()">
                 {{ __('messages.try_again') }}
-            </button>
+            </x-ios-button>
         </x-glass-card>
     </div>
 </body>

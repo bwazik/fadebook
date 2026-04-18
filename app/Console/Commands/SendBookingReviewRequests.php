@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Enums\BookingStatus;
 use App\Models\Booking;
+use App\Notifications\User\BookingReviewRequestNotification;
 use Illuminate\Console\Attributes\Description;
 use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
@@ -29,10 +30,11 @@ class SendBookingReviewRequests extends Command
             return 0;
         }
 
-        $this->info('Processing ' . $bookings->count() . ' booking review requests...');
+        $this->info('Processing '.$bookings->count().' booking review requests...');
 
+        /** @var Booking $booking */
         foreach ($bookings as $booking) {
-            // TODO: The notification logic will be added here later (WhatsApp)
+            $booking->client->notify(new BookingReviewRequestNotification($booking));
             // The unique link is: route('review.create', ['bookingUuid' => $booking->uuid])
 
             $booking->update([

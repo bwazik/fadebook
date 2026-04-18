@@ -6,6 +6,8 @@ namespace App\Console\Commands;
 
 use App\Enums\BookingStatus;
 use App\Models\Booking;
+use App\Notifications\User\BookingReminderNotification;
+use App\Notifications\User\BookingReviewRequestNotification;
 use Illuminate\Console\Attributes\Description;
 use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
@@ -30,8 +32,9 @@ class SendBookingReminders extends Command
             ->where('created_at', '<', $now->copy()->subHours(1))
             ->get();
 
+        /** @var Booking $booking */
         foreach ($oneHourBookings as $booking) {
-            // TODO: Send 1-hour WhatsApp reminder
+            $booking->client->notify(new BookingReminderNotification($booking));
         }
 
         /**
@@ -46,9 +49,10 @@ class SendBookingReminders extends Command
             ->whereBetween('scheduled_at', [$followUpStart, $followUpEnd])
             ->get();
 
+        /** @var Booking $booking */
         foreach ($completedBookings as $booking) {
-            // TODO: Implementation of frequency cap (e.g., skip if user was notified in last 30 days)
-            // TODO: Send "Thank you + Rating Request" WhatsApp message
+            // Implementation of frequency cap (e.g., skip if user was notified in last 30 days)
+            $booking->client->notify(new BookingReviewRequestNotification($booking));
         }
     }
 }

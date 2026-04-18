@@ -11,6 +11,7 @@ use App\Models\Booking;
 use App\Models\Coupon;
 use App\Models\Referral;
 use App\Models\User;
+use App\Notifications\User\ReferralRewardIssuedNotification;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
@@ -138,8 +139,8 @@ class ReferralService
                 'rewarded_at' => now(),
             ]);
 
-            // 6. Send WhatsApp to referrer
-            // TODO: Send WhatsApp notification to referrer (referral_reward_issued)
+            // Send notification to referrer
+            $referrer->notify(new ReferralRewardIssuedNotification($referral));
         });
     }
 

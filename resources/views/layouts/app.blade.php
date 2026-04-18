@@ -158,202 +158,309 @@ declare(strict_types=1);
     @endif
 
     <script>
-        // Capture PWA install prompt
-        window.deferredPwaPrompt = null;
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            window.deferredPwaPrompt = e;
-            window.dispatchEvent(new Event('pwa-ready'));
-        });
-
-        document.addEventListener('alpine:init', () => {
-            Alpine.store('nav', {
-                hidden: false,
-                currentRoute: @json(Route::currentRouteName())
+        // ── PWA install prompt ─────────────────────────────────────────────────
+        // Guard prevents duplicate listeners on Livewire navigations.
+        if (!window._banhafadePwaListenerAdded) {
+            window._banhafadePwaListenerAdded = true;
+            window.deferredPwaPrompt = null;
+            window.addEventListener('beforeinstallprompt', (e) => {
+                e.preventDefault();
+                window.deferredPwaPrompt = e;
+                window.dispatchEvent(new Event('pwa-ready'));
             });
+            // Hide install prompt if already installed
+            window.addEventListener('appinstalled', () => {
+                window.deferredPwaPrompt = null;
+                window.dispatchEvent(new CustomEvent('close-pwa-modal'));
+            });
+        }
 
-            // PWA Prompt Alpine Data
-            Alpine.data('pwaPrompt', () => ({
-                deferredPrompt: null,
-                init() {
-                    const handlePrompt = () => {
-                        this.deferredPrompt = window.deferredPwaPrompt;
-                        if (!this.deferredPrompt) return;
+        // ── Alpine component stores ────────────────────────────────────────────
+        // alpine:init fires once at boot; guard is belt-and-suspenders.
+        if (!window._banhafadeAlpineInitDone) {
+            window._banhafadeAlpineInitDone = true;
 
-                        const dismissedAt = localStorage.getItem('banhafade_pwa_dismissed');
-                        const now = new Date().getTime();
-                        const threeDays = 3 * 24 * 60 * 60 * 1000;
+            document.addEventListener('alpine:init', () => {
+                Alpine.store('nav', {
+                    hidden: false,
+                    currentRoute: @json(Route::currentRouteName())
+                });
 
-                        if (!dismissedAt || (now - dismissedAt > threeDays)) {
-                            setTimeout(() => {
-                                window.dispatchEvent(new CustomEvent('open-pwa-modal'));
-                            }, 2000);
-                        }
-                    };
-
-                    if (window.deferredPwaPrompt) {
-                        handlePrompt();
-                    } else {
-                        window.addEventListener('pwa-ready', handlePrompt);
-                    }
-                },
-                installPwa() {
-                    if (this.deferredPrompt) {
-                        this.deferredPrompt.prompt();
-                        this.deferredPrompt.userChoice.then((choiceResult) => {
-                            if (choiceResult.outcome === 'accepted') {
-                                console.log('User accepted PWA install');
-                            }
-                            this.deferredPrompt = null;
-                            window.dispatchEvent(new CustomEvent('close-pwa-modal'));
+                // ── PWA Prompt ─────────────────────────────────────────────────
+                // IMPORTANT: Never call this.$dispatch() inside a plain addEventListener
+                // callback — it causes "Illegal invocation". Use window.dispatchEvent().
+                Alpine.data('pwaPrompt', () => ({
+                    open: false,
+                    deferredPrompt: null,
+                    init() {
+                        // Listen for open/close events dispatched by other components
+                        window.addEventListener('open-pwa-modal', () => {
+                            this.open = true;
+                            window.dispatchEvent(new CustomEvent('hide-bottom-nav'));
                         });
-                    }
-                },
-                dismissPwa() {
-                    localStorage.setItem('banhafade_pwa_dismissed', new Date().getTime());
-                    window.dispatchEvent(new CustomEvent('close-pwa-modal'));
-                }
-            }));
-
-            // Notification Prompt Alpine Data
-            Alpine.data('notificationPrompt', () => ({
-                init() {
-                    if (!window.BanhaFade.isAuthenticated) return;
-
-                    setTimeout(() => {
-                        if (Notification.permission === 'default') {
-                            const dismissedAt = localStorage.getItem(
-                                'banhafade_notification_dismissed');
-                            const now = new Date().getTime();
-                            const week = 7 * 24 * 60 * 60 * 1000;
-
-                            if (!dismissedAt || (now - dismissedAt > week)) {
-                                window.dispatchEvent(new CustomEvent(
-                                    'open-notification-modal'));
+                        window.addEventListener('close-pwa-modal', () => {
+                            this.open = false;
+                            if (!@json($hideBottomNav ?? false)) {
+                                window.dispatchEvent(new CustomEvent('show-bottom-nav'));
                             }
-                        }
-                    }, 5000);
-                },
-                async enable() {
-                    Notification.requestPermission();
-                    window.dispatchEvent(new CustomEvent('close-notification-modal'));
-                },
-                dismiss() {
-                    localStorage.setItem('banhafade_notification_dismissed', new Date().getTime());
-                    window.dispatchEvent(new CustomEvent('close-notification-modal'));
-                }
-            }));
-        });
+                        });
 
-        // Also listen on document for Livewire dispatched events
-        document.addEventListener('hide-bottom-nav', () => {
-            if (window.Alpine) Alpine.store('nav').hidden = true;
-        });
-        document.addEventListener('show-bottom-nav', () => {
-            if (window.Alpine) Alpine.store('nav').hidden = false;
-        });
+                        const tryShowPrompt = () => {
+                            this.deferredPrompt = window.deferredPwaPrompt;
+                            if (!this.deferredPrompt) return;
+
+                            const dismissedAt = localStorage.getItem('banhafade_pwa_dismissed');
+                            const now = Date.now();
+                            const threeDays = 3 * 24 * 60 * 60 * 1000;
+
+                            if (!dismissedAt || (now - Number(dismissedAt) > threeDays)) {
+                                setTimeout(() => {
+                                    this.open = true;
+                                    window.dispatchEvent(new CustomEvent('hide-bottom-nav'));
+                                }, 2000);
+                            }
+                        };
+
+                        // The browser may fire beforeinstallprompt before or after Alpine boots
+                        if (window.deferredPwaPrompt) {
+                            tryShowPrompt();
+                        } else {
+                            window.addEventListener('pwa-ready', tryShowPrompt, { once: true });
+                        }
+                    },
+                    installPwa() {
+                        if (!this.deferredPrompt) return;
+                        this.deferredPrompt.prompt();
+                        this.deferredPrompt.userChoice.then(() => {
+                            this.deferredPrompt = null;
+                            this.open = false;
+                            if (!@json($hideBottomNav ?? false)) {
+                                window.dispatchEvent(new CustomEvent('show-bottom-nav'));
+                            }
+                        });
+                    },
+                    dismissPwa() {
+                        localStorage.setItem('banhafade_pwa_dismissed', Date.now());
+                        this.open = false;
+                        if (!@json($hideBottomNav ?? false)) {
+                            window.dispatchEvent(new CustomEvent('show-bottom-nav'));
+                        }
+                    }
+                }));
+
+                // ── Notification Prompt ────────────────────────────────────────
+                // permissionDenied: browser has blocked notifications — guide to settings.
+                Alpine.data('notificationPrompt', () => ({
+                    open: false,
+                    permissionDenied: false,
+                    init() {
+                        window.addEventListener('open-notification-modal', () => {
+                            this.open = true;
+                            window.dispatchEvent(new CustomEvent('hide-bottom-nav'));
+                        });
+                        window.addEventListener('close-notification-modal', () => {
+                            this.open = false;
+                            if (!@json($hideBottomNav ?? false)) {
+                                window.dispatchEvent(new CustomEvent('show-bottom-nav'));
+                            }
+                        });
+
+                        if (!window.BanhaFade.isAuthenticated) return;
+
+                        // Guard: run once per tab session — Livewire navigations re-run
+                        // this init() otherwise, causing the modal to pop on each page.
+                        if (sessionStorage.getItem('banhafade_notification_checked')) return;
+                        sessionStorage.setItem('banhafade_notification_checked', '1');
+
+                        setTimeout(() => {
+                            if (Notification.permission === 'denied') {
+                                // Already blocked — don't bother, just note it
+                                return;
+                            }
+                            if (Notification.permission === 'default') {
+                                const dismissedAt = localStorage.getItem('banhafade_notification_dismissed');
+                                const now = Date.now();
+                                const week = 7 * 24 * 60 * 60 * 1000;
+
+                                if (!dismissedAt || (now - Number(dismissedAt) > week)) {
+                                    this.open = true;
+                                    window.dispatchEvent(new CustomEvent('hide-bottom-nav'));
+                                }
+                            }
+                        }, 5000);
+                    },
+                    async enable() {
+                        if (Notification.permission === 'denied') {
+                            // Can't request programmatically — browser blocked it
+                            this.permissionDenied = true;
+                            return;
+                        }
+                        const success = await window.requestFCMToken?.() || false;
+                        this.open = false;
+                        if (!@json($hideBottomNav ?? false)) {
+                            window.dispatchEvent(new CustomEvent('show-bottom-nav'));
+                        }
+                        if (success) {
+                            window.dispatchEvent(new CustomEvent('toast', {
+                                detail: { message: 'تم تفعيل الإشعارات بنجاح!', type: 'success' }
+                            }));
+                        }
+                    },
+                    dismiss() {
+                        localStorage.setItem('banhafade_notification_dismissed', Date.now());
+                        this.open = false;
+                        if (!@json($hideBottomNav ?? false)) {
+                            window.dispatchEvent(new CustomEvent('show-bottom-nav'));
+                        }
+                    }
+                }));
+            }); // end alpine:init
+        } // end _banhafadeAlpineInitDone guard
+
+        // ── Bottom nav bridge ──────────────────────────────────────────────────
+        // Listens for CustomEvents dispatched above and syncs the Alpine store.
+        if (!window._banhafadeNavListenersAdded) {
+            window._banhafadeNavListenersAdded = true;
+            window.addEventListener('hide-bottom-nav', () => {
+                if (window.Alpine) Alpine.store('nav').hidden = true;
+            });
+            window.addEventListener('show-bottom-nav', () => {
+                if (window.Alpine) Alpine.store('nav').hidden = false;
+            });
+        }
     </script>
 
     <!-- PWA Install Modal -->
-    <div x-data="pwaPrompt">
-        <div x-data="{ open: false }" x-on:open-pwa-modal.window="open = true; $dispatch('hide-bottom-nav')"
-            x-on:close-pwa-modal.window="open = false; if(!@json($hideBottomNav ?? false)) $dispatch('show-bottom-nav')"
-            x-show="open" style="display: none;" x-transition:enter="transition ease-out duration-300"
-            x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
-            x-transition:leave="transition ease-out duration-300" x-transition:leave-start="opacity-100"
-            x-transition:leave-end="opacity-0"
-            class="fixed inset-0 z-[60] bg-black/40 backdrop-blur-md flex items-end justify-center"
-            @click.self="dismissPwa()">
+    <!-- Single x-data scope: open state lives inside pwaPrompt so that
+         installPwa() / dismissPwa() are always in the same scope as @click handlers. -->
+    <div x-data="pwaPrompt" x-show="open" style="display: none;"
+        x-transition:enter="transition ease-out duration-300"
+        x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
+        x-transition:leave="transition ease-out duration-300" x-transition:leave-start="opacity-100"
+        x-transition:leave-end="opacity-0"
+        class="fixed inset-0 z-[60] bg-black/40 backdrop-blur-md flex items-end justify-center"
+        @click.self="dismissPwa()">
 
-            <div x-show="open" x-transition:enter="transition ease-out duration-300"
-                x-transition:enter-start="translate-y-full" x-transition:enter-end="translate-y-0"
-                x-transition:leave="transition ease-out duration-300" x-transition:leave-start="translate-y-0"
-                x-transition:leave-end="translate-y-full"
-                class="bg-white/80 dark:bg-[#1c1c1e]/80 backdrop-blur-3xl border-t border-white/50 dark:border-white/10 rounded-t-[2rem] w-full max-w-md shadow-2xl relative"
-                @click.stop>
+        <div x-show="open"
+            x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="translate-y-full" x-transition:enter-end="translate-y-0"
+            x-transition:leave="transition ease-out duration-300" x-transition:leave-start="translate-y-0"
+            x-transition:leave-end="translate-y-full"
+            class="bg-white/80 dark:bg-[#1c1c1e]/80 backdrop-blur-3xl border-t border-white/50 dark:border-white/10 rounded-t-[2rem] w-full max-w-md shadow-2xl relative"
+            @click.stop>
 
-                <div class="flex justify-center pt-4 pb-2">
-                    <div class="w-10 h-1 rounded-full bg-gray-300 dark:bg-white/20"></div>
-                </div>
+            <div class="flex justify-center pt-4 pb-2">
+                <div class="w-10 h-1 rounded-full bg-gray-300 dark:bg-white/20"></div>
+            </div>
 
-                <div class="p-6 pt-2 pb-[calc(1.5rem+env(safe-area-inset-bottom))] text-center">
-                    <img src="{{ asset('icons/icon-192x192.png') }}" alt="BanhaFade Icon"
-                        class="w-20 h-20 mx-auto rounded-3xl shadow-xl border border-black/5 dark:border-white/10 mb-5">
-                    <h3 class="font-bold text-xl text-gray-900 dark:text-white mb-2">نزل تطبيق BanhaFade 📱</h3>
-                    <p class="text-sm text-gray-500 dark:text-gray-400 mb-6 leading-relaxed px-2">
-                        تجربة أسرع، إشعارات حية، ومساحة أقل من 1 ميجا!
-                    </p>
-                    <div class="flex flex-col gap-3">
-                        <button @click="installPwa()"
-                            class="w-full py-3.5 rounded-2xl bg-banhafade-accent text-white font-bold text-sm active:scale-95 transition-all shadow-md cursor-pointer">
-                            تثبيت الآن
-                        </button>
-                        <button @click="dismissPwa()"
-                            class="w-full py-3.5 rounded-2xl bg-black/5 dark:bg-white/10 text-gray-700 dark:text-white/70 font-bold text-sm active:scale-95 transition-all cursor-pointer">
-                            ليس الآن
-                        </button>
-                    </div>
+            <div class="p-6 pt-2 pb-[calc(1.5rem+env(safe-area-inset-bottom))] text-center">
+                <img src="{{ asset('icons/icon-192x192.png') }}" alt="BanhaFade Icon"
+                    class="w-20 h-20 mx-auto rounded-3xl shadow-xl border border-black/5 dark:border-white/10 mb-5">
+                <h3 class="font-bold text-xl text-gray-900 dark:text-white mb-2">نزل تطبيق BanhaFade 📱</h3>
+                <p class="text-sm text-gray-500 dark:text-gray-400 mb-6 leading-relaxed px-2">
+                    تجربة أسرع، إشعارات حية، ومساحة أقل من 1 ميجا!
+                </p>
+                <div class="flex flex-col gap-3">
+                    <button @click="installPwa()"
+                        class="w-full py-3.5 rounded-2xl bg-banhafade-accent text-white font-bold text-sm active:scale-95 transition-all shadow-md cursor-pointer">
+                        تثبيت الآن
+                    </button>
+                    <button @click="dismissPwa()"
+                        class="w-full py-3.5 rounded-2xl bg-black/5 dark:bg-white/10 text-gray-700 dark:text-white/70 font-bold text-sm active:scale-95 transition-all cursor-pointer">
+                        ليس الآن
+                    </button>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Notification Permission Modal -->
-    <div x-data="notificationPrompt">
-        <div x-data="{ open: false }" x-on:open-notification-modal.window="open = true; $dispatch('hide-bottom-nav')"
-            x-on:close-notification-modal.window="open = false; if(!@json($hideBottomNav ?? false)) $dispatch('show-bottom-nav')"
-            x-show="open" style="display: none;" x-transition:enter="transition ease-out duration-300"
-            x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
-            x-transition:leave="transition ease-out duration-300" x-transition:leave-start="opacity-100"
-            x-transition:leave-end="opacity-0"
-            class="fixed inset-0 z-[60] bg-black/40 backdrop-blur-md flex items-end justify-center"
-            @click.self="dismiss()">
+    <!-- Single x-data scope: same reason as PWA modal above. -->
+    <div x-data="notificationPrompt" x-show="open" style="display: none;"
+        x-transition:enter="transition ease-out duration-300"
+        x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
+        x-transition:leave="transition ease-out duration-300" x-transition:leave-start="opacity-100"
+        x-transition:leave-end="opacity-0"
+        class="fixed inset-0 z-[60] bg-black/40 backdrop-blur-md flex items-end justify-center"
+        @click.self="dismiss()">
 
-            <div x-show="open" x-transition:enter="transition ease-out duration-300"
-                x-transition:enter-start="translate-y-full" x-transition:enter-end="translate-y-0"
-                x-transition:leave="transition ease-out duration-300" x-transition:leave-start="translate-y-0"
-                x-transition:leave-end="translate-y-full"
-                class="bg-white/80 dark:bg-[#1c1c1e]/80 backdrop-blur-3xl border-t border-white/50 dark:border-white/10 rounded-t-[2rem] w-full max-w-md shadow-2xl relative"
-                @click.stop>
+        <div x-show="open"
+            x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="translate-y-full" x-transition:enter-end="translate-y-0"
+            x-transition:leave="transition ease-out duration-300" x-transition:leave-start="translate-y-0"
+            x-transition:leave-end="translate-y-full"
+            class="bg-white/80 dark:bg-[#1c1c1e]/80 backdrop-blur-3xl border-t border-white/50 dark:border-white/10 rounded-t-[2rem] w-full max-w-md shadow-2xl relative"
+            @click.stop>
 
-                <div class="flex justify-center pt-4 pb-2">
-                    <div class="w-10 h-1 rounded-full bg-gray-300 dark:bg-white/20"></div>
-                </div>
+            <div class="flex justify-center pt-4 pb-2">
+                <div class="w-10 h-1 rounded-full bg-gray-300 dark:bg-white/20"></div>
+            </div>
 
-                <div class="p-6 pt-2 pb-[calc(1.5rem+env(safe-area-inset-bottom))] text-center">
-                    <div
-                        class="w-20 h-20 mx-auto rounded-3xl bg-banhafade-accent/15 flex items-center justify-center text-banhafade-accent text-4xl mb-5 shadow-xl border border-banhafade-accent/10">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                            stroke-width="1.5" stroke="currentColor" class="size-10">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0" />
-                        </svg>
+            <div class="p-6 pt-2 pb-[calc(1.5rem+env(safe-area-inset-bottom))] text-center">
+
+                {{-- Default: ask for permission --}}
+                <template x-if="!permissionDenied">
+                    <div>
+                        <div class="w-20 h-20 mx-auto rounded-3xl bg-banhafade-accent/15 flex items-center justify-center text-banhafade-accent text-4xl mb-5 shadow-xl border border-banhafade-accent/10">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                stroke-width="1.5" stroke="currentColor" class="size-10">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0" />
+                            </svg>
+                        </div>
+                        <h3 class="font-bold text-xl text-gray-900 dark:text-white mb-2">خليك أول واحد يعرف كل جديد! 🔔</h3>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 mb-6 leading-relaxed px-2">
+                            فعل الإشعارات عشان يوصلك تنبيهات فورية بالحجوزات الجديدة والرسائل وأهم التحديثات.
+                        </p>
+                        <div class="flex flex-col gap-3">
+                            <button @click="enable()"
+                                class="w-full py-3.5 rounded-2xl bg-banhafade-accent text-white font-bold text-sm active:scale-95 transition-all shadow-md cursor-pointer">
+                                تفعيل الآن
+                            </button>
+                            <button @click="dismiss()"
+                                class="w-full py-3.5 rounded-2xl bg-black/5 dark:bg-white/10 text-gray-700 dark:text-white/70 font-bold text-sm active:scale-95 transition-all cursor-pointer">
+                                ليس الآن
+                            </button>
+                        </div>
                     </div>
-                    <h3 class="font-bold text-xl text-gray-900 dark:text-white mb-2">خليك أول واحد يعرف كل جديد! 🔔
-                    </h3>
-                    <p class="text-sm text-gray-500 dark:text-gray-400 mb-6 leading-relaxed px-2">
-                        فعل الإشعارات عشان يوصلك تنبيهات فورية بالحجوزات الجديدة والرسائل وأهم التحديثات.
-                    </p>
-                    <div class="flex flex-col gap-3">
-                        <button @click="enable()"
-                            class="w-full py-3.5 rounded-2xl bg-banhafade-accent text-white font-bold text-sm active:scale-95 transition-all shadow-md cursor-pointer">
-                            تفعيل الآن
-                        </button>
-                        <button @click="dismiss()"
-                            class="w-full py-3.5 rounded-2xl bg-black/5 dark:bg-white/10 text-gray-700 dark:text-white/70 font-bold text-sm active:scale-95 transition-all cursor-pointer">
-                            ليس الآن
-                        </button>
+                </template>
+
+                {{-- Denied: guide to browser settings --}}
+                <template x-if="permissionDenied">
+                    <div>
+                        <div class="w-20 h-20 mx-auto rounded-3xl bg-red-500/15 flex items-center justify-center text-red-500 text-4xl mb-5 shadow-xl border border-red-500/10">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                stroke-width="1.5" stroke="currentColor" class="size-10">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M18.364 18.364A9 9 0 0 0 5.636 5.636m12.728 12.728A9 9 0 0 1 5.636 5.636m12.728 12.728L5.636 5.636" />
+                            </svg>
+                        </div>
+                        <h3 class="font-bold text-xl text-gray-900 dark:text-white mb-2">الإشعارات محجوبة 🔕</h3>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 mb-6 leading-relaxed px-2">
+                            المتصفح حجب الإشعارات. افتح إعدادات المتصفح وابحث عن "fadebook.test" وفعّل الإشعارات يدويًا.
+                        </p>
+                        <div class="flex flex-col gap-3">
+                            <button @click="dismiss()"
+                                class="w-full py-3.5 rounded-2xl bg-black/5 dark:bg-white/10 text-gray-700 dark:text-white/70 font-bold text-sm active:scale-95 transition-all cursor-pointer">
+                                فهمت
+                            </button>
+                        </div>
                     </div>
-                </div>
+                </template>
+
             </div>
         </div>
     </div>
 
     <!-- Service Worker Registration -->
     <script>
-        if ('serviceWorker' in navigator) {
+        // Guard: only register once per page load. Livewire navigations re-run
+        // inline scripts, and registering an SW while a fetch is in-flight throws
+        // "InvalidStateError: The document is in an invalid state".
+        if ('serviceWorker' in navigator && !window._banhafadeSwRegistered) {
+            window._banhafadeSwRegistered = true;
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/sw.js');
+                navigator.serviceWorker.register('/sw.js').catch(() => {});
             });
         }
 

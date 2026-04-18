@@ -3,9 +3,7 @@
 namespace App\Livewire;
 
 use App\Models\Offer;
-use App\Models\Referral;
 use App\Models\Shop;
-use App\Models\User;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 

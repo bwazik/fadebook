@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\View\Components;
 
 use App\Enums\UserRole;
+use App\Models\User;
 use App\Services\OfferService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Auth;
@@ -17,6 +18,11 @@ class BottomNav extends Component
      * The count of active offers.
      */
     public int $offerCount = 0;
+
+    /**
+     * The count of unread notifications.
+     */
+    public int $unreadNotificationsCount = 0;
 
     /**
      * Whether the user is a shop owner in their dashboard.
@@ -96,7 +102,9 @@ class BottomNav extends Component
 
     public function render(): View
     {
+        /** @var User $user */
         $user = Auth::user();
+
         $isOwner = $user && $user->role === UserRole::BarberOwner;
         $this->isDashboard = Request::is('dashboard*');
 
@@ -110,6 +118,7 @@ class BottomNav extends Component
         return view('components.bottom-nav', [
             'navItems' => $this->navItems,
             'offerCount' => $this->offerCount,
+            'unreadNotificationsCount' => $user ? $user->unreadNotifications()->count() : 0,
             'isDashboard' => $this->isDashboard,
         ]);
     }

@@ -59,7 +59,7 @@
                         <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">
                             {{ __('messages.profile_whatsapp_alerts_desc') }}</p>
                     </div>
-                    <x-ios-toggle checked disabled />
+                    <x-ios-toggle wire:model.live="whatsappNotifications" @change="$wire.toggleWhatsApp()" />
                 </div>
 
                 <div

@@ -7,6 +7,8 @@ use App\Models\Concerns\HasPublicUuid;
 use App\Services\ReferralCodeGenerator;
 use App\Traits\HasImages;
 use Carbon\Carbon;
+use Filament\Models\Contracts\FilamentUser;
+use Filament\Panel;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Builder;
@@ -33,12 +35,13 @@ use Illuminate\Notifications\Notifiable;
     'cancellation_count',
     'is_blocked',
     'whatsapp_notifications',
+    'fcm_token',
 ])]
 #[Hidden([
     'password',
     'remember_token',
 ])]
-class User extends Authenticatable
+class User extends Authenticatable implements FilamentUser
 {
     /** @use HasFactory<UserFactory> */
     use HasFactory, HasImages, HasPublicUuid, Notifiable, SoftDeletes;
@@ -228,5 +231,13 @@ class User extends Authenticatable
         }
 
         return $lastChange->created_at->addDays(7);
+    }
+
+    /**
+     * Determine if the user can access the admin panel.
+     */
+    public function canAccessPanel(Panel $panel): bool
+    {
+        return $this->role === UserRole::SuperAdmin;
     }
 }

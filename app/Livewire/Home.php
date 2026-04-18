@@ -27,6 +27,15 @@ class Home extends Component
         return $user && $user->role === UserRole::BarberOwner;
     }
 
+    #[Computed]
+    public function isAdmin(): bool
+    {
+        /** @var User|null $user */
+        $user = Auth::user();
+
+        return $user && $user->role === UserRole::SuperAdmin;
+    }
+
     public ?int $selectedArea = null;
 
     public function mount(): void

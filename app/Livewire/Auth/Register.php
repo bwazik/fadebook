@@ -7,6 +7,8 @@ use App\Enums\ShopStatus;
 use App\Enums\UserRole;
 use App\Models\Area;
 use App\Models\Shop;
+use App\Models\User;
+use App\Notifications\Admin\NewShopApplicationNotification;
 use App\Rules\EgyptianPhone;
 use App\Services\ReferralService;
 use App\Traits\WithRateLimiting;
@@ -158,7 +160,7 @@ class Register extends Component
             }
 
             if ($this->role === 'barber_owner') {
-                Shop::create([
+                $shop = Shop::create([
                     'owner_id' => $user->id,
                     'name' => $this->shopName,
                     'phone' => $this->shopPhone,
@@ -171,7 +173,11 @@ class Register extends Component
                     'opening_hours' => $this->openingHours,
                 ]);
 
-                // TODO: Notify super admin via WhatsApp about new shop application
+                // Notify super admin about new shop application
+                $superAdmin = User::where('role', UserRole::SuperAdmin)->first();
+                if ($superAdmin) {
+                    $superAdmin->notify(new NewShopApplicationNotification($shop));
+                }
 
                 DB::commit();
 

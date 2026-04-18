@@ -33,7 +33,7 @@
                 @endphp
                 <a href="{{ route($item['route']) }}" id="tour-nav-{{ $item['route'] }}" @auth wire:navigate @endauth
                     data-route="{{ $item['route'] }}" data-base-route="{{ $routeBase }}"
-                    class="flex flex-col items-center justify-center py-2 px-[1.1rem] relative z-10 liquid-transition whitespace-nowrap"
+                    class="flex flex-col items-center justify-center py-2 px-[0.9rem] relative z-10 liquid-transition whitespace-nowrap"
                     :class="isActive('{{ $item['route'] }}') ?
                         'text-banhafade-accent drop-shadow-[0_0_8px_rgba(1,101,225,0.4)]' :
                         'text-gray-500 dark:text-gray-400'">
@@ -61,14 +61,36 @@
         {{-- ═══════════════════════════════ --}}
         {{-- RIGHT PILL — Search Icon Only  --}}
         {{-- ═══════════════════════════════ --}}
-        <button type="button" @click="$dispatch('open-global-search')"
-            class="flex items-center justify-center p-3 rounded-[2rem] liquid-glass liquid-button text-gray-500 dark:text-gray-400">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                stroke="currentColor" class="w-[22px] h-[22px] liquid-transition scale-100">
-                <path stroke-linecap="round" stroke-linejoin="round"
-                    d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 15.803a7.5 7.5 0 0010.607 0z" />
-            </svg>
-        </button>
+        <div class="flex items-center p-1 rounded-[2rem] liquid-glass relative z-50 shrink-0">
+            @auth
+                <!-- Global Interactive Components: Notification Bell -->
+                <a href="{{ route('notifications.index') }}" wire:navigate
+                    class="p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/10 relative liquid-button text-gray-500 dark:text-gray-400">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                        stroke="currentColor" class="w-[22px] h-[22px] liquid-transition">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0" />
+                    </svg>
+                    @if ($unreadNotificationsCount > 0)
+                        <span
+                            class="absolute top-2 right-2.5 h-2 w-2 rounded-full bg-red-500 ring-2 ring-white/20 dark:ring-white/10 animate-pulse"></span>
+                    @endif
+                </a>
+
+                <!-- Vertical Divider (Only for auth) -->
+                <div class="mx-0.5 w-px h-5 bg-black/5 dark:bg-white/10 rounded-full"></div>
+            @endauth
+
+            <!-- Global Interactive Components: Search Button (Shown for everyone) -->
+            <button type="button" @click="$dispatch('open-global-search')"
+                class="p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/10 liquid-button text-gray-500 dark:text-gray-400">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                    stroke="currentColor" class="w-[22px] h-[22px] liquid-transition scale-100">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 15.803a7.5 7.5 0 0010.607 0z" />
+                </svg>
+            </button>
+        </div>
 
     </div>
 @endif

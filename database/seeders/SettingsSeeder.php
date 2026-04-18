@@ -42,7 +42,7 @@ class SettingsSeeder extends Seeder
                 'لو عندك أي اقتراح، واجهتك مشكلة تقنية، أو حتى عايز تدردش في فكرة جديدة ممكن نطور بيها التطبيق، أنا هكون مبسوط جداً لو سمعت منك.',
                 'تقدر تواصل معايا مباشرة على الواتساب، وهحاول أرد عليك في أسرع وقت ممكن.',
             ]),
-            'developer_whatsapp' => '201211111111',
+            'developer_whatsapp' => '201098617164',
             'default_commission_rate' => '10.00',
             'platform_whatsapp_number' => '+201000000000',
             'otp_expiry_minutes' => '5',
@@ -52,7 +52,7 @@ class SettingsSeeder extends Seeder
             'no_show_grace_period_minutes' => '15',
             'cancellation_window_hours' => '2',
             'max_cancellation_limit' => '3',
-            'referral_reward_enabled' => 'true',
+            'referral_reward_enabled' => 'false',
             'referral_reward_unlimited_mode' => 'false',
             'referral_reward_discount_type' => '2',
             'referral_reward_discount_value' => '20',
@@ -91,6 +91,7 @@ class SettingsSeeder extends Seeder
             'rate_limit_change-password-update_seconds' => '60',
             'otp_resend_cooldown_seconds' => '60',
             'otp_cleanup_hours' => '24',
+            'fcm_enabled' => 'false',
         ];
 
         foreach ($settings as $key => $value) {
