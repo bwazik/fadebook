@@ -108,6 +108,10 @@ class BookingService
                 $depositAmount = ($finalAmount * (float) $shop->deposit_percentage) / 100;
             }
 
+            $paymentMethodId = $depositAmount > 0 ? ($data['payment_method_id'] ?? null) : null;
+            $paymentReference = $depositAmount > 0 ? trim((string) ($data['payment_reference'] ?? '')) : '';
+            $paymentReference = $paymentMethodId && $paymentReference !== '' ? $paymentReference : null;
+
             $commissionAmount = ($finalAmount * (float) $shop->commission_rate) / 100;
 
             $scheduledAt = Carbon::parse($data['date'].' '.$data['time']);
@@ -125,8 +129,8 @@ class BookingService
                 'final_amount' => $finalAmount,
                 'deposit_amount' => $depositAmount,
                 'commission_amount' => $commissionAmount,
-                'payment_method_id' => $data['payment_method_id'] ?? null,
-                'payment_reference' => $data['payment_reference'] ?? null,
+                'payment_method_id' => $paymentMethodId,
+                'payment_reference' => $paymentReference,
                 'policy_accepted' => true,
                 'status' => BookingStatus::Pending,
                 'coupon_id' => $couponId,
@@ -208,6 +212,10 @@ class BookingService
                 $depositAmount = ($finalAmount * (float) $shop->deposit_percentage) / 100;
             }
 
+            $paymentMethodId = $depositAmount > 0 ? ($data['payment_method_id'] ?? null) : null;
+            $paymentReference = $depositAmount > 0 ? trim((string) ($data['payment_reference'] ?? '')) : '';
+            $paymentReference = $paymentMethodId && $paymentReference !== '' ? $paymentReference : null;
+
             $commissionAmount = ($finalAmount * (float) $shop->commission_rate) / 100;
             $scheduledAt = Carbon::parse($data['date'].' '.$data['time']);
 
@@ -220,8 +228,8 @@ class BookingService
                 'final_amount' => $finalAmount,
                 'deposit_amount' => $depositAmount,
                 'commission_amount' => $commissionAmount,
-                'payment_method_id' => $data['payment_method_id'] ?? null,
-                'payment_reference' => $data['payment_reference'] ?? null,
+                'payment_method_id' => $paymentMethodId,
+                'payment_reference' => $paymentReference,
                 'coupon_id' => $couponId,
             ]);
 

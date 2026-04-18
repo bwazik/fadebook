@@ -2,6 +2,7 @@
 
 namespace App\Notifications\Admin;
 
+use App\Enums\BookingStatus;
 use App\Models\Booking;
 use App\Notifications\Channels\WhatsAppChannel;
 use Filament\Notifications\Notification as FilamentNotification;
@@ -14,6 +15,7 @@ class BookingStatusChangedAdminNotification extends Notification
 
     public function __construct(public Booking $booking, public ?string $statusLabel = null)
     {
+        $this->booking->loadMissing(['shop', 'client', 'barber']);
         $this->statusLabel ??= $booking->status->getLabel();
     }
 
@@ -24,11 +26,9 @@ class BookingStatusChangedAdminNotification extends Notification
 
     public function toDatabase($notifiable): array
     {
-        $barberInfo = $this->booking->barber ? "، الحلاق: {$this->booking->barber->name}" : '';
-
         return FilamentNotification::make()
             ->title("تحديث حالة الحجز: {$this->statusLabel}")
-            ->body("تم تحديث حالة الحجز رقم {$this->booking->booking_code} (الصالون: {$this->booking->shop->name}{$barberInfo}) إلى {$this->statusLabel}.")
+            ->body("رقم الحجز: {$this->booking->booking_code} | الحالة: {$this->statusLabel} | {$this->getStatusTimeLabel()}: {$this->getStatusTime()}")
             ->icon('heroicon-o-arrow-path')
             ->iconColor('gray')
             ->getDatabaseMessage();
@@ -42,17 +42,41 @@ class BookingStatusChangedAdminNotification extends Notification
     public function getWhatsAppData(): array
     {
         return [
-            'shop_name' => $this->booking->shop->name,
-            'barber_info' => $this->booking->barber ? "الحلاق: {$this->booking->barber->name}\n" : '',
-            'client_name' => $this->booking->client->name,
             'status_label' => $this->statusLabel,
             'booking_code' => $this->booking->booking_code,
-            'time' => $this->booking->scheduled_at->translatedFormat('Y-m-d H:i'),
+            'status_time_label' => $this->getStatusTimeLabel(),
+            'status_time' => $this->getStatusTime(),
         ];
     }
 
     public function getWhatsAppPriority(): string
     {
         return 'urgent';
+    }
+
+    protected function getStatusTime(): string
+    {
+        $statusTime = match ($this->booking->status) {
+            BookingStatus::Pending => $this->booking->created_at,
+            BookingStatus::Confirmed => $this->booking->confirmed_at ?? $this->booking->payment_verified_at,
+            BookingStatus::InProgress => $this->booking->arrived_at,
+            BookingStatus::Completed => $this->booking->completed_at,
+            BookingStatus::Cancelled => $this->booking->cancelled_at,
+            BookingStatus::NoShow => $this->booking->updated_at,
+        };
+
+        return ($statusTime ?? $this->booking->updated_at ?? now())->translatedFormat('Y-m-d H:i');
+    }
+
+    protected function getStatusTimeLabel(): string
+    {
+        return match ($this->booking->status) {
+            BookingStatus::Pending => 'وقت الطلب',
+            BookingStatus::Confirmed => 'وقت التأكيد',
+            BookingStatus::InProgress => 'وقت الوصول',
+            BookingStatus::Completed => 'وقت الإكمال',
+            BookingStatus::Cancelled => 'وقت الإلغاء',
+            BookingStatus::NoShow => 'وقت تسجيل الحالة',
+        };
     }
 }

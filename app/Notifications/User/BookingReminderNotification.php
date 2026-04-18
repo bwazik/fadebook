@@ -12,7 +12,10 @@ class BookingReminderNotification extends Notification
 {
     use NotificationDataStructure, Queueable;
 
-    public function __construct(public Booking $booking) {}
+    public function __construct(public Booking $booking)
+    {
+        $this->booking->loadMissing(['shop', 'barber']);
+    }
 
     public function via($notifiable): array
     {
@@ -46,14 +49,14 @@ class BookingReminderNotification extends Notification
 
     protected function getShortMessage(): string
     {
-        return "تذكير: باقي ساعة على موعد حجزك في صالون {$this->booking->shop->name}.";
+        return "تذكير بميعاد الحجز {$this->booking->booking_code} في صالون {$this->booking->shop->name}.";
     }
 
     protected function getMessage(): string
     {
         $barberInfo = $this->booking->barber ? " مع الحلاق {$this->booking->barber->name}" : '';
 
-        return "ميعادك في صالون {$this->booking->shop->name}{$barberInfo} اقترب! يرجى التوجه للصالون في الموعد المحدد.";
+        return "ميعاد الحجز {$this->booking->booking_code} في صالون {$this->booking->shop->name}{$barberInfo} اقترب. يرجى التوجه للصالون في الموعد المحدد.";
     }
 
     protected function getIcon(): string

@@ -12,7 +12,10 @@ class BookingCreatedNotification extends Notification
 {
     use NotificationDataStructure, Queueable;
 
-    public function __construct(public Booking $booking) {}
+    public function __construct(public Booking $booking)
+    {
+        $this->booking->loadMissing(['shop', 'client', 'service', 'barber', 'paymentMethod', 'coupon']);
+    }
 
     public function via($notifiable): array
     {
@@ -46,24 +49,12 @@ class BookingCreatedNotification extends Notification
 
     protected function getShortMessage(): string
     {
-        return "طلب حجز جديد بانتظار التأكيد من العميل {$this->booking->client->name}.";
+        return "طلب حجز جديد برقم {$this->booking->booking_code} من العميل {$this->booking->client->name}.";
     }
 
     protected function getMessage(): string
     {
-        $service = $this->booking->service->name;
-        $barberInfo = $this->booking->barber ? "الحلاق: {$this->booking->barber->name} \n" : '';
-        $paymentInfo = $this->booking->paymentMethod ? "طريقة الدفع: {$this->booking->paymentMethod->name} \n" : '';
-        $refInfo = $this->booking->payment_reference ? "الرقم المرجعي: {$this->booking->payment_reference} \n" : '';
-
-        return "يوجد طلب حجز جديد بانتظار تأكيدك! \n".
-               "{$barberInfo}".
-               "العميل: {$this->booking->client->name} \n".
-               "رقم الموبايل: {$this->booking->client->phone} \n".
-               "الخدمة: {$service} \n".
-               "الميعاد: {$this->booking->scheduled_at->translatedFormat('Y-m-d H:i')} \n\n".
-               "{$paymentInfo}{$refInfo}".
-               'أدخل على لوحة التحكم للحصول على التفاصيل وتأكيد الموعد.';
+        return "يوجد طلب حجز جديد بانتظار تأكيدك:\n\n{$this->formatBookingDetails()}\n\nادخل على لوحة التحكم عشان تراجع الحجز وتأكد المعاد.";
     }
 
     protected function getIcon(): string
@@ -102,12 +93,7 @@ class BookingCreatedNotification extends Notification
     public function getWhatsAppData(): array
     {
         return [
-            'client_name' => $this->booking->client->name,
-            'barber_info' => $this->booking->barber ? "الحلاق: {$this->booking->barber->name}\n" : '',
-            'service' => $this->booking->service->name,
-            'time' => $this->booking->scheduled_at->translatedFormat('Y-m-d H:i'),
-            'payment_info' => $this->booking->paymentMethod ? "طريقة الدفع: {$this->booking->paymentMethod->name}\n" : '',
-            'payment_ref_info' => $this->booking->payment_reference ? "الرقم المرجعي للتحويل: {$this->booking->payment_reference}\n" : '',
+            'booking_details' => $this->formatBookingDetails(),
         ];
     }
 
@@ -119,5 +105,72 @@ class BookingCreatedNotification extends Notification
     public function getWhatsAppPriority(): string
     {
         return 'urgent';
+    }
+
+    protected function formatBookingDetails(): string
+    {
+        $lines = [
+            "كود الحجز: {$this->booking->booking_code}",
+            "العميل: {$this->booking->client->name}",
+        ];
+
+        if ($this->booking->client?->phone) {
+            $lines[] = "رقم الموبايل: {$this->booking->client->phone}";
+        }
+
+        if ($this->booking->barber?->name) {
+            $lines[] = "الحلاق: {$this->booking->barber->name}";
+        }
+
+        if ($this->booking->service?->name) {
+            $lines[] = "الخدمة: {$this->booking->service->name}";
+        }
+
+        $lines[] = 'التاريخ: '.$this->booking->scheduled_at->translatedFormat('l, d F Y');
+        $lines[] = 'الوقت: '.$this->booking->scheduled_at->format('g:i A');
+        $lines[] = 'سعر الخدمة: '.$this->formatMoney($this->booking->service_price);
+        $lines[] = 'الضريبة: '.$this->formatMoney(0);
+
+        if ((float) $this->booking->discount_amount > 0) {
+            $lines[] = 'الخصم: -'.$this->formatMoney($this->booking->discount_amount);
+        }
+
+        $lines[] = 'الإجمالي النهائي: '.$this->formatMoney($this->booking->final_amount);
+
+        if ((float) $this->booking->deposit_amount > 0) {
+            $lines[] = 'المقدم المطلوب: '.$this->formatMoney($this->booking->deposit_amount);
+        }
+
+        if ((float) $this->booking->paid_amount > 0) {
+            $lines[] = 'المدفوع: '.$this->formatMoney($this->booking->paid_amount);
+        }
+
+        $remainingAmount = (float) $this->booking->final_amount - (float) $this->booking->paid_amount;
+        if ($remainingAmount > 0) {
+            $lines[] = 'المتبقي: '.$this->formatMoney($remainingAmount);
+        }
+
+        if ($this->booking->coupon?->code) {
+            $lines[] = "كوبون الخصم: {$this->booking->coupon->code}";
+        }
+
+        if ($this->booking->paymentMethod?->type?->getLabel()) {
+            $lines[] = 'طريقة الدفع: '.$this->booking->paymentMethod->type->getLabel();
+        }
+
+        if ($this->booking->payment_reference) {
+            $lines[] = "الرقم المرجعي: {$this->booking->payment_reference}";
+        }
+
+        if ($this->booking->notes) {
+            $lines[] = "ملاحظات العميل: {$this->booking->notes}";
+        }
+
+        return implode("\n", $lines);
+    }
+
+    protected function formatMoney(float|string|int $amount): string
+    {
+        return number_format((float) $amount, 0).' ج.م';
     }
 }

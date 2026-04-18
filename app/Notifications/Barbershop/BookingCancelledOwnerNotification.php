@@ -12,7 +12,10 @@ class BookingCancelledOwnerNotification extends Notification
 {
     use NotificationDataStructure, Queueable;
 
-    public function __construct(public Booking $booking) {}
+    public function __construct(public Booking $booking)
+    {
+        $this->booking->loadMissing(['client', 'service', 'barber']);
+    }
 
     public function via($notifiable): array
     {
@@ -46,14 +49,12 @@ class BookingCancelledOwnerNotification extends Notification
 
     protected function getShortMessage(): string
     {
-        return "قام العميل {$this->booking->client->name} بإلغاء موعده الساعة {$this->booking->scheduled_at->translatedFormat('H:i')}.";
+        return "تم إلغاء الحجز {$this->booking->booking_code} من العميل {$this->booking->client->name}.";
     }
 
     protected function getMessage(): string
     {
-        $barberInfo = $this->booking->barber ? " مع الحلاق {$this->booking->barber->name}" : '';
-
-        return "إشعار: تم إلغاء الحجز من قِبل العميل {$this->booking->client->name} الخاص بموعد {$this->booking->scheduled_at->translatedFormat('Y-m-d H:i')}{$barberInfo}. والموعد متاح الآن للحجز مرة أخرى.";
+        return "إشعار: تم إلغاء الحجز من قِبل العميل.\n\n{$this->formatBookingDetails()}\n\nالخانة دي متاحة للحجز مرة تانية في النظام.";
     }
 
     protected function getIcon(): string
@@ -92,10 +93,7 @@ class BookingCancelledOwnerNotification extends Notification
     public function getWhatsAppData(): array
     {
         return [
-            'client_name' => $this->booking->client->name,
-            'barber_name' => $this->booking->barber?->name ?? 'غير محدد',
-            'service' => $this->booking->service->name,
-            'time' => $this->booking->scheduled_at->translatedFormat('Y-m-d H:i'),
+            'booking_details' => $this->formatBookingDetails(),
         ];
     }
 
@@ -107,5 +105,26 @@ class BookingCancelledOwnerNotification extends Notification
     public function getWhatsAppPriority(): string
     {
         return 'urgent';
+    }
+
+    protected function formatBookingDetails(): string
+    {
+        $lines = [
+            "كود الحجز: {$this->booking->booking_code}",
+            "العميل: {$this->booking->client->name}",
+        ];
+
+        if ($this->booking->barber?->name) {
+            $lines[] = "الحلاق: {$this->booking->barber->name}";
+        }
+
+        if ($this->booking->service?->name) {
+            $lines[] = "الخدمة: {$this->booking->service->name}";
+        }
+
+        $lines[] = 'التاريخ: '.$this->booking->scheduled_at->translatedFormat('l, d F Y');
+        $lines[] = 'الوقت: '.$this->booking->scheduled_at->format('g:i A');
+
+        return implode("\n", $lines);
     }
 }

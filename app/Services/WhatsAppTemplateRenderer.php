@@ -19,6 +19,9 @@ class WhatsAppTemplateRenderer
             $raw = str_replace("{{$key}}", (string) $value, $raw);
         }
 
-        return $raw;
+        $raw = preg_replace('/\{[a-zA-Z0-9_]+\}/', '', $raw) ?? $raw;
+        $raw = preg_replace("/\n{3,}/", "\n\n", $raw) ?? $raw;
+
+        return trim($raw);
     }
 }

@@ -12,7 +12,10 @@ class BookingCancelledClientNotification extends Notification
 {
     use NotificationDataStructure, Queueable;
 
-    public function __construct(public Booking $booking) {}
+    public function __construct(public Booking $booking)
+    {
+        $this->booking->loadMissing(['shop']);
+    }
 
     public function via($notifiable): array
     {
@@ -46,12 +49,12 @@ class BookingCancelledClientNotification extends Notification
 
     protected function getShortMessage(): string
     {
-        return "للأسف، تم إلغاء حجزك في صالون {$this->booking->shop->name}.";
+        return "تم إلغاء الحجز {$this->booking->booking_code} في صالون {$this->booking->shop->name}.";
     }
 
     protected function getMessage(): string
     {
-        return "نعتذر لك، تم إلغاء حجزك في صالون {$this->booking->shop->name} بتاريخ {$this->booking->scheduled_at->translatedFormat('Y-m-d H:i')}. يمكنك حجز موعد آخر أو التواصل مع الدعم.";
+        return "نعتذر لك، تم إلغاء الحجز {$this->booking->booking_code} في صالون {$this->booking->shop->name} بتاريخ {$this->booking->scheduled_at->translatedFormat('Y-m-d H:i')}. يمكنك حجز موعد آخر أو التواصل مع الدعم.";
     }
 
     protected function getIcon(): string

@@ -12,7 +12,10 @@ class BookingConfirmedNotification extends Notification
 {
     use NotificationDataStructure, Queueable;
 
-    public function __construct(public Booking $booking) {}
+    public function __construct(public Booking $booking)
+    {
+        $this->booking->loadMissing(['shop', 'barber']);
+    }
 
     public function via($notifiable): array
     {
@@ -46,14 +49,14 @@ class BookingConfirmedNotification extends Notification
 
     protected function getShortMessage(): string
     {
-        return "تم تأكيد حجزك بنجاح في صالون {$this->booking->shop->name}.";
+        return "تم تأكيد الحجز {$this->booking->booking_code} في صالون {$this->booking->shop->name}.";
     }
 
     protected function getMessage(): string
     {
         $barberInfo = $this->booking->barber ? " مع الحلاق {$this->booking->barber->name}" : '';
 
-        return "تم تأكيد حجزك في صالون {$this->booking->shop->name}{$barberInfo} لميعاد {$this->booking->scheduled_at->translatedFormat('Y-m-d H:i')}. يرجى الحضور قبل الميعاد بـ 15 دقيقة.";
+        return "تم تأكيد حجزك برقم {$this->booking->booking_code} في صالون {$this->booking->shop->name}{$barberInfo} يوم {$this->booking->scheduled_at->translatedFormat('Y-m-d H:i')}. يرجى الحضور قبل الميعاد بـ 15 دقيقة.";
     }
 
     protected function getIcon(): string
@@ -88,11 +91,9 @@ class BookingConfirmedNotification extends Notification
     {
         return [
             'shop_name' => $this->booking->shop->name,
-            'barber_info' => $this->booking->barber ? "الحلاق: {$this->booking->barber->name}\n" : '',
-            'service' => $this->booking->service->name,
+            'with_barber' => $this->booking->barber ? " مع الحلاق {$this->booking->barber->name}" : '',
             'time' => $this->booking->scheduled_at->translatedFormat('Y-m-d H:i'),
             'booking_code' => $this->booking->booking_code,
-            'payment_ref_info' => $this->booking->payment_reference ? "رقم عملية الدفع: {$this->booking->payment_reference}\n" : '',
             'settings_url' => route('profile.settings'),
         ];
     }

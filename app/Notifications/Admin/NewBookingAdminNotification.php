@@ -12,7 +12,10 @@ class NewBookingAdminNotification extends Notification
 {
     use Queueable;
 
-    public function __construct(public Booking $booking) {}
+    public function __construct(public Booking $booking)
+    {
+        $this->booking->loadMissing(['shop', 'client', 'service', 'barber', 'paymentMethod', 'coupon']);
+    }
 
     public function via($notifiable): array
     {
@@ -21,11 +24,9 @@ class NewBookingAdminNotification extends Notification
 
     public function toDatabase($notifiable): array
     {
-        $barberInfo = $this->booking->barber ? " مع الحلاق {$this->booking->barber->name}" : '';
-
         return FilamentNotification::make()
             ->title('تسجيل حجز جديد')
-            ->body("تم تسجيل حجز جديد في صالون {$this->booking->shop->name}{$barberInfo} للعميل {$this->booking->client->name}.")
+            ->body($this->formatBookingDetails())
             ->icon('heroicon-o-calendar-days')
             ->iconColor('info')
             ->getDatabaseMessage();
@@ -39,17 +40,80 @@ class NewBookingAdminNotification extends Notification
     public function getWhatsAppData(): array
     {
         return [
-            'shop_name' => $this->booking->shop->name,
-            'barber_info' => $this->booking->barber ? "الحلاق: {$this->booking->barber->name}\n" : '',
-            'client_name' => $this->booking->client->name,
-            'service' => $this->booking->service->name,
-            'time' => $this->booking->scheduled_at->translatedFormat('Y-m-d H:i'),
-            'total' => $this->booking->final_amount,
+            'booking_details' => $this->formatBookingDetails(),
         ];
     }
 
     public function getWhatsAppPriority(): string
     {
         return 'urgent';
+    }
+
+    protected function formatBookingDetails(): string
+    {
+        $lines = [
+            "كود الحجز: {$this->booking->booking_code}",
+            "الصالون: {$this->booking->shop->name}",
+            "العميل: {$this->booking->client->name}",
+        ];
+
+        if ($this->booking->client?->phone) {
+            $lines[] = "رقم الموبايل: {$this->booking->client->phone}";
+        }
+
+        if ($this->booking->barber?->name) {
+            $lines[] = "الحلاق: {$this->booking->barber->name}";
+        }
+
+        if ($this->booking->service?->name) {
+            $lines[] = "الخدمة: {$this->booking->service->name}";
+        }
+
+        $lines[] = 'التاريخ: '.$this->booking->scheduled_at->translatedFormat('l, d F Y');
+        $lines[] = 'الوقت: '.$this->booking->scheduled_at->format('g:i A');
+        $lines[] = 'سعر الخدمة: '.$this->formatMoney($this->booking->service_price);
+        $lines[] = 'الضريبة: '.$this->formatMoney(0);
+
+        if ((float) $this->booking->discount_amount > 0) {
+            $lines[] = 'الخصم: -'.$this->formatMoney($this->booking->discount_amount);
+        }
+
+        $lines[] = 'الإجمالي النهائي: '.$this->formatMoney($this->booking->final_amount);
+
+        if ((float) $this->booking->deposit_amount > 0) {
+            $lines[] = 'المقدم المطلوب: '.$this->formatMoney($this->booking->deposit_amount);
+        }
+
+        if ((float) $this->booking->paid_amount > 0) {
+            $lines[] = 'المدفوع: '.$this->formatMoney($this->booking->paid_amount);
+        }
+
+        $remainingAmount = (float) $this->booking->final_amount - (float) $this->booking->paid_amount;
+        if ($remainingAmount > 0) {
+            $lines[] = 'المتبقي: '.$this->formatMoney($remainingAmount);
+        }
+
+        if ($this->booking->coupon?->code) {
+            $lines[] = "كوبون الخصم: {$this->booking->coupon->code}";
+        }
+
+        if ($this->booking->paymentMethod?->type?->getLabel()) {
+            $lines[] = 'طريقة الدفع: '.$this->booking->paymentMethod->type->getLabel();
+        }
+
+        if ($this->booking->payment_reference) {
+            $lines[] = "الرقم المرجعي: {$this->booking->payment_reference}";
+        }
+
+        if ($this->booking->notes) {
+            $lines[] = "ملاحظات العميل: {$this->booking->notes}";
+        }
+
+        return implode("\n", $lines);
+    }
+
+    protected function formatMoney(float|string|int $amount): string
+    {
+        return number_format((float) $amount, 0).' ج.م';
     }
 }
