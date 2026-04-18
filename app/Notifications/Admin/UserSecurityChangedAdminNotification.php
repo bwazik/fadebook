@@ -53,4 +53,9 @@ class UserSecurityChangedAdminNotification extends Notification
             'date' => now()->format('Y-m-d H:i'),
         ];
     }
+
+    public function getWhatsAppPriority(): string
+    {
+        return 'urgent';
+    }
 }

@@ -248,6 +248,8 @@
                 <div class="pt-2 border-t border-gray-100 dark:border-gray-800 space-y-2">
                     <x-booking.summary-row :label="__('messages.booking_label_total')" :value="number_format($this->totalBeforeDiscount, 0) . ' ' . __('messages.egp')" :class="$discountAmount > 0 ? 'line-through opacity-50' : ''" />
 
+                    <x-booking.summary-row :label="__('messages.tax')" :value="'0 ' . __('messages.egp')" />
+
                     @if ($discountAmount > 0)
                         <div class="transition-all animate-in fade-in slide-in-from-top-1">
                             <x-booking.summary-row :label="__('messages.booking_discount')" :value="'-' . number_format($discountAmount, 0) . ' ' . __('messages.egp')"

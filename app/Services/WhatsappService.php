@@ -15,6 +15,23 @@ class WhatsAppService
     protected $allowMultipleTemplates = [
         'otp_verification',
         'phone_changed_notification',
+        'referral_reward_issued',
+        'user_registered',
+        'new_booking_admin',
+        'booking_status_changed_admin',
+        'user_blocked_admin',
+        'shop_applied',
+        'user_security_changed_admin',
+        'booking_created_barber',
+        'booking_cancelled_owner',
+        'account_blocked_cancellation',
+        'account_blocked_no_show',
+        'booking_cancelled_client',
+        'booking_confirmed_client',
+        'booking_reminder_client',
+        'booking_review_request',
+        'no_show_warning',
+        'booking_arrived_client',
     ];
 
     public function sendMessage(string $phone, string $template, array $data, string $priority = 'default', ?int $userId = null, ?int $shopId = null)

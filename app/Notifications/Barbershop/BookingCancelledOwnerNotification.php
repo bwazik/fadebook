@@ -103,4 +103,9 @@ class BookingCancelledOwnerNotification extends Notification
     {
         return $this->booking->shop_id;
     }
+
+    public function getWhatsAppPriority(): string
+    {
+        return 'urgent';
+    }
 }

@@ -36,11 +36,6 @@ trait NotificationDataStructure
         return $this->getCustomData();
     }
 
-    public function getWhatsAppPriority(): string
-    {
-        return 'default';
-    }
-
     public function getRelatedShopId(): ?int
     {
         return null;

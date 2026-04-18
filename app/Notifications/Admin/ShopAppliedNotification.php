@@ -4,7 +4,6 @@ namespace App\Notifications\Admin;
 
 use App\Models\Shop;
 use App\Notifications\Channels\WhatsAppChannel;
-use Filament\Actions\Action;
 use Filament\Notifications\Notification as FilamentNotification;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
@@ -27,11 +26,6 @@ class ShopAppliedNotification extends Notification
             ->body("صالون {$this->shop->name} يطلب الانضمام للمنصة. رقم التواصل: {$this->shop->phone}.")
             ->icon('heroicon-o-building-storefront')
             ->iconColor('success')
-            ->actions([
-                Action::make('view')
-                    ->label('عرض الطلبات')
-                    ->url('/admin/shops'),
-            ])
             ->getDatabaseMessage();
     }
 
@@ -48,5 +42,10 @@ class ShopAppliedNotification extends Notification
             'phone' => $this->shop->phone,
             'area' => $this->shop->address,
         ];
+    }
+
+    public function getWhatsAppPriority(): string
+    {
+        return 'urgent';
     }
 }

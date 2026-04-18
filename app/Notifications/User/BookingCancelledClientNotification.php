@@ -92,6 +92,11 @@ class BookingCancelledClientNotification extends Notification
         ];
     }
 
+    public function getWhatsAppPriority(): string
+    {
+        return 'urgent';
+    }
+
     public function getRelatedShopId(): ?int
     {
         return $this->booking->shop_id;

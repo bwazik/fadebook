@@ -45,7 +45,7 @@
         </div>
 
         {{-- Toast Content --}}
-        <div class="relative flex items-center gap-3 liquid-panel rounded-[1.8rem] px-5 py-3 transition-all duration-300 shadow-xl border border-white/20 dark:border-white/10 max-w-[calc(100vw-3rem)] sm:max-w-md mx-auto">
+        <div class="relative flex items-center gap-3 liquid-panel rounded-[1.8rem] px-5 py-3 transition-all duration-300 shadow-xl border border-white/20 dark:border-white/10 w-max max-w-[calc(100vw-3rem)] sm:max-w-md mx-auto">
             {{-- Success Icon --}}
             <template x-if="type === 'success'">
                 <div class="w-6 h-6 rounded-full bg-green-500/15 flex items-center justify-center shrink-0">
@@ -66,7 +66,7 @@
                 </div>
             </template>
 
-            <span class="text-xs font-black leading-tight tracking-tight break-words flex-1"
+            <span class="text-xs font-black leading-tight tracking-tight whitespace-normal"
                 :class="type === 'error' ? 'text-red-500 dark:text-red-400' : 'text-gray-900 dark:text-white'"
                 x-text="message">
             </span>

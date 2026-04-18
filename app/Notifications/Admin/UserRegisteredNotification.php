@@ -4,7 +4,6 @@ namespace App\Notifications\Admin;
 
 use App\Models\User;
 use App\Notifications\Channels\WhatsAppChannel;
-use Filament\Actions\Action;
 use Filament\Notifications\Notification as FilamentNotification;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
@@ -27,11 +26,6 @@ class UserRegisteredNotification extends Notification
             ->body("تم تسجيل عميل جديد في المنصة: {$this->user->name} ({$this->user->phone}).")
             ->icon('heroicon-o-user-plus')
             ->iconColor('info')
-            ->actions([
-                Action::make('view')
-                    ->label('عرض المستخدمين')
-                    ->url('/admin/users'),
-            ])
             ->getDatabaseMessage();
     }
 
@@ -47,5 +41,10 @@ class UserRegisteredNotification extends Notification
             'phone' => $this->user->phone,
             'date' => now()->format('Y-m-d H:i'),
         ];
+    }
+
+    public function getWhatsAppPriority(): string
+    {
+        return 'urgent';
     }
 }

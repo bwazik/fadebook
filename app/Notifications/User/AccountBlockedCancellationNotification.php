@@ -84,4 +84,9 @@ class AccountBlockedCancellationNotification extends Notification
             'settings_url' => route('profile.settings'),
         ];
     }
+
+    public function getWhatsAppPriority(): string
+    {
+        return 'urgent';
+    }
 }
