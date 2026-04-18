@@ -11,7 +11,7 @@ use Livewire\Attributes\Layout;
 use Livewire\Component;
 
 #[Layout('layouts.app')]
-class Notifications extends Component
+class NotificationsPage extends Component
 {
     /**
      * Mark all notifications as read.

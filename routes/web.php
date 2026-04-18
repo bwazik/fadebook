@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\PushNotificationController;
 use App\Livewire\Booking\BookingDetails;
 use App\Livewire\Booking\BookingList;
 use App\Livewire\Booking\CreateBooking;
@@ -14,7 +13,7 @@ use App\Livewire\Dashboard\ManageServices;
 use App\Livewire\Dashboard\Reservations;
 use App\Livewire\Dashboard\ShopSettings;
 use App\Livewire\Home;
-use App\Livewire\Notifications;
+use App\Livewire\NotificationsPage;
 use App\Livewire\Offers;
 use App\Livewire\Onboarding\PendingApproval;
 use App\Livewire\Onboarding\ShopSetup;
@@ -62,12 +61,8 @@ Route::middleware(['auth', 'phone.verified'])->group(function () {
     Route::get('/bookings/{bookingUuid}', BookingDetails::class)->name('booking.show');
     Route::get('/review/{bookingUuid}', SubmitReview::class)->name('review.create');
 
-    // Push Notifications Testing
-    Route::post('/fcm-token', [PushNotificationController::class, 'updateToken'])->name('fcm.token.update');
-    Route::get('/test-push', [PushNotificationController::class, 'testPush'])->name('fcm.test.push');
-
     // Phase 8 Profile & Settings
-    Route::get('/notifications', Notifications::class)->name('notifications.index');
+    Route::get('/notifications', NotificationsPage::class)->name('notifications');
     Route::get('/profile', Index::class)->name('profile.index');
     Route::get('/profile/edit', EditProfile::class)->name('profile.edit');
     Route::get('/settings', AppSettings::class)->name('profile.settings');

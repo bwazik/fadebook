@@ -64,7 +64,7 @@
         <div class="flex items-center p-1 rounded-[2rem] liquid-glass relative z-50 shrink-0">
             @auth
                 <!-- Global Interactive Components: Notification Bell -->
-                <a href="{{ route('notifications.index') }}" wire:navigate
+                <a href="{{ route('notifications') }}" wire:navigate
                     class="p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/10 relative liquid-button text-gray-500 dark:text-gray-400">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                         stroke="currentColor" class="w-[22px] h-[22px] liquid-transition">
@@ -111,10 +111,14 @@
 
                     // Re-calculate on Livewire navigation
                     document.addEventListener('livewire:navigated', () => {
+                        // Sync store route immediately
+                        if ( Alpine.store('nav')) {
+                            Alpine.store('nav').currentRoute = document.body.dataset.route || '';
+                        }
+
                         this.$nextTick(() => {
                             const activeTab = this.tabs.find(t => this.isActive(t
-                                .dataset.route)) || this.tabs[
-                                0];
+                                .dataset.route)) || this.tabs[0];
                             this.snapTo(activeTab, true);
                         });
                     });

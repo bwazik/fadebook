@@ -144,7 +144,7 @@ class Home extends Component
         return $query->count() > $this->perPage;
     }
 
-    #[Layout('components.layout.app')]
+    #[Layout('layouts.app')]
     public function render(): View
     {
         return view('livewire.home', [
