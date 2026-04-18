@@ -3,7 +3,6 @@
 namespace App\Notifications\Barbershop;
 
 use App\Models\Booking;
-use App\Notifications\Channels\FcmChannel;
 use App\Notifications\Channels\WhatsAppChannel;
 use App\Traits\NotificationDataStructure;
 use Illuminate\Bus\Queueable;
@@ -17,7 +16,7 @@ class BookingCancelledOwnerNotification extends Notification
 
     public function via($notifiable): array
     {
-        return [FcmChannel::class, WhatsAppChannel::class];
+        return [WhatsAppChannel::class];
     }
 
     public function toDatabase($notifiable): array

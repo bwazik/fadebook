@@ -133,6 +133,7 @@ class BookingService
             ]);
 
             $this->notifyAdmins(new NewBookingAdminNotification($booking));
+            $booking->shop->owner->notify(new BookingCreatedNotification($booking));
 
             return $booking;
         });
@@ -242,9 +243,6 @@ class BookingService
 
         // Send WhatsApp notification to Client
         $booking->client->notify(new BookingConfirmedNotification($booking));
-
-        // Send WhatsApp notification to Shop Owner
-        $booking->shop->owner->notify(new BookingCreatedNotification($booking));
 
         // Notify Admins
         $this->notifyAdmins(new BookingStatusChangedAdminNotification($booking));

@@ -2,7 +2,6 @@
 
 namespace App\Notifications\User;
 
-use App\Notifications\Channels\FcmChannel;
 use App\Notifications\Channels\WhatsAppChannel;
 use App\Traits\NotificationDataStructure;
 use Illuminate\Bus\Queueable;
@@ -16,7 +15,7 @@ class AccountBlockedNoShowNotification extends Notification
 
     public function via($notifiable): array
     {
-        return ['database', FcmChannel::class, WhatsAppChannel::class];
+        return ['database', WhatsAppChannel::class];
     }
 
     public function toDatabase($notifiable): array
