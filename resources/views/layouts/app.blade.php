@@ -144,6 +144,42 @@ declare(strict_types=1);
                 if (window.Alpine) Alpine.store('nav').hidden = false;
             });
         }
+
+        // ── Livewire Global Error Handler ──────────────────────────────────────
+        document.addEventListener('livewire:init', () => {
+            Livewire.interceptRequest(({ onError, onFailure }) => {
+                onError(({ response, preventDefault }) => {
+                    preventDefault(); // Stops the scary default modal
+
+                    let message = 'حدث خطأ أثناء معالجة طلبك.';
+
+                    if (response.status === 419) {
+                        message = 'انتهت صلاحية الجلسة، يرجى تحديث الصفحة.';
+                    } else if (response.status === 404) {
+                        message = 'لم يتم العثور على العنصر المطلوب.';
+                    } else if (response.status === 500) {
+                        message = 'خطأ في الخادم، يرجى المحاولة لاحقاً.';
+                    } else if (response.status === 403) {
+                        message = 'غير مصرح لك بإجراء هذه العملية.';
+                    } else if (response.status === 401) {
+                        message = 'يرجى تسجيل الدخول أولاً.';
+                    } else if (response.status === 422) {
+                        message = 'بعض البيانات المدخلة غير صحيحة.';
+                    }
+
+                    window.dispatchEvent(new CustomEvent('toast', {
+                        detail: { type: 'error', message: message }
+                    }));
+                });
+
+                onFailure(({ preventDefault }) => {
+                    preventDefault(); // Network error (offline usually)
+                    window.dispatchEvent(new CustomEvent('toast', {
+                        detail: { type: 'error', message: 'خطأ في الاتصال بالإنترنت. يرجى المحاولة مجدداً.' }
+                    }));
+                });
+            });
+        });
     </script>
 
     <script>
