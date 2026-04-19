@@ -28,6 +28,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
     'average_rating',
     'total_reviews',
     'is_active',
+    'sort_order',
 ])]
 class Barber extends Model
 {

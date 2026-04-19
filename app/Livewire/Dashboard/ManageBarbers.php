@@ -63,7 +63,31 @@ class ManageBarbers extends Component
     #[Computed]
     public function barbers()
     {
-        return $this->shop->barbers()->with(['services', 'images'])->latest()->get();
+        return $this->shop->barbers()->with(['services', 'images'])->orderBy('sort_order')->get();
+    }
+
+    public function updateOrder(int $id, int $position): void
+    {
+        if ($this->isRateLimited('manage-barbers')) {
+            return;
+        }
+
+        $barbers = $this->shop->barbers()->orderBy('sort_order')->get();
+
+        $sorted = $barbers->reject(fn ($b) => $b->id === $id)->values();
+        $moved = $barbers->firstWhere('id', $id);
+
+        if (!$moved) {
+            return;
+        }
+
+        $sorted->splice($position, 0, [$moved]);
+
+        foreach ($sorted as $index => $barber) {
+            $barber->update(['sort_order' => $index + 1]);
+        }
+
+        $this->toastSuccess(__('messages.barber_order_updated'));
     }
 
     public function toggleActive(int $barberId): void

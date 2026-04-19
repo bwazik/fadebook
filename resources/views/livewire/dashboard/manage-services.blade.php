@@ -28,35 +28,13 @@
                     <div class="flex-1 h-px bg-black/5 dark:bg-white/5"></div>
                 </div>
 
-                <div class="space-y-3" x-data="{
-                    sortable: null,
-                    init() {
-                        this.sortable = new Sortable($el, {
-                            animation: 150,
-                            handle: '.drag-handle',
-                            delay: 150,
-                            delayOnTouchOnly: true,
-                            forceFallback: true,
-                            fallbackClass: 'opacity-80',
-                            fallbackTolerance: 5,
-                            scroll: true,
-                            bubbleScroll: true,
-                            ghostClass: 'opacity-50',
-                            onEnd: (evt) => {
-                                let items = Array.from($el.querySelectorAll('[data-id]')).map((el, index) => {
-                                    return { value: el.getAttribute('data-id'), order: index + 1 };
-                                });
-                                $wire.updateOrder(items);
-                            }
-                        });
-                    }
-                }" x-init="init">
+                <div class="space-y-3" wire:sort="updateOrder">
                     @foreach ($services as $service)
-                        <div data-id="{{ $service->id }}"
+                        <div wire:sort:item="{{ $service->id }}" wire:key="service-{{ $service->id }}"
                             class="liquid-glass rounded-[1.5rem] p-4 flex items-center justify-between border-white/30 dark:border-white/10 shadow-sm {{ !$service->is_active ? 'opacity-50 grayscale' : '' }}">
                             <div class="flex items-center gap-4 flex-1">
-                                <div
-                                    class="drag-handle w-10 h-10 rounded-2xl bg-black/5 dark:bg-white/5 flex items-center justify-center text-gray-400 cursor-grab active:cursor-grabbing shrink-0">
+                                <div wire:sort:handle
+                                    class="w-10 h-10 rounded-2xl bg-black/5 dark:bg-white/5 flex items-center justify-center text-gray-400 cursor-grab active:cursor-grabbing shrink-0 transition-colors hover:text-gray-600 dark:hover:text-gray-200">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                         stroke-width="2" stroke="currentColor" class="w-5 h-5">
                                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -175,6 +153,3 @@
     </x-bottom-sheet>
 </div>
 
-@push('scripts')
-    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
-@endpush

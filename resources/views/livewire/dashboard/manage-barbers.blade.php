@@ -19,19 +19,28 @@
     </div>
 
     <!-- Barbers List -->
-    <div class="space-y-4">
+    <div class="space-y-3" wire:sort="updateOrder">
         @forelse($this->barbers as $barber)
-            <div
-                class="liquid-glass rounded-[1.5rem] p-4 border border-white/20 shadow-sm flex items-center gap-4 {{ !$barber->is_active ? 'opacity-60 grayscale' : '' }}">
+            <div wire:sort:item="{{ $barber->id }}" wire:key="barber-{{ $barber->id }}"
+                class="liquid-glass rounded-[1.5rem] p-4 border border-white/20 shadow-sm flex items-center gap-3 {{ !$barber->is_active ? 'opacity-60 grayscale' : '' }}">
+                {{-- Drag Handle --}}
+                <div wire:sort:handle class="w-9 h-9 rounded-xl bg-black/5 dark:bg-white/5 flex items-center justify-center text-gray-400 cursor-grab active:cursor-grabbing shrink-0 transition-colors hover:text-gray-600 dark:hover:text-gray-200">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                        stroke="currentColor" class="w-4 h-4">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M3.75 12h16.5m-16.5-6.75h16.5m-16.5 13.5h16.5" />
+                    </svg>
+                </div>
+
                 <div class="shrink-0">
                     @php $barberImage = $barber->images->first(); @endphp
                     @if ($barberImage)
                         <img src="{{ Storage::url($barberImage->path) }}" alt="{{ $barber->name }}"
-                            class="w-14 h-14 rounded-full object-cover border border-black/5 dark:border-white/10 shadow-sm bg-white dark:bg-[#1c1c1e]">
+                            class="w-12 h-12 rounded-full object-cover border border-black/5 dark:border-white/10 shadow-sm bg-white dark:bg-[#1c1c1e]">
                     @else
                         <div
-                            class="w-14 h-14 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center border border-black/5 dark:border-white/10 shadow-sm">
-                            <span class="text-xl text-gray-400 font-black">{{ mb_substr($barber->name, 0, 1) }}</span>
+                            class="w-12 h-12 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center border border-black/5 dark:border-white/10 shadow-sm">
+                            <span class="text-lg text-gray-400 font-black">{{ mb_substr($barber->name, 0, 1) }}</span>
                         </div>
                     @endif
                 </div>
@@ -39,9 +48,19 @@
                     <h3 class="text-sm font-black text-gray-900 dark:text-white uppercase leading-tight truncate mb-1">
                         {{ $barber->name }}
                     </h3>
-                    <p class="text-[10px] text-gray-500 font-bold uppercase tracking-widest truncate">
-                        {{ $barber->services->count() > 0 ? implode(' • ', $barber->services->pluck('name')->toArray()) : __('messages.top_artist') }}
-                    </p>
+                    @php
+                        $isFullService = $this->availableServices->count() > 0
+                            && $barber->services->count() >= $this->availableServices->count();
+                    @endphp
+                    @if ($isFullService)
+                        <p class="text-[10px] text-banhafade-accent font-bold uppercase tracking-widest truncate">
+                            {{ __('messages.barber_all_services') }}
+                        </p>
+                    @else
+                        <p class="text-[10px] text-banhafade-accent font-bold uppercase tracking-widest truncate">
+                            {{ $barber->services->count() > 0 ? implode(' • ', $barber->services->pluck('name')->toArray()) : __('messages.top_artist') }}
+                        </p>
+                    @endif
                 </div>
                 <div class="shrink-0 flex items-center gap-2">
                     <button wire:click="edit({{ $barber->id }})"
@@ -194,4 +213,4 @@
             </div>
         </form>
     </x-bottom-sheet>
-</div>
+

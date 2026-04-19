@@ -1,4 +1,4 @@
-@props(['barber'])
+@props(['barber', 'totalServices' => 0])
 
 <div
     {{ $attributes->merge(['class' => 'snap-start shrink-0 w-48 liquid-glass rounded-[2rem] p-6 text-center shadow-xl dark:shadow-black/20 border-white/40 dark:border-white/5 transition-all active:scale-[0.98]']) }}>
@@ -36,8 +36,21 @@
     </div>
     <h3 class="font-black text-gray-900 dark:text-white text-base truncate leading-none">
         {{ $barber->name }}</h3>
-    <p
-        class="text-[10px] text-banhafade-accent font-black uppercase mt-2 tracking-widest leading-none whitespace-nowrap overflow-hidden">
-        {{ $barber->services->count() > 0 ? implode(' • ', $barber->services->pluck('name')->toArray()) : __('messages.top_artist') }}
-    </p>
+
+    @php
+        $isFullService = $totalServices > 0 && $barber->services->count() >= $totalServices;
+    @endphp
+
+    @if ($isFullService)
+        {{-- Full-service badge --}}
+        <p
+            class="text-[10px] text-banhafade-accent font-bold uppercase mt-2 tracking-widest leading-none whitespace-nowrap overflow-hidden">
+            {{ __('messages.barber_all_services') }}
+        </p>
+    @else
+        <p
+            class="text-[10px] text-banhafade-accent font-bold uppercase mt-2 tracking-widest leading-none whitespace-nowrap overflow-hidden">
+            {{ $barber->services->count() > 0 ? implode(' • ', $barber->services->pluck('name')->toArray()) : __('messages.top_artist') }}
+        </p>
+    @endif
 </div>

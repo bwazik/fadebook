@@ -1,4 +1,4 @@
-@props(['barber', 'selected' => false])
+@props(['barber', 'selected' => false, 'totalServices' => 0])
 
 <button
     {{ $attributes->merge(['class' => 'w-full liquid-glass liquid-button rounded-[1.5rem] p-4 flex items-center gap-4 border-2 transition-all shadow-sm text-right group']) }}
@@ -20,9 +20,18 @@
         <h3 class="text-sm font-black text-gray-900 dark:text-white uppercase leading-tight">
             {{ $barber->name }}
         </h3>
-        <p class="text-[10px] text-gray-500 font-bold uppercase tracking-widest mt-1">
-            {{ $barber->services->count() > 0 ? $barber->services->pluck('name')->join(' • ') : __('messages.top_artist') }}
-        </p>
+        @php
+            $isFullService = $totalServices > 0 && $barber->services->count() >= $totalServices;
+        @endphp
+        @if ($isFullService)
+            <p class="text-[10px] text-banhafade-accent font-bold uppercase tracking-widest mt-1">
+                {{ __('messages.barber_all_services') }}
+            </p>
+        @else
+            <p class="text-[10px] text-banhafade-accent font-bold uppercase tracking-widest mt-1">
+                {{ $barber->services->count() > 0 ? $barber->services->pluck('name')->join(' • ') : __('messages.top_artist') }}
+            </p>
+        @endif
     </div>
 
     {{-- Selected Indicator --}}

@@ -104,16 +104,25 @@ class ManageCategories extends Component
         $this->resetForm();
     }
 
-    public function updateOrder(array $items): void
+    public function updateOrder(int $id, int $position): void
     {
         if ($this->isRateLimited('manage-categories')) {
             return;
         }
 
-        foreach ($items as $item) {
-            $this->shop->serviceCategories()
-                ->where('id', $item['value'])
-                ->update(['sort_order' => $item['order']]);
+        $categories = $this->shop->serviceCategories()->orderBy('sort_order')->get();
+
+        $sorted = $categories->reject(fn ($c) => $c->id === $id)->values();
+        $moved = $categories->firstWhere('id', $id);
+
+        if (!$moved) {
+            return;
+        }
+
+        $sorted->splice($position, 0, [$moved]);
+
+        foreach ($sorted as $index => $category) {
+            $category->update(['sort_order' => $index + 1]);
         }
         $this->toastSuccess('تم تحديث الترتيب');
     }

@@ -32,7 +32,7 @@ class ShopPage extends Component
             'area',
             'serviceCategories',
             'services' => fn ($q) => $q->with('category')->orderBy('sort_order', 'asc'),
-            'barbers' => fn ($q) => $q->with('services')->active(),
+            'barbers' => fn ($q) => $q->with('services')->active()->orderBy('sort_order'),
             'images',
         ])
             ->where('slug', $shopSlug)

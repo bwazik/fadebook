@@ -51,7 +51,7 @@ class ManageServices extends Component
             ->with('category')
             ->orderBy('sort_order')
             ->get()
-            ->groupBy(fn ($s) => $s->category?->name ?? 'أخرى');
+            ->groupBy(fn($s) => $s->category?->name ?? 'أخرى');
     }
 
     #[Computed]
@@ -67,7 +67,7 @@ class ManageServices extends Component
         }
 
         $service = $this->shop->services()->findOrFail($serviceId);
-        $service->update(['is_active' => ! $service->is_active]);
+        $service->update(['is_active' => !$service->is_active]);
         $this->toastSuccess($service->is_active ? 'تم تفعيل الخدمة' : 'تم إيقاف الخدمة');
     }
 
@@ -140,16 +140,29 @@ class ManageServices extends Component
         $this->resetForm();
     }
 
-    public function updateOrder(array $items): void
+    public function updateOrder(int $id, int $position): void
     {
         if ($this->isRateLimited('manage-services')) {
             return;
         }
 
-        foreach ($items as $item) {
-            $this->shop->services()
-                ->where('id', (int) $item['value'])
-                ->update(['sort_order' => (int) $item['order']]);
+        $moved = $this->shop->services()->firstWhere('id', $id);
+
+        if (!$moved) {
+            return;
+        }
+
+        $services = $this->shop->services()
+            ->where('service_category_id', $moved->service_category_id)
+            ->orderBy('sort_order')
+            ->get();
+
+        $sorted = $services->reject(fn ($s) => $s->id === $id)->values();
+
+        $sorted->splice($position, 0, [$moved]);
+
+        foreach ($sorted as $index => $service) {
+            $service->update(['sort_order' => $index + 1]);
         }
         $this->toastSuccess('تم تحديث الترتيب');
     }

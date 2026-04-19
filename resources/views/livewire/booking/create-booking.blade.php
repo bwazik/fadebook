@@ -104,7 +104,9 @@
                 {{ __('messages.booking_select_barber') }}</h2>
             <div class="space-y-3">
                 @forelse($this->availableBarbers as $barber)
-                    <x-booking.barber-card wire:key="barber-{{ $barber->id }}" :barber="$barber" :selected="'selectedBarberId === ' . $barber->id"
+                    <x-booking.barber-card wire:key="barber-{{ $barber->id }}" :barber="$barber"
+                        :totalServices="$shop->services->count()"
+                        :selected="'selectedBarberId === ' . $barber->id"
                         wire:click="selectBarber({{ $barber->id }})"
                     />
                 @empty

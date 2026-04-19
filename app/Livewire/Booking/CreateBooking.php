@@ -72,7 +72,7 @@ class CreateBooking extends Component
             ->with([
                 'serviceCategories',
                 'services' => fn ($q) => $q->with('category'),
-                'barbers' => fn ($q) => $q->with('services')->active(),
+                'barbers' => fn ($q) => $q->with('services')->active()->orderBy('sort_order'),
             ])
             ->firstOrFail();
 

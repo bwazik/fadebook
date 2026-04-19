@@ -289,7 +289,7 @@
             </div>
             <x-shop.carousel gap="gap-4" pb="pb-6">
                 @foreach ($shop->barbers->where('is_active', true) as $barber)
-                    <x-shop.barber-card :barber="$barber" wire:key="barber-{{ $barber->id }}" />
+                    <x-shop.barber-card :barber="$barber" :totalServices="$shop->services->count()" wire:key="barber-{{ $barber->id }}" />
                 @endforeach
             </x-shop.carousel>
         </div>
