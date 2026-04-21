@@ -13,7 +13,7 @@ declare(strict_types=1);
     <meta name="theme-color" content="#f2f2f7" media="(prefers-color-scheme: light)">
     <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
 
-    <title>{{ config('app.name', 'BanhaFade') }} | احجز جلسة حلاقة اليوم</title>
+    <title>{{ config('app.name', 'BanhaFade') }} | الحلاقة بطريقة مختلفة</title>
     <meta name="description"
         content="BanhaFade - احجز موعد حلاقة سهل وسريع مع أفضل الحلاقين والصالونات في مصر. تطبيق محترف 100% مصري.">
     <meta name="keywords" content="حلاقة, صالون حلاقة, حجز موعد, حلاق, BanhaFade, حلاقين مصر, صالون, حلاقة رجال">
