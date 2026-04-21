@@ -255,7 +255,11 @@
                                 @if ($this->selectedReferral->coupon->discount_type === \App\Enums\DiscountType::Percentage)
                                     {{ __('messages.offers_discount_percentage', ['value' => (int) $this->selectedReferral->coupon->discount_value]) }}
                                 @else
-                                    {{ __('messages.offers_discount_fixed', ['value' => (int) $this->selectedReferral->coupon->discount_value]) }}
+                                    @if ($this->selectedReferral->shop->show_service_prices)
+                                        {{ __('messages.offers_discount_fixed', ['value' => (int) $this->selectedReferral->coupon->discount_value]) }}
+                                    @else
+                                        {{ __('messages.offers_discount_hidden') }}
+                                    @endif
                                 @endif
                             @else
                                 {{ __('messages.referral_reward_unlocked') }}
@@ -288,8 +292,12 @@
                                 @if ($this->selectedReferral->coupon->discount_type === \App\Enums\DiscountType::Percentage)
                                     {{ (int) $this->selectedReferral->coupon->discount_value }}%
                                 @else
-                                    {{ (int) $this->selectedReferral->coupon->discount_value }} <span
-                                        class="text-xs">{{ __('messages.egp') }}</span>
+                                    @if ($this->selectedReferral->shop->show_service_prices)
+                                        {{ (int) $this->selectedReferral->coupon->discount_value }} <span
+                                            class="text-xs">{{ __('messages.egp') }}</span>
+                                    @else
+                                        <span class="text-xs font-black text-banhafade-accent/80 text-nowrap">{{ __('messages.offers_discount_hidden') }}</span>
+                                    @endif
                                 @endif
                             @else
                                 <span class="text-lg opacity-30">—</span>

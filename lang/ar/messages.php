@@ -560,6 +560,7 @@ return [
     'offers_modal_use_at_footer' => 'استخدم الكود ده وإنت بتعمل الحجز في محل :shop عشان تاخد الخصم!',
     'offers_discount_percentage' => ':value% خصم',
     'offers_discount_fixed' => ':value ج.م خصم',
+    'offers_discount_hidden' => 'خصم خاص (تحدد بالتواصل مع المحل)',
     'offers_ends_label' => 'ينتهي',
     'offers_login_prompt_title' => 'سجل دخولك عشان تشوف كوبوناتك',
     'offers_login_prompt_btn' => 'سجل دخول',

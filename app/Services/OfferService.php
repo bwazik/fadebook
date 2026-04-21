@@ -41,9 +41,15 @@ class OfferService
             ->get();
 
         foreach ($activeCoupons as $coupon) {
-            $discountLabel = $coupon->discount_type->value === 1
-                ? __('messages.offers_discount_sync_label_percent', ['value' => (int) $coupon->discount_value])
-                : __('messages.offers_discount_sync_label_fixed', ['value' => (int) $coupon->discount_value]);
+            $isFixed = $coupon->discount_type->value !== 1; // 1 is Percentage usually, let's check DiscountType enum
+
+            if ($isFixed && ! $shop->show_service_prices) {
+                $discountLabel = __('messages.offers_discount_hidden');
+            } else {
+                $discountLabel = $coupon->discount_type->value === 1
+                    ? __('messages.offers_discount_sync_label_percent', ['value' => (int) $coupon->discount_value])
+                    : __('messages.offers_discount_sync_label_fixed', ['value' => (int) $coupon->discount_value]);
+            }
 
             Offer::updateOrCreate(
                 [

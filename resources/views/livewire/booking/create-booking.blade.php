@@ -299,10 +299,20 @@
                         </span>
                     </div>
                 </div>
+                @else
+                <div class="pt-2 border-t border-gray-100 dark:border-gray-800 space-y-2">
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm text-gray-500 dark:text-gray-400 font-bold">{{ __('messages.booking_label_final_total') }}</span>
+                        <span class="text-sm font-black text-gray-900 dark:text-white">
+                            {{ __('messages.booking_deposit_hidden') }}
+                        </span>
+                    </div>
+                </div>
                 @endif
             </div>
 
             {{-- Coupon Section --}}
+            @if ($shop->show_service_prices)
             <div class="mb-8">
                 <div class="flex gap-3">
                     <div class="flex-1">
@@ -330,6 +340,7 @@
                     @endif
                 </div>
             </div>
+            @endif
 
             <div class="mb-8 py-4 px-2">
                 <div class="flex items-center gap-1 text-center justify-center flex-wrap">

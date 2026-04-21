@@ -53,7 +53,11 @@
                                         @if ($offer->coupon->discount_type === \App\Enums\DiscountType::Percentage)
                                             {{ __('messages.offers_discount_percentage', ['value' => $offer->coupon->discount_value]) }}
                                         @else
-                                            {{ __('messages.offers_discount_fixed', ['value' => $offer->coupon->discount_value]) }}
+                                            @if ($offer->shop->show_service_prices)
+                                                {{ __('messages.offers_discount_fixed', ['value' => $offer->coupon->discount_value]) }}
+                                            @else
+                                                {{ __('messages.offers_discount_hidden') }}
+                                            @endif
                                         @endif
                                     @else
                                         {{ __('messages.offers_featured_reward') }}
@@ -93,7 +97,15 @@
                                 @if ($offer->coupon->discount_type === \App\Enums\DiscountType::Percentage)
                                     -{{ $offer->coupon->discount_value }}%
                                 @else
-                                    -{{ $offer->coupon->discount_value }} {{ __('messages.egp') }}
+                                    @if ($offer->shop->show_service_prices)
+                                        -{{ $offer->coupon->discount_value }} {{ __('messages.egp') }}
+                                    @else
+                                        <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3"
+                                                d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z">
+                                            </path>
+                                        </svg>
+                                    @endif
                                 @endif
                             @else
                                 <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -215,7 +227,11 @@
                                 @if ($selectedOffer->coupon->discount_type === \App\Enums\DiscountType::Percentage)
                                     {{ $selectedOffer->coupon->discount_value }}%
                                 @else
-                                    {{ $selectedOffer->coupon->discount_value }} {{ __('messages.egp') }}
+                                    @if ($selectedOffer->shop->show_service_prices)
+                                        {{ $selectedOffer->coupon->discount_value }} {{ __('messages.egp') }}
+                                    @else
+                                        <span class="text-xs font-black text-banhafade-accent/80 text-nowrap">{{ __('messages.offers_discount_hidden') }}</span>
+                                    @endif
                                 @endif
                             @else
                                 <span
