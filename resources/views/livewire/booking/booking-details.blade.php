@@ -70,6 +70,7 @@
         <x-booking.summary-row :label="__('messages.booking_label_date')" :value="$booking->scheduled_at->translatedFormat('l, d F Y')" border />
         <x-booking.summary-row :label="__('messages.booking_label_time')" :value="$booking->scheduled_at->format('g:i A')" border />
 
+        @if ($booking->shop->show_service_prices)
         <div class="pt-2 border-t border-gray-100 dark:border-gray-800 space-y-2">
             <x-booking.summary-row :label="__('messages.booking_label_total')" :value="number_format($booking->service_price, 0) . ' ' . __('messages.egp')" :class="$booking->discount_amount > 0 ? 'line-through opacity-50' : ''" />
 
@@ -109,6 +110,11 @@
                 </div>
             @endif
         </div>
+        @else
+        <div class="pt-2 border-t border-gray-100 dark:border-gray-800 space-y-2">
+            <x-booking.summary-row :label="__('messages.booking_label_final_total')" :value="__('messages.booking_deposit_hidden')" value-class="text-gray-500 font-bold text-xs" />
+        </div>
+        @endif
     </div>
 
     <!-- Actions -->

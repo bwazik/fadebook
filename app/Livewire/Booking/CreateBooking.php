@@ -208,7 +208,7 @@ class CreateBooking extends Component
             return;
         }
 
-        if ($this->depositAmount > 0) {
+        if ($this->shop->payment_mode !== PaymentMode::NoPayment) {
             $this->step = 5;
             $this->saveDraft();
         } else {
@@ -417,7 +417,7 @@ class CreateBooking extends Component
             return;
         }
 
-        if ($this->depositAmount > 0) {
+        if ($this->shop->payment_mode !== PaymentMode::NoPayment) {
             $this->paymentReference = trim($this->paymentReference);
 
             if (! $this->selectedPaymentMethodId) {

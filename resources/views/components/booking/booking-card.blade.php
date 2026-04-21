@@ -109,7 +109,11 @@
                     <span
                         class="text-[9px] font-black text-gray-400 uppercase tracking-widest">{{ __('messages.booking_deposit_label') }}</span>
                     <span class="text-[11px] font-black text-gray-900 dark:text-white text-left">
-                        {{ number_format($booking->deposit_amount, 0) }} {{ __('messages.egp') }}
+                        @if (!$booking->shop->show_service_prices)
+                            {{ __('messages.booking_deposit_hidden') }}
+                        @else
+                            {{ number_format($booking->deposit_amount, 0) }} {{ __('messages.egp') }}
+                        @endif
                     </span>
                 </div>
             </div>
@@ -119,14 +123,14 @@
             <div class="flex gap-2 mt-4">
                 <x-ios-button type="button"
                     @click.stop="$dispatch('open-ios-alert', {
-                        title: '{{ $booking->deposit_amount > 0 ? __('messages.booking_payment_verify_button') : __('messages.status_confirmed') }}',
-                        message: '{{ $booking->deposit_amount > 0 ? 'هل تأكدت من وصول المبلغ على محفظتك؟' : 'هل أنت متأكد من تأكيد هذا الحجز؟' }}',
+                        title: '{{ $booking->payment_method_id ? __('messages.booking_payment_verify_button') : __('messages.status_confirmed') }}',
+                        message: '{{ $booking->payment_method_id ? 'هل تأكدت من وصول المبلغ على محفظتك؟' : 'هل أنت متأكد من تأكيد هذا الحجز؟' }}',
                         action: 'verifyPayment',
                         params: {{ $booking->id }},
                         componentId: '{{ $componentId }}'
                     })"
                     class="flex-1 !py-2.5 !text-[11px] uppercase tracking-widest">
-                    {{ $booking->deposit_amount > 0 ? __('messages.booking_payment_verify_button') : __('messages.status_confirmed') }}
+                    {{ $booking->payment_method_id ? __('messages.booking_payment_verify_button') : __('messages.status_confirmed') }}
                 </x-ios-button>
                 <x-ios-button type="button" variant="danger"
                     @click.stop="$dispatch('open-ios-alert', {
