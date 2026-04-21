@@ -74,7 +74,7 @@
                                     @if ($service->is_active) @click="$wire.selectService({{ $service->id }})"
                                     @else
                                     wire:click="showServiceBlockedToast({{ $shop->is_online ? 'true' : 'false' }}, false)" @endif>
-                                    <x-shop.service-card :service="$service" :selected="$selectedServiceId === $service->id" :unavailable="!$service->is_active" />
+                                    <x-shop.service-card :service="$service" :selected="$selectedServiceId === $service->id" :unavailable="!$service->is_active" :show-prices="$shop->show_service_prices" />
                                 </div>
                             @endforeach
                         </div>
@@ -141,7 +141,7 @@
             <!-- Date Selector (Premium Horizontal Scroll) -->
             <div class="flex overflow-x-auto gap-3 pb-6 no-scrollbar -mx-4 px-4 snap-x">
                 @for ($i = 0; $i < min(14, $shop->advance_booking_days ?? 30); $i++)
-@php $date = now()->addDays($i); @endphp
+                    @php $date = now()->addDays($i); @endphp
                     <x-booking.date-card
                         wire:key="date-{{ $date->format('Y-m-d') }}"
                         :date="$date"
@@ -247,6 +247,7 @@
                 <x-booking.summary-row :label="__('messages.booking_label_date')" :value="\Carbon\Carbon::parse($selectedDate)->translatedFormat('l, d F Y')" border />
                 <x-booking.summary-row :label="__('messages.booking_label_time')" :value="\Carbon\Carbon::parse($selectedSlot)->format('g:i') . ' ' . (__(\Carbon\Carbon::parse($selectedSlot)->format('a') === 'am' ? 'messages.time_am' : 'messages.time_pm'))" border />
 
+                @if ($shop->show_service_prices)
                 <div class="pt-2 border-t border-gray-100 dark:border-gray-800 space-y-2">
                     <x-booking.summary-row :label="__('messages.booking_label_total')" :value="number_format($this->totalBeforeDiscount, 0) . ' ' . __('messages.egp')" :class="$discountAmount > 0 ? 'line-through opacity-50' : ''" />
 
@@ -268,6 +269,7 @@
                         </span>
                     </div>
                 </div>
+                @endif
             </div>
 
             {{-- Coupon Section --}}
@@ -506,6 +508,7 @@
                                     class="text-xs font-black text-gray-900 dark:text-white">{{ number_format($depositAmount, 0) }}
                                     {{ __('messages.egp') }}</span>
                             </div>
+                            @if ($shop->show_service_prices)
                             <div class="flex justify-between items-center opacity-60">
                                 <span
                                     class="text-[10px] text-gray-400 font-bold tracking-tight">{{ __('messages.booking_remaining_label') }}</span>
@@ -513,6 +516,7 @@
                                     class="text-xs font-black text-gray-400">{{ number_format($finalAmount - $depositAmount, 0) }}
                                     {{ __('messages.egp') }}</span>
                             </div>
+                            @endif
                         </div>
                     </div>
 

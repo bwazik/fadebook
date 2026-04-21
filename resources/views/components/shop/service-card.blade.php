@@ -1,4 +1,4 @@
-@props(['service', 'selected' => false, 'href' => null, 'unavailable' => false, 'forceShow' => false])
+@props(['service', 'selected' => false, 'href' => null, 'unavailable' => false, 'forceShow' => false, 'showPrices' => true])
 
 @php
     $tag = $href ? 'a' : 'button';
@@ -42,10 +42,12 @@
         </div>
     </div>
 
+    @if ($showPrices)
     <div class="shrink-0 text-left">
         <p class="text-xl font-black text-banhafade-accent tracking-tighter leading-none">
             {{ number_format($service->price, 0) }}
             <span class="text-[10px] ms-1">{{ __('messages.egp') }}</span>
         </p>
     </div>
+    @endif
     </{{ $tag }}>

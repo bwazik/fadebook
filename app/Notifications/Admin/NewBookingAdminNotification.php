@@ -73,14 +73,22 @@ class NewBookingAdminNotification extends Notification
 
         $lines[] = 'التاريخ: '.$this->booking->scheduled_at->translatedFormat('l, d F Y');
         $lines[] = 'الوقت: '.$this->booking->scheduled_at->format('g:i A');
-        $lines[] = 'سعر الخدمة: '.$this->formatMoney($this->booking->service_price);
-        $lines[] = 'الضريبة: '.$this->formatMoney(0);
 
-        if ((float) $this->booking->discount_amount > 0) {
-            $lines[] = 'الخصم: -'.$this->formatMoney($this->booking->discount_amount);
+        if ($this->booking->shop->show_service_prices) {
+            $lines[] = 'سعر الخدمة: '.$this->formatMoney($this->booking->service_price);
+            $lines[] = 'الضريبة: '.$this->formatMoney(0);
+
+            if ((float) $this->booking->discount_amount > 0) {
+                $lines[] = 'الخصم: -'.$this->formatMoney($this->booking->discount_amount);
+            }
+
+            $lines[] = 'الإجمالي النهائي: '.$this->formatMoney($this->booking->final_amount);
+
+            $remainingAmount = (float) $this->booking->final_amount - (float) $this->booking->paid_amount;
+            if ($remainingAmount > 0) {
+                $lines[] = 'المتبقي: '.$this->formatMoney($remainingAmount);
+            }
         }
-
-        $lines[] = 'الإجمالي النهائي: '.$this->formatMoney($this->booking->final_amount);
 
         if ((float) $this->booking->deposit_amount > 0) {
             $lines[] = 'المقدم المطلوب: '.$this->formatMoney($this->booking->deposit_amount);
@@ -88,11 +96,6 @@ class NewBookingAdminNotification extends Notification
 
         if ((float) $this->booking->paid_amount > 0) {
             $lines[] = 'المدفوع: '.$this->formatMoney($this->booking->paid_amount);
-        }
-
-        $remainingAmount = (float) $this->booking->final_amount - (float) $this->booking->paid_amount;
-        if ($remainingAmount > 0) {
-            $lines[] = 'المتبقي: '.$this->formatMoney($remainingAmount);
         }
 
         if ($this->booking->coupon?->code) {

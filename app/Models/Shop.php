@@ -46,6 +46,7 @@ use Illuminate\Support\Str;
     'approved_at',
     'rejected_at',
     'referral_enabled',
+    'show_service_prices',
 ])]
 class Shop extends Model
 {
@@ -94,6 +95,7 @@ class Shop extends Model
             'approved_at' => 'datetime',
             'rejected_at' => 'datetime',
             'referral_enabled' => 'boolean',
+            'show_service_prices' => 'boolean',
         ];
     }
 

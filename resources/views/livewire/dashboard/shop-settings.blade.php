@@ -173,6 +173,21 @@
                 </div>
             </div>
 
+            <!-- Show Prices Toggle -->
+            <div @click="$refs.showPricesToggle.click()"
+                class="flex items-center justify-between p-4 rounded-2xl bg-black/5 dark:bg-white/10 cursor-pointer active:scale-[0.98] transition-all">
+                <div>
+                    <p class="text-sm font-black text-gray-900 dark:text-white leading-none">إظهار أسعار الخدمات</p>
+                    <p class="text-[10px] font-bold text-gray-400 mt-1 uppercase tracking-widest">عرض الأسعار للعملاء قبل الحجز</p>
+                </div>
+                <div class="relative inline-flex items-center">
+                    <input type="checkbox" wire:model="show_service_prices" x-ref="showPricesToggle" class="sr-only peer">
+                    <div
+                        class="w-11 h-6 bg-gray-200/50 peer-focus:outline-none rounded-full peer dark:bg-white/5 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-banhafade-accent">
+                    </div>
+                </div>
+            </div>
+
             <x-ios-input label="أيام الحجز المسبق" wire:model="advance_booking_days" type="number"
                 help="أقصى عدد أيام يمكن للعميل الحجز خلالها" />
 

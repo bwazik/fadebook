@@ -49,6 +49,8 @@ class ShopSettings extends Component
 
     public bool $is_online = false;
 
+    public bool $show_service_prices = true;
+
     // Opening Hours
     public array $opening_hours = [];
 
@@ -90,6 +92,7 @@ class ShopSettings extends Component
         $this->payment_mode = $this->shop->payment_mode->value ?? 0;
         $this->deposit_percentage = (float) ($this->shop->deposit_percentage ?? 0);
         $this->is_online = (bool) $this->shop->is_online;
+        $this->show_service_prices = (bool) $this->shop->show_service_prices;
 
         $defaultHours = [
             'saturday' => ['open' => '09:00', 'close' => '21:00', 'is_open' => true],
@@ -256,6 +259,7 @@ class ShopSettings extends Component
                 'barber_selection_mode' => 'required|in:1,2',
                 'payment_mode' => 'required|in:0,1,2',
                 'deposit_percentage' => 'required|numeric|min:0|max:100',
+                'show_service_prices' => 'boolean',
                 'logo' => 'nullable|image|max:3072',
                 'banner' => 'nullable|image|max:3072',
                 'newGalleryImages.*' => 'image|max:3072',
@@ -286,6 +290,7 @@ class ShopSettings extends Component
             'payment_mode' => PaymentMode::from((int) $this->payment_mode),
             'deposit_percentage' => $this->payment_mode == 1 ? $this->deposit_percentage : 0,
             'is_online' => $this->is_online,
+            'show_service_prices' => $this->show_service_prices,
             'opening_hours' => $formattedHours,
         ]);
 

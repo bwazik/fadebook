@@ -336,7 +336,7 @@
                                 <x-shop.service-card :service="$service" :selected="false" :href="$shop->is_online && $service->is_active
                                     ? route('booking.create', ['shopSlug' => $shop->slug, 'serviceId' => $service->id])
                                     : null"
-                                    :unavailable="!($shop->is_online && $service->is_active)" />
+                                    :unavailable="!($shop->is_online && $service->is_active)" :show-prices="$shop->show_service_prices" />
                             </div>
                         @endforeach
                     </div>
@@ -423,6 +423,7 @@
             </div>
 
             <!-- Price Info -->
+            @if ($shop->show_service_prices)
             <div class="shrink-0 px-4 relative z-10 flex flex-col justify-center">
                 <p
                     class="text-[9px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest leading-none mb-1">
@@ -432,6 +433,7 @@
                         class="text-[10px] font-bold">{{ __('messages.egp') }}</small>
                 </p>
             </div>
+            @endif
 
             <!-- Action Button -->
             <div class="flex-1 relative z-10">

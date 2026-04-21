@@ -51,7 +51,7 @@ class ManageServices extends Component
             ->with('category')
             ->orderBy('sort_order')
             ->get()
-            ->groupBy(fn($s) => $s->category?->name ?? 'أخرى');
+            ->groupBy(fn ($s) => $s->category?->name ?? 'أخرى');
     }
 
     #[Computed]
@@ -67,7 +67,7 @@ class ManageServices extends Component
         }
 
         $service = $this->shop->services()->findOrFail($serviceId);
-        $service->update(['is_active' => !$service->is_active]);
+        $service->update(['is_active' => ! $service->is_active]);
         $this->toastSuccess($service->is_active ? 'تم تفعيل الخدمة' : 'تم إيقاف الخدمة');
     }
 
@@ -108,7 +108,7 @@ class ManageServices extends Component
 
         $this->validate([
             'name' => 'required|string|max:255',
-            'price' => 'required|numeric|min:0',
+            'price' => 'nullable|numeric|min:0',
             'duration_minutes' => 'required|integer|min:5',
             'description' => 'nullable|string|max:1000',
             'service_category_id' => 'nullable|exists:service_categories,id',
@@ -118,7 +118,7 @@ class ManageServices extends Component
             $service = $this->shop->services()->findOrFail($this->editingId);
             $service->update([
                 'name' => $this->name,
-                'price' => $this->price,
+                'price' => $this->price === '' ? null : $this->price,
                 'duration_minutes' => $this->duration_minutes,
                 'description' => $this->description ?: null,
                 'service_category_id' => $this->service_category_id ?: null,
@@ -127,7 +127,7 @@ class ManageServices extends Component
         } else {
             $this->shop->services()->create([
                 'name' => $this->name,
-                'price' => $this->price,
+                'price' => $this->price === '' ? null : $this->price,
                 'duration_minutes' => $this->duration_minutes,
                 'description' => $this->description ?: null,
                 'service_category_id' => $this->service_category_id ?: null,
@@ -148,7 +148,7 @@ class ManageServices extends Component
 
         $moved = $this->shop->services()->firstWhere('id', $id);
 
-        if (!$moved) {
+        if (! $moved) {
             return;
         }
 
