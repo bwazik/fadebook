@@ -76,6 +76,19 @@ declare(strict_types=1);
             }
         })();
     </script>
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-KDJMFY00DP"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+        gtag('js', new Date());
+
+        gtag('config', 'G-KDJMFY00DP');
+    </script>
 </head>
 
 <body data-route="{{ Route::currentRouteName() }}"
@@ -147,8 +160,14 @@ declare(strict_types=1);
 
         // ── Livewire Global Error Handler ──────────────────────────────────────
         document.addEventListener('livewire:init', () => {
-            Livewire.interceptRequest(({ onError, onFailure }) => {
-                onError(({ response, preventDefault }) => {
+            Livewire.interceptRequest(({
+                onError,
+                onFailure
+            }) => {
+                onError(({
+                    response,
+                    preventDefault
+                }) => {
                     preventDefault(); // Stops the scary default modal
 
                     let message = 'حدث خطأ أثناء معالجة طلبك.';
@@ -168,14 +187,22 @@ declare(strict_types=1);
                     }
 
                     window.dispatchEvent(new CustomEvent('toast', {
-                        detail: { type: 'error', message: message }
+                        detail: {
+                            type: 'error',
+                            message: message
+                        }
                     }));
                 });
 
-                onFailure(({ preventDefault }) => {
+                onFailure(({
+                    preventDefault
+                }) => {
                     preventDefault(); // Network error (offline usually)
                     window.dispatchEvent(new CustomEvent('toast', {
-                        detail: { type: 'error', message: 'خطأ في الاتصال بالإنترنت. يرجى المحاولة مجدداً.' }
+                        detail: {
+                            type: 'error',
+                            message: 'خطأ في الاتصال بالإنترنت. يرجى المحاولة مجدداً.'
+                        }
                     }));
                 });
             });

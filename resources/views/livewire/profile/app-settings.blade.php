@@ -15,27 +15,25 @@
 
             <div class="mt-4 space-y-6 px-2">
                 {{-- Dark Mode Toggle --}}
-                <div class="flex items-center justify-between py-2">
-                    <div class="space-y-1">
-                        <span
-                            class="text-base font-black text-gray-900 dark:text-white tracking-tight">{{ __('messages.profile_dark_mode') }}</span>
-                        <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">
-                            {{ __('messages.profile_dark_mode_desc') }}</p>
-                    </div>
-                    <div x-data="{
-                        isDark: document.documentElement.classList.contains('dark'),
-                        toggle() {
-                            this.isDark = !this.isDark;
-                            document.documentElement.classList.toggle('dark', this.isDark);
-                            localStorage.setItem('darkMode', this.isDark);
-                        }
-                    }">
-                        <x-ios-toggle x-model="isDark" @click="toggle()" />
-                    </div>
+                <div x-data="{
+                    isDark: document.documentElement.classList.contains('dark'),
+                    init() {
+                        this.$watch('isDark', val => {
+                            document.documentElement.classList.toggle('dark', val);
+                            localStorage.setItem('darkMode', val);
+                        })
+                    }
+                }" class="px-0">
+                    <x-ios-toggle 
+                        x-model="isDark" 
+                        :label="__('messages.profile_dark_mode')"
+                        :description="__('messages.profile_dark_mode_desc')"
+                        class="!px-0"
+                    />
                 </div>
 
                 {{-- Accent Color --}}
-                <div class="space-y-4 pt-2">
+                <div class="space-y-4 pt-2 px-2">
                     <div class="space-y-1">
                         <span
                             class="text-base font-black text-gray-900 dark:text-white tracking-tight">{{ __('messages.profile_accent_color') }}</span>
@@ -52,15 +50,13 @@
             <x-section-header :title="__('messages.profile_notifications_section')" />
 
             <div class="mt-4 px-2 space-y-4">
-                <div class="flex items-center justify-between py-2">
-                    <div class="space-y-1">
-                        <span
-                            class="text-base font-black text-gray-900 dark:text-white tracking-tight">{{ __('messages.profile_whatsapp_alerts') }}</span>
-                        <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">
-                            {{ __('messages.profile_whatsapp_alerts_desc') }}</p>
-                    </div>
-                    <x-ios-toggle wire:model.live="whatsappNotifications" @change="$wire.toggleWhatsApp()" />
-                </div>
+                <x-ios-toggle 
+                    wire:model.live="whatsappNotifications" 
+                    @change="$wire.toggleWhatsApp()" 
+                    :label="__('messages.profile_whatsapp_alerts')"
+                    :description="__('messages.profile_whatsapp_alerts_desc')"
+                    class="!px-0"
+                />
 
                 <div
                     class="p-4 rounded-[1.5rem] bg-gray-100 dark:bg-white/5 border border-black/5 dark:border-white/10">
@@ -72,7 +68,7 @@
             </div>
         </section>
 
-        {{-- Version Footer --}}
+         {{-- Version Footer --}}
         <div class="text-center py-6 animate-in fade-in zoom-in duration-1000 delay-600">
             <span
                 class="text-[10px] font-black text-gray-300 dark:text-gray-700 uppercase tracking-[0.5em] font-mono">BanhaFade

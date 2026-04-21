@@ -105,6 +105,21 @@ body { @apply font-sans antialiased; }
     }
 }
 
+/* Custom typography for and RichEditor content */
+@utility liquid-prose {
+    @apply text-[13px];
+    & p { @apply mb-4 leading-relaxed; }
+    & strong { @apply font-black text-gray-900 dark:text-white; }
+    & em { @apply italic; }
+    & ul { @apply list-disc list-inside mb-4 space-y-1; }
+    & ol { @apply list-decimal list-inside mb-4 space-y-1; }
+    & h1 { @apply text-xl font-black mb-4 mt-6; }
+    & h2 { @apply text-lg font-black mb-3 mt-5; }
+    & h3 { @apply text-base font-black mb-2 mt-4; }
+    & a { @apply text-banhafade-accent underline decoration-2 underline-offset-4 font-bold transition-all hover:opacity-80; }
+    & blockquote { @apply border-r-4 border-banhafade-accent/20 pr-4 italic text-gray-500 my-4; }
+}
+
 /* Legacy Glass effect */
 @utility glass {
     @apply bg-white/70 dark:bg-[#1c1c1e]/70 backdrop-blur-2xl border border-black/5 dark:border-white/10 shadow-sm;

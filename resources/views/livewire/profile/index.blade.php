@@ -169,12 +169,14 @@
             </svg>
         </x-slot:icon>
 
-        <div class="space-y-4 max-h-[55vh] overflow-y-auto px-1 no-scrollbar mb-6" dir="rtl">
-            @foreach (explode("\n\n", $this->termsContent) as $paragraph)
-                <p class="text-[13px] text-gray-700 dark:text-gray-300 font-bold leading-relaxed">
-                    {{ $paragraph }}
-                </p>
-            @endforeach
+        <div class="max-h-[55vh] overflow-y-auto px-1 no-scrollbar mb-6" dir="rtl">
+            <div class="liquid-prose text-gray-700 dark:text-gray-300 font-bold">
+                @if(str($this->termsContent)->contains('<'))
+                    {!! $this->termsContent !!}
+                @else
+                    {!! nl2br(e($this->termsContent)) !!}
+                @endif
+            </div>
         </div>
 
         <x-ios-button wire:click="$set('showTermsSheet', false)" variant="secondary">
@@ -192,12 +194,14 @@
             </svg>
         </x-slot:icon>
 
-        <div class="space-y-4 max-h-[55vh] overflow-y-auto px-1 no-scrollbar mb-6" dir="rtl">
-            @foreach (explode("\n\n", $this->privacyContent) as $paragraph)
-                <p class="text-[13px] text-gray-700 dark:text-gray-300 font-bold leading-relaxed">
-                    {{ $paragraph }}
-                </p>
-            @endforeach
+        <div class="max-h-[55vh] overflow-y-auto px-1 no-scrollbar mb-6" dir="rtl">
+            <div class="liquid-prose text-gray-700 dark:text-gray-300 font-bold">
+                @if(str($this->privacyContent)->contains('<'))
+                    {!! $this->privacyContent !!}
+                @else
+                    {!! nl2br(e($this->privacyContent)) !!}
+                @endif
+            </div>
         </div>
 
         <x-ios-button wire:click="$set('showPrivacySheet', false)" variant="secondary">
@@ -214,12 +218,14 @@
             </svg>
         </x-slot:icon>
 
-        <div class="space-y-4 max-h-[55vh] overflow-y-auto px-1 no-scrollbar mb-6" dir="rtl">
-            @foreach (explode("\n\n", $this->contactDeveloperContent) as $paragraph)
-                <p class="text-[13px] text-gray-700 dark:text-gray-300 font-bold leading-relaxed">
-                    {{ $paragraph }}
-                </p>
-            @endforeach
+        <div class="max-h-[55vh] overflow-y-auto px-1 no-scrollbar mb-6" dir="rtl">
+            <div class="liquid-prose text-gray-700 dark:text-gray-300 font-bold">
+                @if(str($this->contactDeveloperContent)->contains('<'))
+                    {!! $this->contactDeveloperContent !!}
+                @else
+                    {!! nl2br(e($this->contactDeveloperContent)) !!}
+                @endif
+            </div>
         </div>
 
         <div class="flex flex-col gap-3">

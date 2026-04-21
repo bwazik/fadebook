@@ -158,35 +158,20 @@
             <h2 class="text-xs font-black text-banhafade-accent uppercase tracking-[0.2em] mb-4">إعدادات الحجز</h2>
 
             <!-- Online Toggle -->
-            <div @click="$refs.onlineToggle.click()"
-                class="flex items-center justify-between p-4 rounded-2xl bg-black/5 dark:bg-white/10 cursor-pointer active:scale-[0.98] transition-all">
-                <div>
-                    <p class="text-sm font-black text-gray-900 dark:text-white leading-none">متاح للحجز</p>
-                    <p class="text-[10px] font-bold text-gray-400 mt-1 uppercase tracking-widest">المحل يستقبل حجوزات
-                        حالياً</p>
-                </div>
-                <div class="relative inline-flex items-center">
-                    <input type="checkbox" wire:model="is_online" x-ref="onlineToggle" class="sr-only peer">
-                    <div
-                        class="w-11 h-6 bg-gray-200/50 peer-focus:outline-none rounded-full peer dark:bg-white/5 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-banhafade-accent">
-                    </div>
-                </div>
-            </div>
+            <x-ios-toggle 
+                wire:model="is_online" 
+                label="متاح للحجز" 
+                description="المحل يستقبل حجوزات حالياً" 
+                class="p-4 rounded-2xl bg-black/5 dark:bg-white/10"
+            />
 
             <!-- Show Prices Toggle -->
-            <div @click="$refs.showPricesToggle.click()"
-                class="flex items-center justify-between p-4 rounded-2xl bg-black/5 dark:bg-white/10 cursor-pointer active:scale-[0.98] transition-all">
-                <div>
-                    <p class="text-sm font-black text-gray-900 dark:text-white leading-none">إظهار أسعار الخدمات</p>
-                    <p class="text-[10px] font-bold text-gray-400 mt-1 uppercase tracking-widest">عرض الأسعار للعملاء قبل الحجز</p>
-                </div>
-                <div class="relative inline-flex items-center">
-                    <input type="checkbox" wire:model="show_service_prices" x-ref="showPricesToggle" class="sr-only peer">
-                    <div
-                        class="w-11 h-6 bg-gray-200/50 peer-focus:outline-none rounded-full peer dark:bg-white/5 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-banhafade-accent">
-                    </div>
-                </div>
-            </div>
+            <x-ios-toggle 
+                wire:model="show_service_prices" 
+                label="إظهار أسعار الخدمات" 
+                description="عرض الأسعار للعملاء قبل الحجز" 
+                class="p-4 rounded-2xl bg-black/5 dark:bg-white/10"
+            />
 
             <x-ios-input label="أيام الحجز المسبق" wire:model="advance_booking_days" type="number"
                 help="أقصى عدد أيام يمكن للعميل الحجز خلالها" />
@@ -356,18 +341,12 @@
                 @foreach ($days as $day)
                     <div
                         class="p-4 rounded-2xl transition-all {{ $opening_hours[$day]['is_open'] ? 'bg-black/5 dark:bg-white/10 border border-white/10' : 'bg-transparent border border-dashed border-black/10 dark:border-white/10 opacity-60' }}">
-                        <div class="flex items-center justify-between mb-4">
-                            <span class="text-sm font-black text-gray-900 dark:text-white capitalize">
-                                {{ __('messages.day_' . $day) }}
-                            </span>
-                            <div @click="$refs.toggle_{{ $day }}.click()"
-                                class="relative inline-flex items-center cursor-pointer">
-                                <input type="checkbox" wire:model.live="opening_hours.{{ $day }}.is_open"
-                                    x-ref="toggle_{{ $day }}" class="sr-only peer">
-                                <div
-                                    class="w-11 h-6 bg-gray-200/50 peer-focus:outline-none rounded-full peer dark:bg-white/5 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-banhafade-accent">
-                                </div>
-                            </div>
+                        <div class="mb-4">
+                            <x-ios-toggle 
+                                wire:model.live="opening_hours.{{ $day }}.is_open"
+                                label="{{ __('messages.day_' . $day) }}"
+                                class="!px-0"
+                            />
                         </div>
 
                         @if ($opening_hours[$day]['is_open'])
