@@ -38,7 +38,7 @@ class BookingsTable
 
                 TextColumn::make('scheduled_at')
                     ->label('موعد الحجز')
-                    ->dateTime('d/m/Y H:i')
+                    ->since()
                     ->sortable(),
 
                 TextColumn::make('status')

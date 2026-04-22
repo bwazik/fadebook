@@ -40,13 +40,13 @@ class RefundsTable
 
                 TextColumn::make('processed_at')
                     ->label('تاريخ المعالجة')
-                    ->dateTime()
+                    ->since()
                     ->sortable()
                     ->toggleable(),
 
                 TextColumn::make('created_at')
                     ->label('تاريخ الطلب')
-                    ->dateTime()
+                    ->since()
                     ->sortable()
                     ->toggleable(),
             ])

@@ -38,11 +38,11 @@ class PhoneVerificationsRelationManager extends RelationManager
                     ->boolean(),
                 TextColumn::make('expires_at')
                     ->label('تاريخ الانتهاء')
-                    ->dateTime()
+                    ->since()
                     ->sortable(),
                 TextColumn::make('created_at')
                     ->label('تاريخ الإرسال')
-                    ->dateTime()
+                    ->since()
                     ->sortable(),
             ])
             ->filters([

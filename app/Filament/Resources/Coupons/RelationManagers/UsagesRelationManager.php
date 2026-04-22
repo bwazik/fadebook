@@ -37,11 +37,11 @@ class UsagesRelationManager extends RelationManager
                     ->sortable(),
                 TextColumn::make('created_at')
                     ->label('أول استخدام')
-                    ->dateTime()
+                    ->since()
                     ->sortable(),
                 TextColumn::make('updated_at')
                     ->label('آخر استخدام')
-                    ->dateTime()
+                    ->since()
                     ->sortable(),
             ])
             ->filters([

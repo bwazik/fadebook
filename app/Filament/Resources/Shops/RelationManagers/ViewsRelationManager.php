@@ -34,8 +34,8 @@ class ViewsRelationManager extends RelationManager
                 TextColumn::make('ip_address')
                     ->label('العنوان IP'),
                 TextColumn::make('created_at')
-                    ->label('التاريخ')
-                    ->dateTime()
+                    ->label('تاريخ المشاهدة')
+                    ->since()
                     ->sortable(),
             ])
             ->filters([

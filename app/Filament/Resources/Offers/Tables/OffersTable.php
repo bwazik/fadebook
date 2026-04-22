@@ -29,11 +29,11 @@ class OffersTable
                     ->boolean(),
                 TextColumn::make('start_date')
                     ->label('من')
-                    ->dateTime()
+                    ->since()
                     ->sortable(),
                 TextColumn::make('end_date')
                     ->label('إلى')
-                    ->dateTime()
+                    ->since()
                     ->sortable(),
             ])
             ->filters([

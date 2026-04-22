@@ -37,7 +37,7 @@ class PhoneHistoryRelationManager extends RelationManager
                     ->label('العنوان IP'),
                 TextColumn::make('created_at')
                     ->label('تاريخ التغيير')
-                    ->dateTime()
+                    ->since()
                     ->sortable(),
             ])
             ->filters([

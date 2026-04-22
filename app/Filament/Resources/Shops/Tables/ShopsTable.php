@@ -52,7 +52,7 @@ class ShopsTable
 
                 TextColumn::make('created_at')
                     ->label('تاريخ التسجيل')
-                    ->dateTime('d/m/Y')
+                    ->since()
                     ->sortable(),
             ])
             ->filters([

@@ -55,7 +55,7 @@ class TransactionsTable
 
                 TextColumn::make('completed_at')
                     ->label('تاريخ الإتمام')
-                    ->dateTime('d/m/Y H:i')
+                    ->since()
                     ->sortable(),
             ])
             ->headerActions([])

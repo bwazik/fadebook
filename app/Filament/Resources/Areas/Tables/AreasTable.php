@@ -33,7 +33,7 @@ class AreasTable
 
                 TextColumn::make('created_at')
                     ->label('تاريخ الإضافة')
-                    ->dateTime()
+                    ->since()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])

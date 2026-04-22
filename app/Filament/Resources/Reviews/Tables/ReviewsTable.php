@@ -46,7 +46,7 @@ class ReviewsTable
 
                 TextColumn::make('created_at')
                     ->label('تاريخ المراجعة')
-                    ->dateTime('d/m/Y')
+                    ->since()
                     ->sortable(),
             ])
             ->filters([

@@ -45,13 +45,13 @@ class ReferralsTable
 
                 TextColumn::make('rewarded_at')
                     ->label('تاريخ المكافأة')
-                    ->dateTime('d/m/Y')
+                    ->since()
                     ->placeholder('—')
                     ->sortable(),
 
                 TextColumn::make('created_at')
                     ->label('تاريخ الإحالة')
-                    ->dateTime('d/m/Y')
+                    ->since()
                     ->sortable(),
             ])
             ->filters([
