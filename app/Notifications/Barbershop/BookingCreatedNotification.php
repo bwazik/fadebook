@@ -94,6 +94,7 @@ class BookingCreatedNotification extends Notification
     {
         return [
             'booking_details' => $this->formatBookingDetails(),
+            'booking_url' => route('booking.show', $this->booking->uuid),
         ];
     }
 
@@ -168,6 +169,8 @@ class BookingCreatedNotification extends Notification
         if ($this->booking->notes) {
             $lines[] = "ملاحظات العميل: {$this->booking->notes}";
         }
+
+        $lines[] = "\nرابط تفاصيل الحجز:\n".route('booking.show', $this->booking->uuid);
 
         return implode("\n", $lines);
     }

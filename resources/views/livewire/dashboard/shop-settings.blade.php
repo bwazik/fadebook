@@ -158,18 +158,18 @@
             <h2 class="text-xs font-black text-banhafade-accent uppercase tracking-[0.2em] mb-4">إعدادات الحجز</h2>
 
             <!-- Online Toggle -->
-            <x-ios-toggle 
-                wire:model="is_online" 
-                label="متاح للحجز" 
-                description="المحل يستقبل حجوزات حالياً" 
+            <x-ios-toggle
+                wire:model="is_online"
+                label="متاح للحجز"
+                description="المحل يستقبل حجوزات حالياً"
                 class="p-4 rounded-2xl bg-black/5 dark:bg-white/10"
             />
 
             <!-- Show Prices Toggle -->
-            <x-ios-toggle 
-                wire:model="show_service_prices" 
-                label="إظهار أسعار الخدمات" 
-                description="عرض الأسعار للعملاء قبل الحجز" 
+            <x-ios-toggle
+                wire:model="show_service_prices"
+                label="إظهار أسعار الخدمات"
+                description="عرض الأسعار للعملاء قبل الحجز"
                 class="p-4 rounded-2xl bg-black/5 dark:bg-white/10"
             />
 
@@ -342,7 +342,7 @@
                     <div
                         class="p-4 rounded-2xl transition-all {{ $opening_hours[$day]['is_open'] ? 'bg-black/5 dark:bg-white/10 border border-white/10' : 'bg-transparent border border-dashed border-black/10 dark:border-white/10 opacity-60' }}">
                         <div class="mb-4">
-                            <x-ios-toggle 
+                            <x-ios-toggle
                                 wire:model.live="opening_hours.{{ $day }}.is_open"
                                 label="{{ __('messages.day_' . $day) }}"
                                 class="!px-0"

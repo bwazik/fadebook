@@ -10,8 +10,8 @@ use App\Enums\ShopStatus;
 use App\Enums\UserRole;
 use App\Models\Area;
 use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Tabs;
@@ -99,8 +99,9 @@ class ShopForm
                                             ->native(false),
                                     ])->columns(2),
 
-                                RichEditor::make('description')
+                                Textarea::make('description')
                                     ->label('وصف المحل')
+                                    ->rows(5)
                                     ->columnSpanFull(),
                             ]),
 
