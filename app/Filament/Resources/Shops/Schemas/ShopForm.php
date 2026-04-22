@@ -59,10 +59,6 @@ class ShopForm
                                             ->label('رقم الهاتف')
                                             ->tel()
                                             ->required(),
-                                        TextInput::make('whatsapp')
-                                            ->label('رقم الواتساب')
-                                            ->tel()
-                                            ->required(),
                                         TextInput::make('address')
                                             ->label('العنوان بالتفصيل')
                                             ->required()
@@ -80,7 +76,7 @@ class ShopForm
                                             ->options(ShopStatus::class)
                                             ->required()
                                             ->native(false),
-                                        TextInput::make('commission_percentage')
+                                        TextInput::make('commission_rate')
                                             ->label('نسبة العمولة (%)')
                                             ->numeric()
                                             ->default(10)

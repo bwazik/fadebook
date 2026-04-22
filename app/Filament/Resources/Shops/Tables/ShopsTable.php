@@ -41,11 +41,11 @@ class ShopsTable
                     ->formatStateUsing(fn (ShopStatus $state): string => $state->getLabel())
                     ->color(fn (ShopStatus $state): string => $state->getColor()),
 
-                TextColumn::make('commission_percentage')
+                TextColumn::make('commission_rate')
                     ->label('نسبة العمولة %')
                     ->sortable(),
 
-                TextColumn::make('bookings_count')
+                TextColumn::make('total_bookings')
                     ->label('إجمالي الحجوزات')
                     ->sortable(),
 
