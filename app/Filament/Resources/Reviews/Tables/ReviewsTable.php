@@ -55,7 +55,7 @@ class ReviewsTable
                     ->trueLabel('مُبلَّغ عنه')
                     ->falseLabel('غير مُبلَّغ'),
             ])
-            ->actions([
+            ->recordActions([
                 Action::make('mark_reviewed')
                     ->label('تمت المراجعة')
                     ->icon('heroicon-o-check')

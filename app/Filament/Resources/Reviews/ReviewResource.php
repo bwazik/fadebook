@@ -20,7 +20,7 @@ class ReviewResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedStar;
 
-    protected static string|UnitEnum|null $navigationGroup = 'التفاعل';
+    protected static string|UnitEnum|null $navigationGroup = 'المحتوى';
 
     protected static ?string $navigationLabel = 'المراجعات';
 

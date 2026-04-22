@@ -9,6 +9,8 @@ use App\Models\User;
 use App\Services\WhatsAppService;
 use Exception;
 use Filament\Actions\Action;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\EditAction;
 use Filament\Forms\Components\Textarea;
 use Filament\Notifications\Notification;
 use Filament\Tables\Columns\IconColumn;
@@ -70,7 +72,13 @@ class UsersTable
                     ->trueLabel('محظور')
                     ->falseLabel('غير محظور'),
             ])
-            ->actions([
+            ->recordActions([
+                EditAction::make()
+                    ->label('تعديل')
+                    ->icon('heroicon-o-pencil-square'),
+                DeleteAction::make()
+                    ->label('حذف')
+                    ->icon('heroicon-o-trash'),
                 Action::make('ban')
                     ->label('حظر')
                     ->icon('heroicon-o-no-symbol')
@@ -111,7 +119,7 @@ class UsersTable
                     ->label('إرسال واتساب')
                     ->icon('heroicon-o-chat-bubble-left')
                     ->color('info')
-                    ->form([
+                    ->schema([
                         Textarea::make('message')
                             ->label('الرسالة')
                             ->required()

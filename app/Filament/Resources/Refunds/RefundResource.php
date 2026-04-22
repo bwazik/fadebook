@@ -2,8 +2,6 @@
 
 namespace App\Filament\Resources\Refunds;
 
-use App\Filament\Resources\Refunds\Pages\CreateRefund;
-use App\Filament\Resources\Refunds\Pages\EditRefund;
 use App\Filament\Resources\Refunds\Pages\ListRefunds;
 use App\Filament\Resources\Refunds\Schemas\RefundForm;
 use App\Filament\Resources\Refunds\Tables\RefundsTable;
@@ -52,8 +50,6 @@ class RefundResource extends Resource
     {
         return [
             'index' => ListRefunds::route('/'),
-            'create' => CreateRefund::route('/create'),
-            'edit' => EditRefund::route('/{record}/edit'),
         ];
     }
 }

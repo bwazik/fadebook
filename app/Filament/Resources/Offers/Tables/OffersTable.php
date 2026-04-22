@@ -39,7 +39,7 @@ class OffersTable
             ->filters([
                 //
             ])
-            ->actions([
+            ->recordActions([
                 EditAction::make(),
             ]);
     }

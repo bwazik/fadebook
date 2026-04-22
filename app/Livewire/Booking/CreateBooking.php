@@ -252,7 +252,7 @@ class CreateBooking extends Component
         } catch (\Exception $e) {
             $this->discountAmount = 0;
             $this->calculateTotals();
-            $this->toastError($e->getMessage());
+            $this->toastException($e);
         }
     }
 
@@ -474,7 +474,7 @@ class CreateBooking extends Component
             $this->redirectRoute('booking.show', ['bookingUuid' => $booking->uuid], navigate: true);
 
         } catch (\Exception $e) {
-            $this->toastError($e->getMessage());
+            $this->toastException($e);
         }
     }
 

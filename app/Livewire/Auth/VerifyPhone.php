@@ -73,7 +73,7 @@ class VerifyPhone extends Component
 
             return redirect()->intended($redirect);
         } catch (OtpException $e) {
-            $this->toastError($e->getMessage());
+            $this->toastException($e);
         }
     }
 
@@ -105,7 +105,7 @@ class VerifyPhone extends Component
             $this->toastSuccess(__('messages.otp_sent'));
             $this->dispatch('resend-cooldown', seconds: $this->getRateLimitDuration('resend-otp', 120));
         } catch (OtpException $e) {
-            $this->toastError($e->getMessage());
+            $this->toastException($e);
         }
     }
 

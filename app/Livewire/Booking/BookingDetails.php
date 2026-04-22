@@ -55,7 +55,7 @@ class BookingDetails extends Component
             $this->booking->refresh();
             $this->toastSuccess(__('messages.booking_cancel_success'));
         } catch (\Exception $e) {
-            $this->toastError($e->getMessage());
+            $this->toastException($e);
         }
     }
 

@@ -55,10 +55,10 @@ class RefundsTable
                     ->label('الحالة')
                     ->options(RefundStatus::class),
             ])
-            ->actions([
+            ->recordActions([
                 ViewAction::make()->label('عرض'),
             ])
-            ->bulkActions([
+            ->toolbarActions([
                 BulkActionGroup::make([
                     //
                 ]),

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Filament\Resources\Shops\Tables;
 
 use App\Enums\ShopStatus;
-use App\Enums\WhatsAppQueueType;
 use App\Models\Shop;
 use App\Services\WhatsAppService;
 use Exception;
@@ -65,7 +64,7 @@ class ShopsTable
                     ->label('المنطقة')
                     ->relationship('area', 'name'),
             ])
-            ->actions([
+            ->recordActions([
                 Action::make('approve')
                     ->label('موافقة')
                     ->icon('heroicon-o-check-circle')
@@ -81,11 +80,13 @@ class ShopsTable
                         ]);
 
                         try {
-                            app(WhatsAppService::class)->send(
+                            app(WhatsAppService::class)->sendMessage(
                                 $record->owner->phone,
                                 'shop_approved',
                                 ['shop_name' => $record->name],
-                                WhatsAppQueueType::Instant
+                                'instant',
+                                $record->owner->id,
+                                $record->id
                             );
                         } catch (Exception) {
                             // notification still shown
@@ -102,7 +103,7 @@ class ShopsTable
                     ->icon('heroicon-o-x-circle')
                     ->color('danger')
                     ->visible(fn (Shop $record): bool => $record->status === ShopStatus::Pending)
-                    ->form([
+                    ->schema([
                         Textarea::make('rejection_reason')
                             ->label('سبب الرفض')
                             ->required()
@@ -117,14 +118,16 @@ class ShopsTable
                         ]);
 
                         try {
-                            app(WhatsAppService::class)->send(
+                            app(WhatsAppService::class)->sendMessage(
                                 $record->owner->phone,
                                 'shop_rejected',
                                 [
                                     'shop_name' => $record->name,
                                     'rejection_reason' => $data['rejection_reason'],
                                 ],
-                                WhatsAppQueueType::Instant
+                                'instant',
+                                $record->owner->id,
+                                $record->id
                             );
                         } catch (Exception) {
                             // notification still shown

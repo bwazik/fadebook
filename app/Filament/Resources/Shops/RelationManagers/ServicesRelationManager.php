@@ -46,7 +46,7 @@ class ServicesRelationManager extends RelationManager
             ->headerActions([
                 CreateAction::make()->label('إضافة خدمة')->modal(),
             ])
-            ->actions([
+            ->recordActions([
                 EditAction::make()->label('تعديل')->modal(),
                 DeleteAction::make()->label('حذف'),
             ]);

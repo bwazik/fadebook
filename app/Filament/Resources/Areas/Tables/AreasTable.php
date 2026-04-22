@@ -40,7 +40,7 @@ class AreasTable
             ->filters([
                 TrashedFilter::make(),
             ])
-            ->actions([
+            ->recordActions([
                 EditAction::make()->label('تعديل'),
                 DeleteAction::make()->label('حذف'),
             ]);

@@ -8,7 +8,6 @@ use App\Filament\Resources\Barbers\Pages\ListBarbers;
 use App\Filament\Resources\Barbers\RelationManagers\UnavailabilitiesRelationManager;
 use App\Filament\Resources\Barbers\Schemas\BarberForm;
 use App\Filament\Resources\Barbers\Tables\BarbersTable;
-use App\Filament\Resources\Shops\RelationManagers\ImagesRelationManager;
 use App\Models\Barber;
 use BackedEnum;
 use Filament\Resources\Resource;
@@ -27,7 +26,7 @@ class BarberResource extends Resource
 
     protected static ?string $navigationLabel = 'الحلاقين';
 
-    protected static string|UnitEnum|null $navigationGroup = 'المستخدمين';
+    protected static string|UnitEnum|null $navigationGroup = 'المحلات';
 
     protected static ?string $modelLabel = 'حلاق';
 
@@ -49,7 +48,6 @@ class BarberResource extends Resource
     {
         return [
             UnavailabilitiesRelationManager::class,
-            ImagesRelationManager::class,
         ];
     }
 

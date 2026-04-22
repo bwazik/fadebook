@@ -64,7 +64,7 @@ class BookingsTable
 
                 Filter::make('scheduled_at')
                     ->label('تاريخ الحجز')
-                    ->form([
+                    ->schema([
                         DatePicker::make('from')->label('من'),
                         DatePicker::make('until')->label('إلى'),
                     ])

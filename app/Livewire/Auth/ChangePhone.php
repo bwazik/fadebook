@@ -85,7 +85,7 @@ class ChangePhone extends Component
             $this->step = 2;
             $this->toastSuccess(__('messages.otp_sent_to_new_phone'));
         } catch (OtpException $e) {
-            $this->toastError($e->getMessage());
+            $this->toastException($e);
         }
     }
 
@@ -117,7 +117,7 @@ class ChangePhone extends Component
                 type: OtpType::PhoneVerification
             );
         } catch (OtpException $e) {
-            $this->toastError($e->getMessage());
+            $this->toastException($e);
 
             return;
         }
@@ -166,7 +166,7 @@ class ChangePhone extends Component
 
             $this->toastSuccess(__('messages.otp_sent'));
         } catch (OtpException $e) {
-            $this->toastError($e->getMessage());
+            $this->toastException($e);
         }
     }
 

@@ -20,7 +20,7 @@ class BookingResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedCalendarDays;
 
-    protected static string|UnitEnum|null $navigationGroup = 'المالية';
+    protected static string|UnitEnum|null $navigationGroup = 'الحجوزات';
 
     protected static ?string $navigationLabel = 'الحجوزات';
 

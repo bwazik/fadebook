@@ -1,11 +1,13 @@
 <?php
 
-declare(strict_types=1);
+namespace App\Filament\Resources\Clients;
 
-namespace App\Filament\Resources\Users;
-
-use App\Filament\Resources\Users\Pages\ListUsers;
-use App\Filament\Resources\Users\RelationManagers\PhoneChangeHistoriesRelationManager;
+use App\Enums\UserRole;
+use App\Filament\Resources\Clients\Pages\CreateClient;
+use App\Filament\Resources\Clients\Pages\EditClient;
+use App\Filament\Resources\Clients\Pages\ListClients;
+use App\Filament\Resources\Users\Forms\UserForm;
+use App\Filament\Resources\Users\RelationManagers\PhoneHistoryRelationManager;
 use App\Filament\Resources\Users\RelationManagers\PhoneVerificationsRelationManager;
 use App\Filament\Resources\Users\RelationManagers\WhatsAppMessagesRelationManager;
 use App\Filament\Resources\Users\Tables\UsersTable;
@@ -15,9 +17,10 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 use UnitEnum;
 
-class UserResource extends Resource
+class ClientResource extends Resource
 {
     protected static ?string $model = User::class;
 
@@ -25,17 +28,17 @@ class UserResource extends Resource
 
     protected static string|UnitEnum|null $navigationGroup = 'المستخدمين';
 
-    protected static ?string $navigationLabel = 'المستخدمين';
+    protected static ?string $navigationLabel = 'العملاء';
 
-    protected static ?string $modelLabel = 'مستخدم';
+    protected static ?string $modelLabel = 'عميل';
 
-    protected static ?string $pluralModelLabel = 'المستخدمين';
+    protected static ?string $pluralModelLabel = 'العملاء';
 
     protected static ?int $navigationSort = 1;
 
     public static function form(Schema $schema): Schema
     {
-        return $schema->components([]);
+        return UserForm::configure($schema);
     }
 
     public static function table(Table $table): Table
@@ -43,19 +46,27 @@ class UserResource extends Resource
         return UsersTable::configure($table);
     }
 
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()
+            ->where('role', UserRole::Client);
+    }
+
     public static function getRelations(): array
     {
         return [
-            PhoneChangeHistoriesRelationManager::class,
-            WhatsAppMessagesRelationManager::class,
             PhoneVerificationsRelationManager::class,
+            PhoneHistoryRelationManager::class,
+            WhatsAppMessagesRelationManager::class,
         ];
     }
 
     public static function getPages(): array
     {
         return [
-            'index' => ListUsers::route('/'),
+            'index' => ListClients::route('/'),
+            'create' => CreateClient::route('/create'),
+            'edit' => EditClient::route('/{record}/edit'),
         ];
     }
 }

@@ -15,9 +15,28 @@ use Filament\Tables\Table;
 
 class CategoriesRelationManager extends RelationManager
 {
-    protected static string $relationship = 'categories';
+    protected static string $relationship = 'serviceCategories';
 
     protected static ?string $title = 'الأقسام';
+
+    protected static ?string $modelLabel = 'قسم';
+
+    protected static ?string $pluralModelLabel = 'الأقسام';
+
+    public function form(Schema $schema): Schema
+    {
+        return $schema
+            ->schema([
+                TextInput::make('name')
+                    ->label('اسم القسم')
+                    ->required()
+                    ->maxLength(255),
+                TextInput::make('sort_order')
+                    ->label('ترتيب العرض')
+                    ->numeric()
+                    ->default(0),
+            ]);
+    }
 
     public function table(Table $table): Table
     {
@@ -29,32 +48,24 @@ class CategoriesRelationManager extends RelationManager
                     ->searchable()
                     ->sortable(),
 
-                TextColumn::make('slug')
-                    ->label('الرابط')
-                    ->badge(),
+                TextColumn::make('sort_order')
+                    ->label('الترتيب')
+                    ->sortable(),
+
+                TextColumn::make('services_count')
+                    ->label('عدد الخدمات')
+                    ->counts('services'),
             ])
             ->filters([
                 //
             ])
             ->headerActions([
-                CreateAction::make()->label('إضافة قسم')->modal(),
+                CreateAction::make()->label('إضافة قسم'),
             ])
-            ->actions([
-                EditAction::make()->label('تعديل')->modal(),
+            ->recordActions([
+                EditAction::make()->label('تعديل'),
                 DeleteAction::make()->label('حذف'),
-            ]);
-    }
-
-    public function form(Schema $schema): Schema
-    {
-        return $schema
-            ->schema([
-                TextInput::make('name')
-                    ->label('اسم القسم')
-                    ->required(),
-                TextInput::make('slug')
-                    ->label('الرابط')
-                    ->required(),
-            ]);
+            ])
+            ->defaultSort('sort_order');
     }
 }

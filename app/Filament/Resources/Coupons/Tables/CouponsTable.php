@@ -39,7 +39,7 @@ class CouponsTable
             ->filters([
                 //
             ])
-            ->actions([
+            ->recordActions([
                 EditAction::make(),
             ]);
     }

@@ -185,11 +185,11 @@ class Shop extends Model
     }
 
     /**
-     * Get all views for this shop (polymorphic).
+     * Get the views for this shop.
      */
-    public function views(): MorphMany
+    public function views(): HasMany
     {
-        return $this->morphMany(View::class, 'viewable');
+        return $this->hasMany(View::class);
     }
 
     /**

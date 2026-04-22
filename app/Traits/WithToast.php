@@ -2,6 +2,8 @@
 
 namespace App\Traits;
 
+use App\Exceptions\OtpException;
+
 trait WithToast
 {
     /**
@@ -55,5 +57,22 @@ trait WithToast
     public function flashToastSuccess(string $message): void
     {
         $this->flashToast($message, 'success');
+    }
+
+    /**
+     * Handle exceptions and display a safe toast message.
+     * Displays the actual error if app is in debug mode or if it's a safe business logic exception.
+     * Otherwise, reports the error and shows a generic fallback message.
+     */
+    public function toastException(\Throwable $e, ?string $fallbackMessage = null): void
+    {
+        $isSafe = $e instanceof OtpException || get_class($e) === \Exception::class;
+
+        if (config('app.debug') || $isSafe) {
+            $this->toastError($e->getMessage());
+        } else {
+            report($e);
+            $this->toastError($fallbackMessage ?? __('messages.error'));
+        }
     }
 }

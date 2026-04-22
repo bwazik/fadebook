@@ -7,15 +7,15 @@ use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
-class PhoneChangeHistoriesRelationManager extends RelationManager
+class PhoneHistoryRelationManager extends RelationManager
 {
-    protected static string $relationship = 'phoneChangeHistories';
+    protected static string $relationship = 'phoneChangeHistory';
 
     protected static ?string $title = 'سجل تغيير الهاتف';
 
-    protected static ?string $modelLabel = 'سجل';
+    protected static ?string $modelLabel = 'تغيير';
 
-    protected static ?string $pluralModelLabel = 'سجلات التغيير';
+    protected static ?string $pluralModelLabel = 'سجل تغيير الهاتف';
 
     public function form(Schema $schema): Schema
     {
@@ -25,17 +25,20 @@ class PhoneChangeHistoriesRelationManager extends RelationManager
     public function table(Table $table): Table
     {
         return $table
-            ->recordTitleAttribute('new_phone')
+            ->recordTitleAttribute('old_phone')
             ->columns([
                 TextColumn::make('old_phone')
-                    ->label('الرقم القديم'),
+                    ->label('الرقم القديم')
+                    ->searchable(),
                 TextColumn::make('new_phone')
-                    ->label('الرقم الجديد'),
+                    ->label('الرقم الجديد')
+                    ->searchable(),
                 TextColumn::make('ip_address')
                     ->label('العنوان IP'),
                 TextColumn::make('created_at')
-                    ->label('التاريخ')
-                    ->dateTime(),
+                    ->label('تاريخ التغيير')
+                    ->dateTime()
+                    ->sortable(),
             ])
             ->filters([
                 //

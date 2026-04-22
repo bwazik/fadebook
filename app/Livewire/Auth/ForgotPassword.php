@@ -63,7 +63,7 @@ class ForgotPassword extends Component
             try {
                 $otpService->generateAndSend((string) $this->phone, OtpType::PasswordReset, $user->id);
             } catch (OtpException $e) {
-                $this->toastError($e->getMessage());
+                $this->toastException($e);
 
                 return;
             }
@@ -110,7 +110,7 @@ class ForgotPassword extends Component
             $this->otpVerified = true;
             $this->step = 3;
         } catch (OtpException $e) {
-            $this->toastError($e->getMessage());
+            $this->toastException($e);
         }
     }
 
@@ -128,7 +128,7 @@ class ForgotPassword extends Component
                 $this->toastSuccess(__('messages.otp_sent'));
                 $this->dispatch('resend-cooldown', seconds: $this->getRateLimitDuration('forgot-password-resend', 120));
             } catch (OtpException $e) {
-                $this->toastError($e->getMessage());
+                $this->toastException($e);
             }
         } else {
             usleep(500000);

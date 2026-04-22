@@ -25,7 +25,7 @@ class OfferResource extends Resource
 
     protected static ?string $navigationLabel = 'العروض';
 
-    protected static string|UnitEnum|null $navigationGroup = 'المالية';
+    protected static string|UnitEnum|null $navigationGroup = 'التسويق';
 
     protected static ?string $modelLabel = 'عرض';
 

@@ -75,7 +75,7 @@ class ChangePassword extends Component
             $this->toastSuccess(__('messages.otp_sent'));
             $this->dispatch('resend-cooldown', seconds: $this->getRateLimitDuration('change-password-send', 120));
         } catch (OtpException $e) {
-            $this->toastError($e->getMessage());
+            $this->toastException($e);
         }
     }
 
@@ -103,7 +103,7 @@ class ChangePassword extends Component
             $this->otpVerified = true;
             $this->step = 3;
         } catch (OtpException $e) {
-            $this->toastError($e->getMessage());
+            $this->toastException($e);
         }
     }
 
@@ -118,7 +118,7 @@ class ChangePassword extends Component
             $this->toastSuccess(__('messages.otp_sent'));
             $this->dispatch('resend-cooldown', seconds: $this->getRateLimitDuration('change-password-resend', 120));
         } catch (OtpException $e) {
-            $this->toastError($e->getMessage());
+            $this->toastException($e);
         }
     }
 
@@ -164,7 +164,7 @@ class ChangePassword extends Component
 
             return $this->redirectRoute('profile.edit', navigate: true);
         } catch (OtpException $e) {
-            $this->toastError($e->getMessage());
+            $this->toastException($e);
 
             return null;
         }

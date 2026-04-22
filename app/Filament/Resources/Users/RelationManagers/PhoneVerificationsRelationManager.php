@@ -12,11 +12,11 @@ class PhoneVerificationsRelationManager extends RelationManager
 {
     protected static string $relationship = 'phoneVerifications';
 
-    protected static ?string $title = 'توثيق الهاتف';
+    protected static ?string $title = 'توثيقات الهاتف';
 
     protected static ?string $modelLabel = 'توثيق';
 
-    protected static ?string $pluralModelLabel = 'سجل التوثيق';
+    protected static ?string $pluralModelLabel = 'توثيقات الهاتف';
 
     public function form(Schema $schema): Schema
     {
@@ -26,22 +26,24 @@ class PhoneVerificationsRelationManager extends RelationManager
     public function table(Table $table): Table
     {
         return $table
-            ->recordTitleAttribute('phone')
+            ->recordTitleAttribute('otp_code')
             ->columns([
                 TextColumn::make('phone')
-                    ->label('الرقم'),
+                    ->label('رقم الهاتف')
+                    ->searchable(),
                 TextColumn::make('otp_code')
-                    ->label('الكود')
-                    ->badge(),
+                    ->label('رمز التحقق'),
                 IconColumn::make('is_used')
-                    ->label('استخدم')
+                    ->label('تم الاستخدام')
                     ->boolean(),
-                TextColumn::make('verified_at')
-                    ->label('تاريخ التوثيق')
-                    ->dateTime(),
+                TextColumn::make('expires_at')
+                    ->label('تاريخ الانتهاء')
+                    ->dateTime()
+                    ->sortable(),
                 TextColumn::make('created_at')
-                    ->label('تاريخ الطلب')
-                    ->dateTime(),
+                    ->label('تاريخ الإرسال')
+                    ->dateTime()
+                    ->sortable(),
             ])
             ->filters([
                 //

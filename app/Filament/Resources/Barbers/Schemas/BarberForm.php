@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Barbers\Schemas;
 
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
@@ -13,6 +14,12 @@ class BarberForm
     {
         return $schema
             ->components([
+                FileUpload::make('avatar')
+                    ->label('الصورة الشخصية')
+                    ->image()
+                    ->directory('barbers/avatars')
+                    ->maxSize(3072)
+                    ->columnSpanFull(),
                 Select::make('shop_id')
                     ->label('المحل')
                     ->relationship('shop', 'name')

@@ -10,12 +10,12 @@ use App\Filament\Resources\Shops\Pages\ListShops;
 use App\Filament\Resources\Shops\Pages\ViewShop;
 use App\Filament\Resources\Shops\RelationManagers\BarbersRelationManager;
 use App\Filament\Resources\Shops\RelationManagers\CategoriesRelationManager;
-use App\Filament\Resources\Shops\RelationManagers\ImagesRelationManager;
 use App\Filament\Resources\Shops\RelationManagers\PaymentMethodsRelationManager;
 use App\Filament\Resources\Shops\RelationManagers\ServicesRelationManager;
 use App\Filament\Resources\Shops\RelationManagers\ViewsRelationManager;
 use App\Filament\Resources\Shops\Schemas\ShopForm;
 use App\Filament\Resources\Shops\Tables\ShopsTable;
+use App\Filament\Resources\Users\RelationManagers\WhatsAppMessagesRelationManager;
 use App\Models\Shop;
 use BackedEnum;
 use Filament\Resources\Resource;
@@ -58,7 +58,7 @@ class ShopResource extends Resource
             ServicesRelationManager::class,
             PaymentMethodsRelationManager::class,
             ViewsRelationManager::class,
-            ImagesRelationManager::class,
+            WhatsAppMessagesRelationManager::class,
         ];
     }
 
