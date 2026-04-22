@@ -33,7 +33,7 @@ class AreasTable
 
                 TextColumn::make('created_at')
                     ->label('تاريخ الإضافة')
-                    ->since()
+                    ->formatStateUsing(fn ($state) => $state?->translatedFormat('l، j F Y - h:i A'))
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])

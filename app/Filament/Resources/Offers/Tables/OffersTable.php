@@ -29,11 +29,11 @@ class OffersTable
                     ->boolean(),
                 TextColumn::make('start_date')
                     ->label('من')
-                    ->since()
+                    ->formatStateUsing(fn ($state) => $state?->translatedFormat('l، j F Y - h:i A'))
                     ->sortable(),
                 TextColumn::make('end_date')
                     ->label('إلى')
-                    ->since()
+                    ->formatStateUsing(fn ($state) => $state?->translatedFormat('l، j F Y - h:i A'))
                     ->sortable(),
             ])
             ->filters([

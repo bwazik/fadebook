@@ -37,11 +37,11 @@ class UsagesRelationManager extends RelationManager
                     ->sortable(),
                 TextColumn::make('created_at')
                     ->label('أول استخدام')
-                    ->since()
+                    ->formatStateUsing(fn ($state) => $state?->translatedFormat('l، j F Y - h:i A'))
                     ->sortable(),
                 TextColumn::make('updated_at')
                     ->label('آخر استخدام')
-                    ->since()
+                    ->formatStateUsing(fn ($state) => $state?->translatedFormat('l، j F Y - h:i A'))
                     ->sortable(),
             ])
             ->filters([

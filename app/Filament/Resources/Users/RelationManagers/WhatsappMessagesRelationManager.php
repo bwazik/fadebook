@@ -52,12 +52,12 @@ class WhatsAppMessagesRelationManager extends RelationManager
                     ->color(fn ($state): string => $state instanceof WhatsAppStatus ? $state->getColor() : 'gray'),
                 TextColumn::make('sent_at')
                     ->label('تاريخ الإرسال')
-                    ->since()
+                    ->formatStateUsing(fn ($state) => $state?->translatedFormat('l، j F Y - h:i A'))
                     ->sortable()
                     ->placeholder('قيد الانتظار'),
                 TextColumn::make('created_at')
                     ->label('تاريخ الإنشاء')
-                    ->since()
+                    ->formatStateUsing(fn ($state) => $state?->translatedFormat('l، j F Y - h:i A'))
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])

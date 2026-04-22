@@ -55,7 +55,7 @@ class TransactionsTable
 
                 TextColumn::make('completed_at')
                     ->label('تاريخ الإتمام')
-                    ->since()
+                    ->formatStateUsing(fn ($state) => $state?->translatedFormat('l، j F Y - h:i A'))
                     ->sortable(),
             ])
             ->headerActions([])

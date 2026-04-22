@@ -38,7 +38,7 @@ class BookingsTable
 
                 TextColumn::make('scheduled_at')
                     ->label('موعد الحجز')
-                    ->since()
+                    ->formatStateUsing(fn ($state) => $state?->translatedFormat('l، j F Y - h:i A'))
                     ->sortable(),
 
                 TextColumn::make('status')

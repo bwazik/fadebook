@@ -45,13 +45,13 @@ class ReferralsTable
 
                 TextColumn::make('rewarded_at')
                     ->label('تاريخ المكافأة')
-                    ->since()
+                    ->formatStateUsing(fn ($state) => $state?->translatedFormat('l، j F Y - h:i A'))
                     ->placeholder('—')
                     ->sortable(),
 
                 TextColumn::make('created_at')
                     ->label('تاريخ الإحالة')
-                    ->since()
+                    ->formatStateUsing(fn ($state) => $state?->translatedFormat('l، j F Y - h:i A'))
                     ->sortable(),
             ])
             ->filters([

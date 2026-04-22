@@ -58,7 +58,7 @@ class UsersTable
 
                 TextColumn::make('created_at')
                     ->label('تاريخ التسجيل')
-                    ->since()
+                    ->formatStateUsing(fn ($state) => $state?->translatedFormat('l، j F Y - h:i A'))
                     ->sortable(),
             ])
             ->filters([

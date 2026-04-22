@@ -40,13 +40,13 @@ class RefundsTable
 
                 TextColumn::make('processed_at')
                     ->label('تاريخ المعالجة')
-                    ->since()
+                    ->formatStateUsing(fn ($state) => $state?->translatedFormat('l، j F Y - h:i A'))
                     ->sortable()
                     ->toggleable(),
 
                 TextColumn::make('created_at')
                     ->label('تاريخ الطلب')
-                    ->since()
+                    ->formatStateUsing(fn ($state) => $state?->translatedFormat('l، j F Y - h:i A'))
                     ->sortable()
                     ->toggleable(),
             ])

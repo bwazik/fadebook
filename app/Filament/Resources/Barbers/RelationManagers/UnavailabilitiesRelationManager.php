@@ -42,7 +42,7 @@ class UnavailabilitiesRelationManager extends RelationManager
             ->columns([
                 TextColumn::make('unavailable_date')
                     ->label('التاريخ')
-                    ->since()
+                    ->formatStateUsing(fn ($state) => $state?->translatedFormat('l، j F Y'))
                     ->sortable(),
             ])
             ->filters([

@@ -35,7 +35,7 @@ class ViewsRelationManager extends RelationManager
                     ->label('العنوان IP'),
                 TextColumn::make('created_at')
                     ->label('تاريخ المشاهدة')
-                    ->since()
+                    ->formatStateUsing(fn ($state) => $state?->translatedFormat('l، j F Y - h:i A'))
                     ->sortable(),
             ])
             ->filters([

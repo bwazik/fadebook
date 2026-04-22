@@ -46,7 +46,7 @@ class ReviewsTable
 
                 TextColumn::make('created_at')
                     ->label('تاريخ المراجعة')
-                    ->since()
+                    ->formatStateUsing(fn ($state) => $state?->translatedFormat('l، j F Y - h:i A'))
                     ->sortable(),
             ])
             ->filters([
