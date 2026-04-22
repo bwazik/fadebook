@@ -174,7 +174,7 @@
             <div x-data="{ expanded: false }">
                 <p class="text-sm text-gray-600 dark:text-gray-300 leading-relaxed font-medium italic transition-all duration-300"
                     :class="expanded ? '' : 'line-clamp-3'">
-                    "{{ $shop->description }}"
+                    "{!! nl2br(e($shop->description)) !!}"
                 </p>
                 @if (mb_strlen($shop->description) > 80)
                     <button @click="expanded = !expanded"
