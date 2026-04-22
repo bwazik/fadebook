@@ -1,3 +1,5 @@
+@section('canonical', route('home'))
+
 <div class="pb-24">
     <!-- Top Header Section (Mobile App Style) -->
     <div class="px-4 pt-[calc(1.5rem+var(--safe-area-top))] pb-6">

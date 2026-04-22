@@ -1,3 +1,6 @@
+@section('title', __('messages.booking_title') . ' - ' . $shop->name)
+@section('robots', 'noindex, nofollow')
+
 <div class="pb-[calc(5rem+var(--safe-area-bottom)+64px)] relative min-h-screen pt-4 px-4" x-data="{
     step: @entangle('step'),
     selectedBarberId: @entangle('selectedBarberId'),

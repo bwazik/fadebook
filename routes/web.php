@@ -24,9 +24,19 @@ use App\Livewire\Profile\Referral;
 use App\Livewire\Review\SubmitReview;
 use App\Livewire\Shop\ShopPage;
 use App\Livewire\WhatsAppConnect;
+use App\Models\Shop;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/offline', fn () => view('offline'))->name('offline');
+
+// SEO Sitemap
+Route::get('/sitemap.xml', function () {
+    $shops = Shop::with('area')->where('is_online', true)->get();
+
+    return response()->view('sitemap', [
+        'shops' => $shops,
+    ])->header('Content-Type', 'text/xml');
+});
 
 // Phase 2 Home
 Route::get('/', Home::class)->name('home');

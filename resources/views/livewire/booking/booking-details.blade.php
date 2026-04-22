@@ -1,3 +1,6 @@
+@section('title', __('messages.booking_details_title'))
+@section('robots', 'noindex, nofollow')
+
 <div class="pb-[calc(5rem+var(--safe-area-bottom)+64px)] min-h-screen pt-4 px-4 relative">
     <x-sticky-back-button href="{{ route('bookings.index') }}" />
 

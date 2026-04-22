@@ -13,34 +13,46 @@ declare(strict_types=1);
     <meta name="theme-color" content="#f2f2f7" media="(prefers-color-scheme: light)">
     <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
 
-    <title>{{ config('app.name', 'BanhaFade') }} | الحلاقة بطريقة مختلفة</title>
-    <meta name="description"
-        content="BanhaFade - احجز موعد حلاقة سهل وسريع مع أفضل الحلاقين والصالونات في مصر. تطبيق محترف 100% مصري.">
-    <meta name="keywords" content="حلاقة, صالون حلاقة, حجز موعد, حلاق, BanhaFade, حلاقين مصر, صالون, حلاقة رجال">
+    <!-- Security -->
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+
+    <!-- Preconnect for Performance -->
+    <link rel="preconnect" href="https://www.googletagmanager.com">
+    <link rel="preconnect" href="https://www.google-analytics.com">
+
+    <!-- Dynamic SEO Tags -->
+    <title>
+        @hasSection('title')
+            @yield('title') | {{ config('app.name', 'BanhaFade') }}
+        @else
+            {{ config('app.name', 'BanhaFade') }} | الحلاقة بطريقة مختلفة
+        @endif
+    </title>
+    <meta name="description" content="@yield('meta_description', 'BanhaFade - احجز موعد حلاقة سهل وسريع مع أفضل الحلاقين والصالونات في مصر. تطبيق محترف 100% مصري.')">
+    <meta name="keywords" content="@yield('meta_keywords', 'حلاقين بنها, صالونات حلاقة في بنها, حجز موعد حلاقة بنها, أفضل حلاق في بنها, كوافير رجالي بنها, BanhaFade, بنها فيد, حلاقة رجال بنها, صالون حلاقة')">
     <meta name="author" content="BanhaFade Team">
-    <meta name="robots" content="index, follow">
-    <link rel="canonical" href="{{ url()->current() }}">
+    <meta name="robots" content="@yield('robots', 'index, follow')">
+    <link rel="canonical" href="@yield('canonical', request()->fullUrl())">
 
     <!-- OG Meta Tags -->
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="{{ url()->current() }}">
-    <meta property="og:title" content="BanhaFade - احجز حلاقتك الآن">
-    <meta property="og:description" content="احجز موعد حلاقة مع أفضل الحلاقين في مصر بسهولة وسرعة">
-    <meta property="og:image" content="{{ asset('icons/og-image.png') }}">
+    <meta property="og:type" content="@yield('og_type', 'website')">
+    <meta property="og:url" content="{{ request()->fullUrl() }}">
+    <meta property="og:title" content="@yield('og_title', 'BanhaFade - الحلاقة بطريقة مختلفة')">
+    <meta property="og:description" content="@yield('og_description', 'احجز موعد حلاقة مع أفضل الحلاقين في مصر بسهولة وسرعة')">
+    <meta property="og:image" content="@yield('og_image', asset('icons/og-image.png'))">
     <meta property="og:locale" content="ar_EG">
 
     <!-- Twitter Cards -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:url" content="{{ url()->current() }}">
-    <meta name="twitter:title" content="BanhaFade - احجز حلاقتك الآن">
-    <meta name="twitter:description" content="احجز موعد حلاقة مع أفضل الحلاقين في مصر بسهولة وسرعة">
-    <meta name="twitter:image" content="{{ asset('icons/og-image.png') }}">
+    <meta name="twitter:url" content="{{ request()->fullUrl() }}">
+    <meta name="twitter:title" content="@yield('og_title', 'BanhaFade - احجز حلاقتك الآن')">
+    <meta name="twitter:description" content="@yield('og_description', 'احجز موعد حلاقة مع أفضل الحلاقين في مصر بسهولة وسرعة')">
+    <meta name="twitter:image" content="@yield('og_image', asset('icons/og-image.png'))">
 
-    <!-- PWA Manifest -->
+    <!-- PWA Manifest & Icons -->
+    <link rel="manifest" href="{{ asset('manifest.json') }}">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-title" content="BanhaFade" />
-
-    <!-- Favicon Setup -->
     <link rel="icon" type="image/png" href="{{ asset('icons/favicon-96x96.png') }}" sizes="96x96" />
     <link rel="icon" type="image/svg+xml" href="{{ asset('icons/favicon.svg') }}" />
     <link rel="shortcut icon" href="{{ asset('icons/favicon.ico') }}" />
@@ -51,22 +63,13 @@ declare(strict_types=1);
     @livewireStyles
 
     <script>
-        // Apply dark mode before rendering
+        // Apply dark mode before rendering to prevent FOUC
         if (localStorage.getItem('darkMode') === 'true' || (!('darkMode' in localStorage) && window.matchMedia(
                 '(prefers-color-scheme: dark)').matches)) {
             document.documentElement.classList.add('dark');
         } else {
             document.documentElement.classList.remove('dark');
         }
-    </script>
-
-    <script>
-        // Global app state
-        window.BanhaFade = {
-            isAuthenticated: @json(auth()->check()),
-            currentRoute: @json(Route::currentRouteName()),
-            hasCompletedOnboarding: @json(auth()->check() ? auth()->user()->is_onboarded : false)
-        };
 
         // Apply saved accent color
         (function() {
@@ -89,6 +92,27 @@ declare(strict_types=1);
 
         gtag('config', 'G-KDJMFY00DP');
     </script>
+
+    <!-- Structured Data (JSON-LD) -->
+    @hasSection('schema')
+        @yield('schema')
+    @else
+        <script type="application/ld+json">
+        {
+          "&#64;context": "https://schema.org",
+          "&#64;type": "SoftwareApplication",
+          "name": "BanhaFade",
+          "operatingSystem": "Web, iOS, Android",
+          "applicationCategory": "LifestyleApplication",
+          "description": "منصة حجز مواعيد صالونات الحلاقة في مصر",
+          "offers": {
+            "&#64;type": "Offer",
+            "price": "0",
+            "priceCurrency": "EGP"
+          }
+        }
+        </script>
+    @endif
 </head>
 
 <body data-route="{{ Route::currentRouteName() }}"
@@ -134,6 +158,13 @@ declare(strict_types=1);
     @endif
 
     <script>
+        // Global app state (Moved to end of body to prevent render blocking)
+        window.BanhaFade = {
+            isAuthenticated: @json(auth()->check()),
+            currentRoute: @json(Route::currentRouteName()),
+            hasCompletedOnboarding: @json(auth()->check() ? auth()->user()->is_onboarded : false)
+        };
+
         // ── Alpine component stores ────────────────────────────────────────────
         if (!window._banhafadeAlpineInitDone) {
             window._banhafadeAlpineInitDone = true;

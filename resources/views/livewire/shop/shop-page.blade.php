@@ -1,3 +1,48 @@
+@php
+    $logo = $shop->getImage('logo')->first();
+    $ogImage = $logo ? Storage::url($logo->path) : asset('icons/og-image.png');
+    $description = $shop->description
+        ? Str::limit($shop->description, 150)
+        : 'احجز موعدك الآن مع ' . $shop->name . ' في ' . $shop->area->name;
+
+    // Generate Highly Targeted Local SEO Keywords
+    $keywords = implode(', ', [
+        $shop->name,
+        'حلاق في ' . $shop->area->name,
+        'صالون ' . $shop->name . ' بنها',
+        'حجز ' . $shop->name,
+        'أفضل حلاق في ' . $shop->area->name,
+        'كوافير رجالي ' . $shop->area->name,
+        'حلاقين بنها',
+        'BanhaFade',
+        'بنها',
+    ]);
+@endphp
+
+@section('title', $shop->name)
+@section('meta_description', $description)
+@section('meta_keywords', $keywords)
+@section('og_title', 'احجز مع ' . $shop->name . ' على BanhaFade')
+@section('og_description', $description)
+@section('og_image', url($ogImage))
+@section('canonical', route('shop.show', ['areaSlug' => $shop->area->slug, 'shopSlug' => $shop->slug]))
+
+@section('schema')
+    <script type="application/ld+json">
+{
+  "&#64;context": "https://schema.org",
+  "&#64;type": "LocalBusiness",
+  "name": "{{ $shop->name }}",
+  "image": "{{ url($ogImage) }}",
+  "address": {
+    "&#64;type": "PostalAddress",
+    "addressLocality": "{{ $shop->area->name }}"
+  },
+  "telephone": "{{ $shop->phone }}"
+}
+</script>
+@endsection
+
 <div class="pb-[calc(5rem+var(--safe-area-bottom)+64px)] relative min-h-screen">
     <!-- Sticky Back Button -->
     <x-sticky-back-button href="{{ route('home') }}" />
@@ -331,12 +376,17 @@
 
                     <div class="space-y-4">
                         @foreach ($services as $service)
+                            @php
+                                $isBlocked = !($shop->is_online && $service->is_active);
+                                $shopOnline = $shop->is_online ? 'true' : 'false';
+                                $serviceActive = $service->is_active ? 'true' : 'false';
+                            @endphp
                             <div wire:key="service-{{ $service->id }}"
-                                @if (!($shop->is_online && $service->is_active)) wire:click="showServiceBlockedToast({{ $shop->is_online ? 'true' : 'false' }}, {{ $service->is_active ? 'true' : 'false' }})" @endif>
-                                <x-shop.service-card :service="$service" :selected="false" :href="$shop->is_online && $service->is_active
+                                @if ($isBlocked) wire:click="showServiceBlockedToast({{ $shopOnline }}, {{ $serviceActive }})" @endif>
+                                <x-shop.service-card :service="$service" :selected="false" :href="!$isBlocked
                                     ? route('booking.create', ['shopSlug' => $shop->slug, 'serviceId' => $service->id])
                                     : null"
-                                    :unavailable="!($shop->is_online && $service->is_active)" :show-prices="$shop->show_service_prices" />
+                                    :unavailable="$isBlocked" :show-prices="$shop->show_service_prices" />
                             </div>
                         @endforeach
                     </div>
@@ -424,20 +474,20 @@
 
             <!-- Price Info -->
             @if ($shop->show_service_prices)
-            <div class="shrink-0 px-4 relative z-10 flex flex-col justify-center">
-                <p
-                    class="text-[9px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest leading-none mb-1">
-                    {{ __('messages.starts_from') }}</p>
-                <p class="text-base font-black text-gray-900 dark:text-white tracking-tighter leading-none">
-                    {{ number_format($this->startingPrice, 0) }} <small
-                        class="text-[10px] font-bold">{{ __('messages.egp') }}</small>
-                </p>
-            </div>
+                <div class="shrink-0 px-4 relative z-10 flex flex-col justify-center">
+                    <p
+                        class="text-[9px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest leading-none mb-1">
+                        {{ __('messages.starts_from') }}</p>
+                    <p class="text-base font-black text-gray-900 dark:text-white tracking-tighter leading-none">
+                        {{ number_format($this->startingPrice, 0) }} <small
+                            class="text-[10px] font-bold">{{ __('messages.egp') }}</small>
+                    </p>
+                </div>
             @endif
 
             <!-- Action Button -->
             <div class="flex-1 relative z-10">
-                @auth
+                @if (auth()->check())
                     @if ($shop->is_online)
                         <a href="{{ route('booking.create', $shop->slug) }}" wire:navigate class="block w-full">
                             <button
@@ -459,7 +509,7 @@
                             {{ __('messages.login_to_book') }}
                         </button>
                     </a>
-                @endauth
+                @endif
             </div>
         </div>
     </div>
