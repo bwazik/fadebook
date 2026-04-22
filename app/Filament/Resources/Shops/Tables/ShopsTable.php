@@ -9,6 +9,7 @@ use App\Models\Shop;
 use App\Services\WhatsAppService;
 use Exception;
 use Filament\Actions\Action;
+use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\Textarea;
 use Filament\Notifications\Notification;
@@ -172,6 +173,7 @@ class ShopsTable
                     }),
 
                 EditAction::make()->label('تعديل'),
+                DeleteAction::make()->label('مسح'),
             ]);
     }
 }
